@@ -1,7 +1,7 @@
 from app.models import db, Stock
 
 def seed_stocks():
-    all_stocks = [ Stock(symbol="TSLA", name="Tesla"),
+    stocks = [ Stock(symbol="TSLA", name="Tesla"),
 
     Stock(symbol="AAPL", name="Apple"),
     Stock(symbol="AMZN", name="Amazon"),
@@ -82,6 +82,29 @@ def seed_stocks():
 
     Stock(symbol="LU", name="Lufax"),
     Stock(symbol="LPCN", name="Lipocine"),
+    Stock(symbol="LULU", name="Lululemon Athletica"),
+    Stock(symbol="LUV", name="Southwest Airlines"),
+    Stock(symbol="LLY", name="Eli Lilly"),
+    Stock(symbol="LIN", name="Linde"),
+    Stock(symbol="LI", name="Li Auto"),
+    Stock(symbol="LB", name="L Brands"),
+    Stock(symbol="LOW", name="Lowe's"),
+    Stock(symbol="LMT", name="Lockheed Martin"),
+    Stock(symbol="LCRX", name="Lam Research"),
+    Stock(symbol="LFC", name="China Life Insurance"),
+    Stock(symbol="LYG", name="Lloyds Banking"),
+    Stock(symbol="LHX", name="L3Harris"),
+    Stock(symbol="LYB", name="LyondelBassel"),
+    Stock(symbol="LBRDK", name="Liberty Broadband"),
+    Stock(symbol="LEN", name="Lennar"),
+    Stock(symbol="LBRDA", name="Liberty Broadband"),
+    Stock(symbol="LH", name="LabCorp"),
+    Stock(symbol="LSXMA", name="Liberty Media"),
+    Stock(symbol="LOB", name="Live Oak Bansch"),
+    Stock(symbol="LBTYK", name="Liberty Global"),
+    Stock(symbol="L", name="Loews"),
+    Stock(symbol="LBTYA", name="Liberty Global"),
+    Stock(symbol="LSXMB", name="Liberty Media"),
 
     Stock(symbol="MSFT", name="Microsoft"),
     Stock(symbol="M", name="Macy's"),
@@ -242,7 +265,7 @@ def seed_stocks():
 
 
     Stock(symbol="MAR", name="Mariott"),
-    Stock(symbol="LULU", name="Lululemon Athletica"),
+
     Stock(symbol="PYPL", name="PayPal"),
     Stock(symbol="ASML", name="ASML Holding"),
     Stock(symbol="ZIP", name="ZipRecruiter"),
@@ -282,7 +305,7 @@ def seed_stocks():
     Stock(symbol="SQ", name="Square"),
     Stock(symbol="T", name="AT&T"),
     Stock(symbol="ABT", name="Abbot Laboratories"),
-    Stock(symbol="LUV", name="Southwest Airlines"),
+
     Stock(symbol="PEP", name="Pepsi"),
     Stock(symbol="CVX", name="Chevron"),
     Stock(symbol="COIN", name="Coinbase"),
@@ -295,7 +318,7 @@ def seed_stocks():
     Stock(symbol="CVNA", name="Carvano"),
     Stock(symbol="MRK", name="Merck"),
     Stock(symbol="OKTA", name="Okta"),
-    Stock(symbol="LLY", name="Eli Lilly"),
+
     Stock(symbol="BHP", name="BHP Group"),
     Stock(symbol="UPS", name="United Parcel Service"),
     Stock(symbol="TMO", name="Thermo Fisher Scientific"),
@@ -317,7 +340,7 @@ def seed_stocks():
     Stock(symbol="C", name="Citigroup"),
     Stock(symbol="HON", name="Honeywell"),
     Stock(symbol="UL", name="Unilever PLC"),
-    Stock(symbol="LIN", name="Linde"),
+
     Stock(symbol="GIS", name="General Mills"),
     Stock(symbol="XEL", name="Xcel Energy"),
     Stock(symbol="LOGI", name="Logitech"),
@@ -349,16 +372,16 @@ def seed_stocks():
     Stock(symbol="CHTR", name="Charter Communications"),
     Stock(symbol="CCIV", name="Churchill Capital"),
     Stock(symbol="PLTR", name="Palantir Technologies"),
-    Stock(symbol="LI", name="Li Auto"),
+
     Stock(symbol="XPEV", name="Xpeng"),
     Stock(symbol="ULTA", name="Ulta Beauty"),
     Stock(symbol="FUBO", name="Fubo"),
     Stock(symbol="WKHS", name="Workhorse"),
-    Stock(symbol="LB", name="L Brands"),
+
     Stock(symbol="RIO", name="Rio Tinto"),
     Stock(symbol="HDB", name="HDFC Bank"),
     Stock(symbol="SCHW", name="Charles Schwab"),
-    Stock(symbol="LOW", name="Lowe's"),
+
     Stock(symbol="AMGN", name="Amgen"),
     Stock(symbol="RTX", name="Raytheon Technologies"),
     Stock(symbol="SBUX", name="Starbucks"),
@@ -391,7 +414,7 @@ def seed_stocks():
     Stock(symbol="DISH", name="DISH Network"),
     Stock(symbol="VALE", name="Vale"),
     Stock(symbol="Real", name="The RealReal"),
-    Stock(symbol="LMT", name="Lockheed Martin"),
+
     Stock(symbol="AMCX", name="AMC Networks"),
     Stock(symbol="DIT", name="Amcon Distributing"),
     Stock(symbol="ZI", name="ZoomInfo"),
@@ -408,7 +431,7 @@ def seed_stocks():
     Stock(symbol="MGM", name="MGM Resorts"),
     Stock(symbol="MU", name="Micron"),
     Stock(symbol="NOW", name="ServiceNow"),
-    Stock(symbol="LCRX", name="Lam Research"),
+
     Stock(symbol="FIS", name="Fidelity"),
     Stock(symbol="SPGI", name="S&P Global"),
     Stock(symbol="MO", name="Altria"),
@@ -471,7 +494,7 @@ def seed_stocks():
     Stock(symbol="D", name="Doiminion Energy"),
     Stock(symbol="STLA", name="Stellantis"),
     Stock(symbol="ADI", name="Analog Devices"),
-    Stock(symbol="LFC", name="China Life Insurance"),
+
     Stock(symbol="BSX", name="Boston Scientific"),
     Stock(symbol="EW", name="Edwards Lifesciences"),
     Stock(symbol="WM", name="Waste Management"),
@@ -509,7 +532,7 @@ def seed_stocks():
     Stock(symbol="SMFG", name="Sumitomo Mitsui"),
     Stock(symbol="CRWD", name="CrowdStrike"),
     Stock(symbol="TRP", name="TC Energy"),
-    Stock(symbol="LYG", name="Lloyds Banking"),
+
     Stock(symbol="PSA", name="Public Storage"),
     Stock(symbol="BBD", name="Banco Bradesco"),
     Stock(symbol="BNTX", name="BioNTech"),
@@ -530,7 +553,7 @@ def seed_stocks():
     Stock(symbol="BCE", name="BCE"),
     Stock(symbol="TEL", name="TE Connectivity"),
     Stock(symbol="ERIC", name="Ericsson"),
-    Stock(symbol="LHX", name="L3Harris"),
+
     Stock(symbol="INFO", name="IHS Markit"),
     Stock(symbol="VEEV", name="Veeva Systems"),
     Stock(symbol="LVS", name="Las Vegas Sands"),
@@ -571,7 +594,7 @@ def seed_stocks():
     Stock(symbol="SNPS", name="Synopsys"),
     Stock(symbol="MSCI", name="MSCI"),
     Stock(symbol="CTSH", name="Cognizant"),
-    Stock(symbol="LYB", name="LyondelBassel"),
+
     Stock(symbol="CMI", name="Cummins"),
     Stock(symbol="ORLY", name="O'Reilly"),
     Stock(symbol="ADM", name="Archer-Daniels-Midland"),
@@ -626,16 +649,16 @@ def seed_stocks():
     Stock(symbol="SIVB", name="SVB"),
     Stock(symbol="DB", name="Deutsche Bank"),
     Stock(symbol="SLF", name="Sun Life"),
-    Stock(symbol="LBRDK", name="Liberty Broadband"),
+
     Stock(symbol="PEG", name="Public Service Enterprise"),
     Stock(symbol="VFC", name="V.F. Corporation"),
     Stock(symbol="XLNX", name="Xilinx"),
     Stock(symbol="WELL", name="Welltower"),
     Stock(symbol="AME", name="AMTEK"),
-    Stock(symbol="LEN", name="Lennar"),
+
     Stock(symbol="ODFL", name="Old Dominion Freight Line"),
     Stock(symbol="NUE", name="Nucor"),
-    Stock(symbol="LBRDA", name="Liberty Broadband"),
+
     Stock(symbol="ROK", name="Rockwell Automation"),
     Stock(symbol="TU", name="Telus"),
     Stock(symbol="CPRT", name="Copart"),
@@ -682,7 +705,7 @@ def seed_stocks():
     Stock(symbol="KSU", name="Kansas City Southern"),
     Stock(symbol="BLL", name="Ball"),
     Stock(symbol="EPAM", name="EPAM"),
-    Stock(symbol="LH", name="LabCorp"),
+
     Stock(symbol="TCOM", name="Trip.com"),
     Stock(symbol="TME", name="Tencent Music Entertainment"),
     Stock(symbol="ZBRA", name="Zebra Technologies"),
@@ -838,7 +861,7 @@ def seed_stocks():
     Stock(symbol="AEM", name="Agnico Eagle Mines"),
     Stock(symbol="DRE", name="Duke Realty"),
     Stock(symbol="EDU", name="New Oriential Education & Technology"),
-    Stock(symbol="LSXMB", name="Liberty Media"),
+
     Stock(symbol="BEN", name="Franklin Resources"),
     Stock(symbol="ON", name="ON Semiconductor"),
     Stock(symbol="EMN", name="Eastman Chemical"),
@@ -885,10 +908,10 @@ def seed_stocks():
     Stock(symbol="ENTG", name="Entegris"),
     Stock(symbol="CG", name="Carlyle Group"),
     Stock(symbol="TXT", name="Textron"),
-    Stock(symbol="LBTYA", name="Liberty Global"),
+
     Stock(symbol="HWM", name="Howmet Aerospace"),
-    Stock(symbol="L", name="Loews"),
-    Stock(symbol="LBTYK", name="Liberty Global"),
+
+
     Stock(symbol="WHR", name="Whirlpool"),
     Stock(symbol="FMC", name="FMC Corp"),
     Stock(symbol="DISCK", name="Discovery"),
@@ -898,13 +921,13 @@ def seed_stocks():
     Stock(symbol="AMTX", name="Aemetis Inc"),
     Stock(symbol="BGFV", name="Big 5"),
     Stock(symbol="GTIM", name="Good Times Rest"),
-    Stock(symbol="LOB", name="Live Oak Bansch"),
+
     Stock(symbol="KEP", name="Korea Electric power"),
     Stock(symbol="MHK", name="Mohawk Industries"),
     Stock(symbol="CNP", name="CenterPoint Energy"),
     Stock(symbol="MOH", name="Molina Healthcare"),
     Stock(symbol="WIX", name="Wix.com"),
-    Stock(symbol="LSXMA", name="Liberty Media"),
+
     Stock(symbol="DT", name="Dynatrace"),
     Stock(symbol="GDRX", name="GoodRx"),
     Stock(symbol="EMB", name="iShares JP Morgan USD Emerging Markets Bond ETF"),
@@ -941,9 +964,8 @@ def seed_stocks():
     Stock(symbol="ICVX", name="Icosavax"),]
 
 
-    for stock in all_stocks:
+    for stock in stocks:
         db.session.add(stock)
-
     db.session.commit()
 
 
