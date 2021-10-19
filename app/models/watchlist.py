@@ -14,5 +14,5 @@ class Watchlist(db.Model):
     name = db.Column(db.String(255),nullable=False)
     user_id = db.Column(db.Integer,db.ForeignKey("users.id"),nullable=False)
 
-    owner = db.relationship("Watchlist",back_populates="watchlists")
+    owner = db.relationship("User",back_populates="watchlists")
     watchlist_stocks = db.relationship("Stock",secondary="watchlist_stocks", backref=db.backref("watchlist_stocks", lazy = "dynamic"))
