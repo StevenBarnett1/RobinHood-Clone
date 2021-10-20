@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { login } from '../../store/session';
 import "./Login.css"
+import { NavLink } from 'react-router-dom';
 
 const LoginForm = () => {
   const [errors, setErrors] = useState([]);
@@ -37,7 +38,9 @@ const LoginForm = () => {
         <img id = "login-page-image" src = "https://cdn.robinhood.com/assets/generated_assets/632fcb3e7ed928b2a960f3e003d10b44.jpg"></img>
       </div>
       <div id = "right-side">
-        <form onSubmit={onLogin}>
+        <div id = "right-side-inner">
+          <div id = "login-title">Welcome to Robbinghood</div>
+        <form id = "login-form" onSubmit={onLogin}>
         <div>
           {errors.map((error, ind) => (
             <div key={ind}>{error}</div>
@@ -46,25 +49,36 @@ const LoginForm = () => {
         <div>
           <label htmlFor='email'>Email</label>
           <input
+            autoComplete="off"
             name='email'
             type='text'
             placeholder='Email'
             value={email}
             onChange={updateEmail}
+            required
           />
         </div>
         <div>
           <label htmlFor='password'>Password</label>
-          <input
+          <input id = "test"
+          autoComplete="off"
             name='password'
             type='password'
             placeholder='Password'
             value={password}
             onChange={updatePassword}
+            required
           />
-          <button type='submit'>Login</button>
+        </div>
+        <div id = "login-button-container">
+          <button type='submit'>Sign In</button>
+          <div>
+            Not on Robbinghood?
+            <NavLink to = "/sign-up"> Create an account</NavLink>
+          </div>
         </div>
       </form>
+      </div>
       </div>
 
     </div>

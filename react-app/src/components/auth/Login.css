@@ -1,14 +1,105 @@
 #login-page-outer-container{
     display:flex;
     justify-content: row;
-    flex-grow:1
+    overflow-y: hidden;
+    width:100%;
+    height:calc(100% - 65px);
+    align-items: center;
 }
 
 #left-side{
-    flex:50%;
+    width:50%;
+    height:100%;
+    overflow-y: hidden;
+}
+
+#right-side{
+    height:30%;
+    margin-left:50px;
+
 }
 
 #login-page-image{
+width:100%;
+height:100%;
+object-fit: cover;
+overflow-y: hidden;
+}
+
+#login-title{
+    font-size:19px;
+    font-weight:500;
+    margin-bottom:25px;
+}
+
+#login-form {
+    font-size:13px;
+
+}
+
+#right-side-inner{
+    width:460px;
     height:100%;
+}
+
+#login-form >div {
+    display:flex;
+    flex-direction:column;
+}
+
+#login-form >div > * {
+    margin-bottom:10px;
+}
+
+#login-form > div > input {
+    border:none;
+    background-color: white;
     width:100%;
+    height:37px;
+    border-radius:5px;
+
+}
+
+#login-form > div > input:focus{
+    background-color: white;
+}
+#login-form > div > input:active{
+    background-color: white;
+}
+
+#test:-webkit-autofill {
+    background-color: white !important;
+    outline: transparent;
+}
+
+#login-button-container{
+    display:flex;
+    margin-top:100px;
+    flex-direction: row !important;
+    align-items: center;
+}
+#login-button-container > button {
+
+    width:140px;
+    height:50px;
+    background-color:rgb(0, 200, 5);
+    border:none;
+    border-radius:5px;
+    color:white;
+    font-weight: 700;
+    cursor:pointer;
+}
+#login-button-container >div {
+    font-size:13px;
+    margin-left:15px;
+}
+
+#login-button-container > div > a {
+    color:rgb(0, 200, 5);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+#login-form > button:hover{
+    background-color: rgb(1, 175, 7);
 }

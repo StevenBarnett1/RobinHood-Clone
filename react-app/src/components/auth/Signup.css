@@ -1,0 +1,144 @@
+
+#signup-title{
+    font-size:24px;
+    margin-bottom:100px;
+}
+
+#signup-subtitle-heading{
+    font-size:24px;
+    font-weight:500;
+    margin-bottom:20px;
+}
+#signup-subtitle-text{
+    font-weight:400;
+    font-size:15px;
+}
+
+#signup-subtitle-container{
+    margin-bottom:60px;
+}
+#signup-form-prevalidation{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+#signup-fineprint{
+    color:rgb(180, 189, 194);
+    font-size:12px;
+}
+
+#signup-button-container{
+    display: flex;
+    margin-top:15px;
+
+}
+#signup-button-links-container{
+    display:flex;
+    flex-direction: column;
+    margin-left:25px;
+    font-size:13px;
+    justify-content: space-around;
+}
+
+#signup-button-links-container > a {
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#signup-button-container > button {
+    width:140px;
+    height:50px;
+    background-color:rgb(0, 200, 5);
+    border:none;
+    border-radius:5px;
+    color:white;
+    font-weight: 700;
+    cursor:pointer;
+}
+#signup-button-links-container > a{
+    color:rgb(0, 200, 5);
+}
+
+#signup-right{
+    font-size:15px;
+    background-color: rgb(245, 248, 250);
+    width:40%;
+}
+
+#signup-left{
+    width:60%;
+}
+
+#signup-outer{
+    display:flex;
+    margin-left:225px;
+}
+.signup-right-print-title{
+    font-weight:700;
+}
+
+#signup-form{
+    width:800px;
+    display:flex;
+    flex-direction: column;
+    margin-bottom:120px;
+
+}
+#name-inputs > input{
+    width:46% !important;
+    height:38px;
+    border:none;
+    background-color:rgb(245, 248, 250);
+}
+#name-inputs{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom:25px;
+
+}
+#signup-form > input {
+    width:99%;
+    border:none;
+    margin-bottom:25px;
+    height:38px;
+    background-color:rgb(245, 248, 250)
+}
+
+#signup-form > input:hover{
+    background-color: white;
+}
+
+#signup-form > input:focus{
+    outline: rgb(0, 200, 5);
+}
+
+#signup-fineprint{
+    width:800px;
+}
+#signup-fineprint > div {
+    margin-bottom:10px;
+}
+
+#signup-right-inner{
+    width:270px;
+    margin-left:40px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    height:100%;
+}
+
+.signup-right-print-title{
+    margin-bottom:15px;
+}
+
+.signup-right-print-text{
+    margin-bottom:25px;
+    line-height: 20px;
+}
+
+.external{
+    color:rgb(0, 200, 5) !important;
+    text-decoration: none;
+}
