@@ -55,6 +55,7 @@ const LoginForm = () => {
             placeholder='Email'
             value={email}
             onChange={updateEmail}
+            required
           />
         </div>
         <div>
@@ -66,9 +67,10 @@ const LoginForm = () => {
             placeholder='Password'
             value={password}
             onChange={updatePassword}
+            required
           />
         </div>
-        <div id = "button-container">
+        <div id = "login-button-container">
           <button type='submit'>Sign In</button>
           <div>
             Not on Robbinghood?
