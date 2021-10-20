@@ -20,8 +20,8 @@ class User(db.Model, UserMixin):
     buying_power = db.Column(db.Float, nullable=False, default=0)
     hashed_password = db.Column(db.String(255), nullable=False)
 
-    watchlists = db.relationship("Watchlist",back_populates="owner")
-    holdings = db.relationship("Stock",secondary="holdings", backref=db.backref("holdings", lazy = "dynamic"))
+    watchlists = db.relationship("Watchlist",back_populates="owner",cascade="all, delete")
+    holdings = db.relationship("Stock",secondary="holdings", backref=db.backref("holdings", lazy = "dynamic"),cascade="all, delete")
 
     @property
     def password(self):
@@ -37,5 +37,11 @@ class User(db.Model, UserMixin):
     def to_dict(self):
         return {
             'id': self.id,
-            'email': self.email
+            'email': self.email,
+            'buying_power':self.buying_power,
+            'first_name':self.first_name,
+            'last_name':self.last_name,
+            'watchlists':[ watchlist.get_stocks() for watchlist in self.watchlists],
+            'holdings':[holding for holding in self.holdings]
+
         }
