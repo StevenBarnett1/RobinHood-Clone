@@ -1,0 +1,14 @@
+#login-page-outer-container{
+    display:flex;
+    justify-content: row;
+    flex-grow:1
+}
+
+#left-side{
+    flex:50%;
+}
+
+#login-page-image{
+    height:100%;
+    width:100%;
+}

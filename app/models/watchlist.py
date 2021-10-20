@@ -15,4 +15,20 @@ class Watchlist(db.Model):
     user_id = db.Column(db.Integer,db.ForeignKey("users.id"),nullable=False)
 
     owner = db.relationship("User",back_populates="watchlists")
-    watchlist_stocks = db.relationship("Stock",secondary="watchlist_stocks", backref=db.backref("watchlist_stocks", lazy = "dynamic"))
+    watchlist_stocks = db.relationship("Stock",secondary="watchlist_stocks", backref=db.backref("watchlist_stocks", lazy = "dynamic"),cascade="all, delete")
+
+
+    def to_dict(self):
+        return {
+            'id':self.id,
+            'name':self.name,
+            'owner':self.owner,
+            'stocks':self.watchlist_stocks
+        }
+
+    def get_stocks(self):
+        return {
+            'id':self.id,
+            'name':self.name,
+            'stocks':self.watchlist_stocks
+        }
