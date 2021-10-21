@@ -30,5 +30,6 @@ body{
     --input-background-color:rgb(245, 248, 250);
     --watchlist-background-color:white;
     --color:black;
+    --button-hover-background-color:rgb(239, 248, 248);
 
 }

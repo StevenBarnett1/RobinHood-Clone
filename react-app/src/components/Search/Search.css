@@ -1,0 +1,47 @@
+#search-input{
+    width:480px;
+    height:35px;
+    padding:0;
+}
+
+#search-list{
+    width:480px;
+    height:240px;
+    overflow-y: scroll;
+    position:absolute;
+    top:51px;
+    box-shadow: 0px 0px 3px 0px;
+    padding:0;
+}
+
+#search-container{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-item{
+    font-size:13px;
+    cursor: pointer;
+}
+
+.search-item-navlink{
+    text-decoration:none;
+    color:var(--color);
+}
+
+.search-item:hover{
+    background-color: var(--button-hover-background-color);
+    color:var(--color);
+    text-decoration:none;
+}
+
+.stock-search-symbol{
+    margin-right:30px;
+}
+
+.colored{
+    color:rgb(0, 200, 5);
+    margin:0;
+    padding:0;
+}

@@ -11,7 +11,7 @@
     padding:0px 15px;
 }
 
-#navbar-inner-container{
+.navbar-inner-container{
     width:100%;
     display: flex;
     justify-content: space-between;
