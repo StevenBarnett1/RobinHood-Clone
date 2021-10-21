@@ -11,7 +11,7 @@
 #splash-top-inner-container{
     display:flex;
     height:100%;
-    width:60%;
+    width:68%;
     margin:auto;
     align-items: center;
 }
@@ -55,6 +55,7 @@
 .splash-top-left-text{
     font-size:24px;
     font-weight: 500;
+    line-height: 36px;
 }
 
 .splash-top-left-navlink{

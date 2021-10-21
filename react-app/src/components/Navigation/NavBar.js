@@ -36,6 +36,8 @@ const NavBar = () => {
         )}
         {user && (
           <div>
+            <div>Robinhood Logo</div>
+            <Search/>
             <LogoutButton />
           </div>
         )}

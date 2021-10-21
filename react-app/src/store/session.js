@@ -1,6 +1,7 @@
 // constants
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
+const TOGGLE_THEME = "session/TOGGLE_THEME"
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -11,6 +12,12 @@ const removeUser = () => ({
   type: REMOVE_USER,
 })
 
+export const setTheme = (theme) => {
+  return {
+    type: "TOGGLE_THEME",
+    payload: theme
+  }
+}
 const initialState = { user: null };
 
 export const authenticate = () => async (dispatch) => {
@@ -99,12 +106,18 @@ export const signUp = (first_name, last_name, email, password) => async (dispatc
 }
 
 export default function reducer(state = initialState, action) {
+  const newState = {...state}
   switch (action.type) {
     case SET_USER:
-      return { user: action.payload }
+      newState.user = action.payload
+      return newState
     case REMOVE_USER:
-      return { user: null }
+      newState.user = null
+      return newState
+    case TOGGLE_THEME:
+      newState.theme=action.payload
+      return newState
     default:
-      return state;
+      return newState;
   }
 }
