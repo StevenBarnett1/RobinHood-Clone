@@ -10,6 +10,8 @@ import User from './components/User';
 import { authenticate } from './store/session';
 import SplashPage from './components/SplashPage';
 import Dashboard from "./components/Dashboard"
+import { getStocks } from './store/stocks';
+import Search from './components/Search';
 import "./index.css"
 function App() {
   const [loaded, setLoaded] = useState(false);
@@ -17,6 +19,11 @@ function App() {
   const user = useSelector(state => state.session.user)
   const theme = useSelector(state => state.session.theme)
 
+  useEffect(()=>{
+    dispatch(getStocks())
+  },[])
+  const stocks = useSelector(state=>state.stocks)
+  console.log("stocks here:", stocks)
   useEffect(() => {
     (async() => {
       await dispatch(authenticate());

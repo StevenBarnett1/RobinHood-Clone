@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import LogoutButton from '../auth/LogoutButton';
 import "./Navigation.css"
 import { useSelector } from 'react-redux';
+import Search from '../Search';
 
 const NavBar = () => {
 

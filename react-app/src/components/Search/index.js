@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 
 const Search = () => {
-    [searchValue,setSearchValue] = useState("")
+    const [searchValue,setSearchValue] = useState("")
     const dispatch = useDispatch()
     return (
         <>
