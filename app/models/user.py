@@ -2,14 +2,6 @@ from .db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-
-holdings = db.Table("holdings",
-    db.Column("user_id",db.Integer,db.ForeignKey("users.id")),
-    db.Column("stock_id", db.Integer, db.ForeignKey("stocks.id")),
-    db.Column("shares",db.Float,nullable=False)
-)
-
-
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -21,7 +13,6 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
 
     watchlists = db.relationship("Watchlist",back_populates="owner",cascade="all, delete")
-    holdings = db.relationship("Stock",secondary="holdings", backref=db.backref("holdings", lazy = "dynamic"),cascade="all, delete")
 
     @property
     def password(self):
@@ -42,6 +33,6 @@ class User(db.Model, UserMixin):
             'first_name':self.first_name,
             'last_name':self.last_name,
             'watchlists':[ watchlist.get_stocks() for watchlist in self.watchlists],
-            'holdings':[{"id":holding.id,"name":holding.name,"symbol":holding.symbol} for holding in self.holdings]
+            'holdings':[holding.to_dict() for holding in self.holdings]
 
         }
