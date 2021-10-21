@@ -19,3 +19,8 @@
     align-items: center;
     justify-content: center;
 }
+
+#trending-list-icons{
+    display:flex;
+    flex-wrap: wrap;
+}
