@@ -1,0 +1,19 @@
+#search-input{
+    width:480px;
+    height:35px;
+}
+
+#search-list{
+    width:480px;
+    height:240px;
+    overflow-y: scroll;
+    position:absolute;
+    left:400px;
+    top:400px;
+}
+
+#search-container{
+    display:flex;
+    flex-direction: column;
+    width:100%;
+}

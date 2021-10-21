@@ -5,7 +5,7 @@ import stocksReducer from './stocks';
 
 const rootReducer = combineReducers({
   session,
-  stocksReducer
+  stocks:stocksReducer
 });
 
 

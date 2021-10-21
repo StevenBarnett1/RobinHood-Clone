@@ -5,7 +5,7 @@ export const getStocks = () => async dispatch =>{
 
     if (response.ok) {
         const stocks = await response.json();
-        dispatch(setStocks(stocks))
+        dispatch(setStocks(stocks.stocks))
         return null;
       } else if (response.status < 500) {
         const data = await response.json();
@@ -25,10 +25,11 @@ export const setStocks = (stocks) => {
 }
 const initialState = {}
 export default function stocksReducer(state = initialState, action) {
-    const newState = {...state}
+    let newState = {...state}
     switch (action.type) {
       case SET_STOCKS:
-          newState.stocks = action.payload
+          newState = action.payload
+          console.log("PAYLOAD: ", action.payload)
           return newState
       default:
         return newState;

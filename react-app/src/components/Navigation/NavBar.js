@@ -14,7 +14,7 @@ const NavBar = () => {
     <nav id = "navbar-outer-container">
       <div id = "navbar-inner-container">
         {!user && (
-          <>
+          <div className = "navbar-innermost-container">
           <div className = "navbar-left">
             <NavLink id = "navbar-title"className = "navbar-navlink" to='/' exact={true} activeClassName='active'>
               Robinhood
@@ -33,10 +33,10 @@ const NavBar = () => {
               </NavLink>
 
           </div>
-        </>
+        </div>
         )}
         {user && (
-          <div>
+          <div className = "navbar-innermost-container">
             <div>Robinhood Logo</div>
             <Search/>
             <LogoutButton />

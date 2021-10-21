@@ -19,6 +19,9 @@
 
 }
 
+.navbar-innermost-container{
+    width:100%;
+}
 .navbar-right{
     display:flex;
     align-items: center;
