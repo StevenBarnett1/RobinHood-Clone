@@ -18,7 +18,7 @@ export const setTheme = (theme) => {
     payload: theme
   }
 }
-const initialState = { user: null };
+const initialState = { user: null, theme:"light" };
 
 export const authenticate = () => async (dispatch) => {
   const response = await fetch('/api/auth/', {
