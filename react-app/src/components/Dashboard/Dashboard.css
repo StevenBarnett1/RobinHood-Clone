@@ -1,0 +1,21 @@
+#dashboard-buying-power-container-heading{
+    cursor:pointer;
+}
+
+#dashboard-buying-power-container-heading:hover{
+    background-color: var(--button-hover-background-color);
+}
+
+
+#buying-power-deposit-button{
+    display:flex;
+    font-size:18px;
+    font-weight:700;
+    background-color: rgb(0, 200, 5);
+    width:145px;
+    height:50px;
+    border:none;
+    border-radius:30px;
+    align-items: center;
+    justify-content: center;
+}
