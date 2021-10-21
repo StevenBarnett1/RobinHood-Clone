@@ -10,17 +10,16 @@ const Search = () => {
     const [coloredStocks,setColoredStocks] = useState("")
     const [nonColoredStocks,setNonColoredStocks] = useState("")
     const stocks = useSelector(state=>state.stocks)
-
     useEffect(()=>{
         if(stocks instanceof Array){
-            if(!searchValue)setCurrentStocks("")
+            if(!searchValue) setCurrentStocks("")
             else{
                 setCurrentStocks(
                     stocks.filter(stock=>{
                         return stock.name.startsWith(searchValue.toLowerCase()) || stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())
                     }).sort((a,b)=>{
                         if(a.symbol < b.symbol) return -1
-                        if(a.symbol > b.symbol)return 1
+                        if(a.symbol > b.symbol) return 1
                         return 0;
                     })
                 )

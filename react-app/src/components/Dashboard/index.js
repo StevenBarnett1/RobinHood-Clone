@@ -3,9 +3,8 @@ import { useState, useEffect } from "react"
 
 const Dashboard = () => {
     const dispatch = useDispatch()
-    useEffect(()=>{
-        dispatch(getHoldings())
-    },[])
+    const user = useSelector(state=>state.session.user)
+    console.log("USER HERE: ", user)
     return (
         <h1>Dashboard</h1>
     )

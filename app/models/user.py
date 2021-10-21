@@ -42,6 +42,6 @@ class User(db.Model, UserMixin):
             'first_name':self.first_name,
             'last_name':self.last_name,
             'watchlists':[ watchlist.get_stocks() for watchlist in self.watchlists],
-            'holdings':[holding for holding in self.holdings]
+            'holdings':[{"id":holding.id,"name":holding.name,"symbol":holding.symbol} for holding in self.holdings]
 
         }
