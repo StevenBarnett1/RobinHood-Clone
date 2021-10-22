@@ -10,6 +10,14 @@ const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
 
+const intervalMap = {
+    "1":60,
+    "15":900,
+    "60":3600,
+    "D":86400,
+    "W":604800,
+}
+
 console.log("API KEYYYYYYYYYYYYYYYYY: ", api_key.apiKey)
 
 
@@ -22,6 +30,9 @@ const Dashboard = () => {
     const [graphData,setGraphData] = useState("")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
+    const [totalPrices,setTotalPrices] = useState([])
+    const [dates,setDates] = useState("")
+    const [interval,setTimeInterval] = useState("15")
     const user = useSelector(state=>state.session.user)
     useEffect(()=>{
         if(user){
@@ -77,35 +88,67 @@ const Dashboard = () => {
     useEffect(()=>{
         let start = new Date()
         start.setHours(6,0,0,0)
-        let interval = "15"
-        const intervalMap = {
-            "1":60,
-            "15":900,
-            "60":3600,
-            "D":86400,
-            "W":604800,
-        }
+
         let startUnix = Math.floor(Number(start.getTime() / 1000))
         let endUnix = new Date()
         endUnix = Math.floor(Number(endUnix.getTime() / 1000))
-        finnhubClient.stockCandles("AAPL", interval, startUnix, endUnix, (error, data, response) => {
-            console.log("DATAAAA: ",data)
-            let objectArray = []
-            for(let i = 0; i< data.c.length; i++){
-                let newObj = {}
-                let unixTime = startUnix + (i*intervalMap[interval])
+        let newTotalPrices = []
+        for(let i=0; i< user.holdings.length;i++){
+
+            finnhubClient.stockCandles(user.holdings[i].symbol, interval, startUnix, endUnix, (error, data, response) => {
+
+                for(let j = 0; j< data.c.length; j++){
+
+                    if(!newTotalPrices[j]){
+                        newTotalPrices[j]=user.holdings[i].shares*data.c[j]
+                        datesArray[j] = newObj
+                    }
+                    else newTotalPrices[j] += user.holdings[i].shares*data.c[j]
+
+
+                    if(i===user.holdings.length-1 && j === data.c.length-1){
+                        setTotalPrices(newTotalPrices)
+
+                    }
+                }
+
+              });
+        }
+
+    },[])
+
+
+    useEffect(()=>{
+
+        if(totalPrices.length){
+            let dateValueArray = []
+            let datesArray = []
+            for(let j = 0; j< totalPrices.length;j++){
+
+                const newObj = {}
+                
+                let unixTime = startUnix + (j*intervalMap[interval])
                 let dateTime = new Date(unixTime * 1000)
-                if(data.c[i]>yMax)setYmax(data.c[i])
-                if(data.c[i]<yMin)setYmin(data.c[i])
-                newObj.price = data.c[i]
+
+                if(totalPrices[j]>yMax)setYmax(totalPrices[j])
+                if(totalPrices[j]<yMin)setYmin(totalPrices[j])
+
+                newObj.price = totalPrices[j]
                 newObj.dateTime = dateTime
                 newObj.unixTime = unixTime
-                objectArray.push(newObj)
+                dateValueArray.push(newObj)
+
             }
-            console.log("GRAPH DATA HERE: ",objectArray)
-            setGraphData(objectArray)
-          });
-    },[])
+            setGraphData(dateValueArray)
+        } else return
+
+    },[totalPrices])
+
+    useEffect(()=>{
+        if(totalPrices && dates){
+
+        }
+    },[totalPrices,dates])
 
 
     const renderLineChart = (
