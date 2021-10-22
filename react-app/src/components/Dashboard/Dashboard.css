@@ -26,14 +26,30 @@
 }
 
 #dashboard-outer-container{
-    width:50%;
+    width:1050px;
     display:flex;
     margin:auto;
 }
+
+#watchlist-outer-container{
+    display:flex;
+    flex-direction: column;
+}
+#watchlist-outer-title{
+    border-bottom:1px solid lightgrey;
+}
+.watchlist-inner-container{
+    height:61px;
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+
+}
 #dashboard-left-container{
-    width:80%;
+    width:730px;
     margin:auto;
     border:1px solid black;
+    margin-right:47px;
 }
 
 #dashboard-upper-container{
@@ -79,6 +95,6 @@
 }
 
 #watchlist-outer-container{
-    width:20%;
+    width:275px;
     border:1px solid black;
 }
