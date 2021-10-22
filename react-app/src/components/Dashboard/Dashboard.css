@@ -39,11 +39,23 @@
     border-bottom:1px solid lightgrey;
 }
 .watchlist-inner-container{
-    height:61px;
+
     width:100%;
     display:flex;
     justify-content: space-between;
+    flex-direction: column;
 
+}
+.watchlist-title{
+    display:flex;
+    align-items: center;
+    height:61px;
+    cursor:pointer;
+    width:100%;
+
+}
+.watchlist-title:hover{
+    background-color: var(--button-hover-background-color);
 }
 #dashboard-left-container{
     width:730px;
@@ -92,9 +104,22 @@
 
 #buying-power-container{
     display:flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 #watchlist-outer-container{
     width:275px;
     border:1px solid black;
+}
+
+.watchlist-stock-container{
+    justify-content: space-between;
+}
+
+#dashboard-graph-timeframes-container{
+    width:230px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom:1px solid lightgrey
 }
