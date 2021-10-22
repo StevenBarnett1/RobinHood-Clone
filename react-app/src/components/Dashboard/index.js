@@ -5,9 +5,12 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
 const finnhub = require('finnhub');
+const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = "c5mtisqad3iam7tur1qg"
+api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
+
+console.log("API KEYYYYYYYYYYYYYYYYY: ", api_key.apiKey)
 
 
 const Dashboard = () => {
@@ -17,6 +20,8 @@ const Dashboard = () => {
     const [openLists,setOpenLists] = useState([])
     const [currentPrices,setCurrentPrices] = useState({})
     const [graphData,setGraphData] = useState("")
+    const [yMax,setYmax] = useState(0)
+    const [yMin,setYmin] = useState(Infinity)
     const user = useSelector(state=>state.session.user)
     useEffect(()=>{
         if(user){
@@ -67,25 +72,48 @@ const Dashboard = () => {
 
 
     }
-    const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400},{name: 'Page B', uv: 500, pv: 2000, amt: 2000},{name: 'Page C', uv: 600, pv: 1500, amt: 1500}];
+    const data = [{time: 'Page A', uv: 400, pv: 2400, amt: 2400},{name: 'Page B', uv: 500, pv: 2000, amt: 2000},{name: 'Page C', uv: 600, pv: 1500, amt: 1500}];
 
     useEffect(()=>{
         let start = new Date()
-        start.setHours(0,0,0,0)
-        let end = new Date()
-        end.setHours(23,59,59,999)
-        let startUnix = start.getTime() / 1000
-        let endUnix = start.getTime() / 1000
-        finnhubClient.stockCandles("AAPL", "15", startUnix, endUnix, (error, data, response) => {
-
+        start.setHours(6,0,0,0)
+        let interval = "15"
+        const intervalMap = {
+            "1":60,
+            "15":900,
+            "60":3600,
+            "D":86400,
+            "W":604800,
+        }
+        let startUnix = Math.floor(Number(start.getTime() / 1000))
+        let endUnix = new Date()
+        endUnix = Math.floor(Number(endUnix.getTime() / 1000))
+        finnhubClient.stockCandles("AAPL", interval, startUnix, endUnix, (error, data, response) => {
+            console.log("DATAAAA: ",data)
+            let objectArray = []
+            for(let i = 0; i< data.c.length; i++){
+                let newObj = {}
+                let unixTime = startUnix + (i*intervalMap[interval])
+                let dateTime = new Date(unixTime * 1000)
+                if(data.c[i]>yMax)setYmax(data.c[i])
+                if(data.c[i]<yMin)setYmin(data.c[i])
+                newObj.price = data.c[i]
+                newObj.dateTime = dateTime
+                newObj.unixTime = unixTime
+                objectArray.push(newObj)
+            }
+            console.log("GRAPH DATA HERE: ",objectArray)
+            setGraphData(objectArray)
           });
     },[])
 
 
     const renderLineChart = (
-        <LineChart width={400} height={400} data={data}>
-          <Line type="monotone" dataKey="amt" stroke="#8884d8" />
-          <XAxis dataKey="name" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+        <LineChart width={400} height={400} data={graphData}>
+          <Line type="monotone" dataKey="price" stroke="#8884d8" />
+          <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+          <YAxis domain={[yMin,yMax]}/>
+          <Tooltip/>
         </LineChart>
       );
 
