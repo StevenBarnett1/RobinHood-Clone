@@ -46,6 +46,7 @@ const Dashboard = () => {
     }
 
     console.log(user)
+    console.log(buyingPower)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -55,12 +56,12 @@ const Dashboard = () => {
                         <div id = "dashboard-graph"></div>
                         <div id = "dashboard-graph-timeframes-container"></div>
                     </div>
-                    <div id = "dashboard-buying-power-container" onClick={(buyingPower=>toggleBuyingPower(!buyingPower))} style = {buyingPower ? {position:"absolute"} : {position:"relative"}}>
+                    <div id = "dashboard-buying-power-container" onClick={()=>toggleBuyingPower(!buyingPower)} >
                         <div id = "dashboard-buying-power-container-heading">
                             <div id = "dashboard-buying-power-text">Buying Power</div>
                             <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${user && user.buyingPower}</div>
                         </div>
-                        <div id = "dashboard-buying-power-container-bottom">
+                        <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
                             <div id = "dashboard-buying-power-container-left">
                                 <div id = "brokerage-cash-container">
                                     <div>Brokerage Cash</div>
@@ -108,12 +109,12 @@ const Dashboard = () => {
                     <div id = "watchlist-outer-title">Lists</div>
                     {user && user.watchlists.map(watchlist=>{
                         return (
-                            <div className = "watchlist-inner-container">
+                            <div key = {watchlist.id} className = "watchlist-inner-container">
                                 <div className = "watchlist-title" onClick = {(watchlist)=>toggleOpenLists(watchlist)}>{watchlist.name}</div>
                                 <div className = "watchlist-stocks">
                                     {watchlist.stocks.map(stock=>{
                                         return (
-                                            <div className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"block"} : {display:"none"}}>
+                                            <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"block"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol"></div>
                                                     <div className = "watchlist-graph"></div>
                                                     <div className = "watchlist-stock-price-container">
