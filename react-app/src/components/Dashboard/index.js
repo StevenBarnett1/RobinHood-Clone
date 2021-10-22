@@ -4,6 +4,7 @@ import "./Dashboard.css"
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
+import { getPortfolioData } from "../../store/portfolio";
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -34,6 +35,8 @@ const Dashboard = () => {
     const [dates,setDates] = useState("")
     const [interval,setTimeInterval] = useState("15")
     const user = useSelector(state=>state.session.user)
+    const portfolioData = useSelector(state=>state.portfolio)
+
     useEffect(()=>{
         if(user){
             let total = 0
@@ -48,8 +51,14 @@ const Dashboard = () => {
     },[user])
 
     useEffect(()=>{
-        console.log(portfolioValue)
-    },[portfolioValue])
+        if(portfolioData.data){
+            setGraphData(portfolioData.data)
+            setYmin(portfolioData.min)
+            setYmax(portfolioData.max)
+
+        }
+    },[portfolioData])
+
 
 
     const toggleOpenLists = (watchlist) => {
@@ -60,7 +69,7 @@ const Dashboard = () => {
         for(let watchlist_stock of watchlist.stocks){
             finnhubClient.quote(watchlist_stock.symbol, (error, data, response) => {
                 prices[watchlist_stock.symbol]=data.c
-                console.log("PRICES: ",prices)
+
                 setCurrentPrices(prices)
             })
         }
@@ -90,77 +99,22 @@ const Dashboard = () => {
         let start = new Date()
         let end = new Date()
         start.setHours(6,0,0,0)
-
         let startUnix = Math.floor(Number(start.getTime() / 1000))
-
         let endUnix = Math.floor(Number(end.getTime() / 1000))
-
-        // dispatch(getCandles(user.holdings, interval, startUnix, endUnix, api_key.apiKey))
-
-        let newTotalPrices = []
-        for(let i=0; i< user.holdings.length;i++){
-
-            finnhubClient.stockCandles(user.holdings[i].symbol, interval, startUnix, endUnix, (error, data, response) => {
-
-                for(let j = 0; j< data.c.length; j++){
-
-                    if(!newTotalPrices[j])newTotalPrices[j]=user.holdings[i].shares*data.c[j]
-
-                    else newTotalPrices[j] += user.holdings[i].shares*data.c[j]
-
-                    console.log("PRICES INSIDE: ", newTotalPrices)
-                    if(i===user.holdings.length-1 && j === data.c.length-1){
-                        console.log("PRICES INSIDE INNER: ", newTotalPrices)
-                        console.log("TOTAL PRICES HERE: ",newTotalPrices)
-                        setTotalPrices(newTotalPrices)
-
-                    }
-                }
-
-              });
-        }
+        dispatch(getPortfolioData(user.holdings, interval, startUnix, endUnix, api_key.apiKey))
 
     },[interval])
 
 
-    useEffect(()=>{
+    let renderLineChart = (
+        <LineChart width={700} height={300} data={graphData}>
+      <Line type="monotone" dataKey="price" stroke="#8884d8" />
+      <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+      <YAxis domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+      <Tooltip/>
+    </LineChart>)
 
-        if(totalPrices.length){
-            let totalArray = []
-            for(let j = 0; j< totalPrices.length;j++){
 
-                const newObj = {}
-                let start = new Date()
-                start.setHours(6,0,0,0)
-                let startUnix = Math.floor(Number(start.getTime() / 1000))
-                let unixTime = startUnix + (j*intervalMap[interval])
-                let dateTime = new Date(unixTime * 1000)
-
-                if(totalPrices[j]>yMax)setYmax(totalPrices[j])
-                if(totalPrices[j]<yMin)setYmin(totalPrices[j])
-
-                newObj.price = totalPrices[j]
-                newObj.dateTime = dateTime
-                newObj.unixTime = unixTime
-                totalArray.push(newObj)
-            }
-            setGraphData(totalArray)
-        } else return
-
-    },[totalPrices])
-
-    const renderLineChart = (
-        <LineChart width={400} height={400} data={graphData}>
-          <Line type="monotone" dataKey="price" stroke="#8884d8" />
-          <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-          <YAxis domain={[yMin,yMax]}/>
-          <Tooltip/>
-        </LineChart>
-      );
-
-    console.log("USER: ",user)
-    console.log("openlists: ",openLists)
-    console.log("CURRENT PRICES: ",currentPrices)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">

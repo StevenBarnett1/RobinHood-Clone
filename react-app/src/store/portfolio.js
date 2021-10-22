@@ -19,20 +19,24 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
   const portfolioData = {"max":0,"min":Infinity}
   let prices = []
   let dates = []
+  let jMax = Infinity
   for(let i = 0 ; i< holdings.length;i++){
-    const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holding[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
+    const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
+    console.log(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
     const data = await response.json()
     for(let j = 0; j<data.c.length;j++){
-
-
+      if(j === data.c.length-1 && j < jMax)jMax = j
+      if(i!==0 && j >= prices.length)continue
       if(!prices[j]){
-        prices[j] = user.holdings[i].shares*data.c[j]
+        if(i===0) prices[j] = holdings[i].shares*data.c[j]
 
       } else {
-        prices[j] += user.holdings[i].shares*data.c[j]
+        prices[j] += holdings[i].shares*data.c[j]
       }
+      console.log(prices, j)
 
     }
+    prices = prices.slice(0,jMax+1)
   }
   let newData = []
   for(let i =0; i<prices.length;i++){
@@ -43,8 +47,8 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
       obj.dateTime = dateTime
       obj.unixTime = unixTime
       obj.price = prices[i]
-      if(obj.price > portfolioData.max)portfolioData.max = obj.price
-      if(obj.price < portfolioData.min)portfolioData.min = obj.price
+      if(obj.price > portfolioData.max)portfolioData.max = Number(obj.price.toFixed(0))
+      if(obj.price < portfolioData.min)portfolioData.min = Number(obj.price.toFixed(0))
       newData.push(obj)
   }
   portfolioData.data=newData
