@@ -24,3 +24,46 @@
     display:flex;
     flex-wrap: wrap;
 }
+
+#dashboard-outer-container{
+    width:50%;
+    display:flex;
+    margin:auto;
+}
+#dashboard-left-container{
+    width:80%;
+    margin:auto;
+    border:1px solid black;
+}
+
+#dashboard-upper-container{
+    display:flex;
+    flex-direction: column;
+}
+
+#dashboard-buying-power-container-left{
+    display:flex;
+    flex-direction:row;
+}
+#dashboard-buying-power-container-heading{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#dashboard-buying-power-container-bottom{
+    display:flex;
+}
+
+#brokerage-cash-container{
+    display:flex;
+}
+
+#buying-power-container{
+    display:flex;
+}
+
+#watchlist-outer-container{
+    width:20%;
+    border:1px solid black;
+}

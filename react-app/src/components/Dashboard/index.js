@@ -48,7 +48,7 @@ const Dashboard = () => {
     console.log(user)
     return (
         <div id = "dashboard-outer-container">
-            <div id = "dashboard-inner-container">
+            <div id = "dashboard-left-container">
                 <div id = "dashboard-upper-container">
                     <div id = "dashboard-portfolio-value"><h1>${portfolioValue}</h1></div>
                     <div id = "dashboard-graph-container">
@@ -84,7 +84,7 @@ const Dashboard = () => {
                         <div id = "trending-lists-icons"></div>
                     </div>
                     <div id = "daily-movers-container">
-                        <div id = "daily-movers-title"></div>
+                        <div id = "daily-movers-title"><h1>Daily Movers</h1></div>
                         <div id = "daily-movers-subtitle"></div>
                         <div id = "daily-movers-icons">
                             <div className = "daily-movers-icons-title"></div>
@@ -93,7 +93,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                     <div id = "news-container">
-                        <div id="news-title"></div>
+                        <div id="news-title"><h1>News</h1></div>
                         <div id = "news-icons-container">
                             <div className = "news-icon-title"></div>
                             <div className = "news-icon-text"></div>
@@ -102,9 +102,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div id = "watchlist-outer-container">
+
+            </div>
+            <div id = "watchlist-outer-container">
                     <div id = "watchlist-outer-title">Lists</div>
-                    {user.watchlist.map(watchlist=>{
+                    {user && user.watchlists.map(watchlist=>{
                         return (
                             <div className = "watchlist-inner-container">
                                 <div className = "watchlist-title" onClick = {(watchlist)=>toggleOpenLists(watchlist)}>{watchlist.name}</div>
@@ -127,7 +129,6 @@ const Dashboard = () => {
                         )})}
 
                 </div>
-            </div>
         </div>
 
     )
