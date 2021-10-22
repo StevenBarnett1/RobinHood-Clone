@@ -86,12 +86,17 @@ const Dashboard = () => {
     const data = [{time: 'Page A', uv: 400, pv: 2400, amt: 2400},{name: 'Page B', uv: 500, pv: 2000, amt: 2000},{name: 'Page C', uv: 600, pv: 1500, amt: 1500}];
 
     useEffect(()=>{
+
         let start = new Date()
+        let end = new Date()
         start.setHours(6,0,0,0)
 
         let startUnix = Math.floor(Number(start.getTime() / 1000))
-        let endUnix = new Date()
-        endUnix = Math.floor(Number(endUnix.getTime() / 1000))
+
+        let endUnix = Math.floor(Number(end.getTime() / 1000))
+
+        // dispatch(getCandles(user.holdings, interval, startUnix, endUnix, api_key.apiKey))
+
         let newTotalPrices = []
         for(let i=0; i< user.holdings.length;i++){
 
@@ -99,14 +104,14 @@ const Dashboard = () => {
 
                 for(let j = 0; j< data.c.length; j++){
 
-                    if(!newTotalPrices[j]){
-                        newTotalPrices[j]=user.holdings[i].shares*data.c[j]
-                        datesArray[j] = newObj
-                    }
+                    if(!newTotalPrices[j])newTotalPrices[j]=user.holdings[i].shares*data.c[j]
+
                     else newTotalPrices[j] += user.holdings[i].shares*data.c[j]
 
-
+                    console.log("PRICES INSIDE: ", newTotalPrices)
                     if(i===user.holdings.length-1 && j === data.c.length-1){
+                        console.log("PRICES INSIDE INNER: ", newTotalPrices)
+                        console.log("TOTAL PRICES HERE: ",newTotalPrices)
                         setTotalPrices(newTotalPrices)
 
                     }
@@ -115,18 +120,19 @@ const Dashboard = () => {
               });
         }
 
-    },[])
+    },[interval])
 
 
     useEffect(()=>{
 
         if(totalPrices.length){
-            let dateValueArray = []
-            let datesArray = []
+            let totalArray = []
             for(let j = 0; j< totalPrices.length;j++){
 
                 const newObj = {}
-                
+                let start = new Date()
+                start.setHours(6,0,0,0)
+                let startUnix = Math.floor(Number(start.getTime() / 1000))
                 let unixTime = startUnix + (j*intervalMap[interval])
                 let dateTime = new Date(unixTime * 1000)
 
@@ -136,20 +142,12 @@ const Dashboard = () => {
                 newObj.price = totalPrices[j]
                 newObj.dateTime = dateTime
                 newObj.unixTime = unixTime
-                dateValueArray.push(newObj)
-
+                totalArray.push(newObj)
             }
-            setGraphData(dateValueArray)
+            setGraphData(totalArray)
         } else return
 
     },[totalPrices])
-
-    useEffect(()=>{
-        if(totalPrices && dates){
-
-        }
-    },[totalPrices,dates])
-
 
     const renderLineChart = (
         <LineChart width={400} height={400} data={graphData}>
