@@ -19,11 +19,7 @@ function App() {
   const user = useSelector(state => state.session.user)
   const theme = useSelector(state => state.session.theme)
 
-  useEffect(()=>{
-    dispatch(getStocks())
-  },[])
-  const stocks = useSelector(state=>state.stocks)
-  console.log("stocks here:", stocks)
+
   useEffect(() => {
     (async() => {
       await dispatch(authenticate());

@@ -2,6 +2,7 @@ import {useState, useEffect} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "./Search.css"
 import { NavLink } from "react-router-dom"
+import { getStocks } from "../../store/stocks"
 
 const Search = () => {
     const [searchValue,setSearchValue] = useState("")
@@ -9,24 +10,34 @@ const Search = () => {
     const [focus,setFocus] = useState(true)
     const [coloredStocks,setColoredStocks] = useState("")
     const [nonColoredStocks,setNonColoredStocks] = useState("")
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        dispatch(getStocks())
+    },[])
     const stocks = useSelector(state=>state.stocks)
-
     useEffect(()=>{
         if(stocks instanceof Array){
-            if(!searchValue)setCurrentStocks("")
+            if(!searchValue) setCurrentStocks("")
             else{
                 setCurrentStocks(
                     stocks.filter(stock=>{
                         return stock.name.startsWith(searchValue.toLowerCase()) || stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())
                     }).sort((a,b)=>{
                         if(a.symbol < b.symbol) return -1
-                        if(a.symbol > b.symbol)return 1
+                        if(a.symbol > b.symbol) return 1
                         return 0;
                     })
                 )
             }
         }
     },[searchValue])
+
+
+    // useEffect(()=>{
+    //     if(!isLoaded){
+    //         return
+    //     }
+    // },[isLoaded])
 
     useEffect(()=>{
 
@@ -49,12 +60,14 @@ const Search = () => {
 
     },[currentStocks])
 
+    // if(stocks.length)setIsLoaded(true)
     const changeFocus = (param) => {
         setFocus(param)
     }
 
     console.log("NON COLORED: ",nonColoredStocks)
     console.log("SEARCH VALUE", searchValue)
+
     return (
         <div id = "search-container">
             <input id = "search-input" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
