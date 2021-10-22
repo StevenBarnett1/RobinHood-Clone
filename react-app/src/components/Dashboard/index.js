@@ -10,6 +10,7 @@ const Dashboard = () => {
     const dispatch = useDispatch()
     const [portfolioValue,setPortfolioValue] = useState(0.00)
     const [buyingPower,toggleBuyingPower] = useState(false)
+    const [openLists,setOpenLists] = useState([])
     const user = useSelector(state=>state.session.user)
 
     useEffect(()=>{
@@ -28,6 +29,21 @@ const Dashboard = () => {
     useEffect(()=>{
         console.log(portfolioValue)
     },[portfolioValue])
+
+    const toggleOpenLists = (watchlist) => {
+        let newList = []
+        let found = false
+        for(let i=0;i<openLists.length;i++){
+            if(openLists[i] !== watchlist.id){
+                newList.append(watchlist.id)
+            } else {
+                found = true
+            }
+        }
+        if (!found)newList.append(watchlist.id)
+        setOpenLists(newList)
+
+    }
 
     console.log(user)
     return (
@@ -86,11 +102,28 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-                <div id = "watchlist container">
+                <div id = "watchlist-outer-container">
+                    <div id = "watchlist-outer-title">Lists</div>
                     {user.watchlist.map(watchlist=>{
                         return (
-                            <div onClick = {}>{watchlist.name}</div>
+                            <div className = "watchlist-inner-container">
+                                <div className = "watchlist-title" onClick = {(watchlist)=>toggleOpenLists(watchlist)}>{watchlist.name}</div>
+                                <div className = "watchlist-stocks">
+                                    {watchlist.stocks.map(stock=>{
+                                        return (
+                                            <div className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"block"} : {display:"none"}}>
+                                                <div className = "watchlist-stock-symbol"></div>
+                                                    <div className = "watchlist-graph"></div>
+                                                    <div className = "watchlist-stock-price-container">
+                                                        <div className = "watchlist-stock-price"></div>
+                                                        <div className = "watchlist-stock-change"></div>
+                                                    </div>
 
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
                         )})}
 
                 </div>
