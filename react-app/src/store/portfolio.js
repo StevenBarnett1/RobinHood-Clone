@@ -19,24 +19,29 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
   const portfolioData = {"max":0,"min":Infinity}
   let prices = []
   let dates = []
-  let jMax = Infinity
+  let jMaxAllowed = Infinity
+  let jMax = 0
   for(let i = 0 ; i< holdings.length;i++){
     const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
     console.log(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
     const data = await response.json()
     for(let j = 0; j<data.c.length;j++){
-      if(j === data.c.length-1 && j < jMax)jMax = j
-      if(i!==0 && j >= prices.length)continue
+      if(j > jMax)jMax = j
+      if(j === data.c.length-1 && j < jMaxAllowed)jMaxAllowed = j
       if(!prices[j]){
-        if(i===0) prices[j] = holdings[i].shares*data.c[j]
-
+        prices[j] = holdings[i].shares*data.c[j]
       } else {
         prices[j] += holdings[i].shares*data.c[j]
       }
-      console.log(prices, j)
 
     }
-    prices = prices.slice(0,jMax+1)
+    let oldPrices = [...prices]
+    prices = prices.slice(0,jMaxAllowed+1)
+    console.log("JMAX HERE: ",jMax, "JMAX ALLOWED HERE: ",jMaxAllowed)
+    for(let i = jMaxAllowed+1; i<jMax+1;i++){
+      prices.push(prices[prices.length-1])
+    }
+
   }
   let newData = []
   for(let i =0; i<prices.length;i++){

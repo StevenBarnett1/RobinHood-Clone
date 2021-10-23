@@ -14,9 +14,13 @@ const Search = () => {
     useEffect(()=>{
         dispatch(getStocks())
     },[])
-    const stocks = useSelector(state=>state.stocks)
+    const stocks = useSelector(state=>state.stocks.stocks)
+    console.log("stocks inside search: ",stocks)
     useEffect(()=>{
-        if(stocks instanceof Array){
+        console.log(searchValue,stocks instanceof Array, !searchValue)
+
+        if(!searchValue) setCurrentStocks("")
+        if(stocks){
             if(!searchValue) setCurrentStocks("")
             else{
                 setCurrentStocks(
@@ -32,12 +36,6 @@ const Search = () => {
         }
     },[searchValue])
 
-
-    // useEffect(()=>{
-    //     if(!isLoaded){
-    //         return
-    //     }
-    // },[isLoaded])
 
     useEffect(()=>{
 
@@ -65,9 +63,8 @@ const Search = () => {
         setFocus(param)
     }
 
-    console.log("NON COLORED: ",nonColoredStocks)
-    console.log("SEARCH VALUE", searchValue)
-
+    console.log("CURRNET STOCKS : ",currentStocks)
+    console.log("FOCUS: ", focus)
     return (
         <div id = "search-container">
             <input id = "search-input" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
