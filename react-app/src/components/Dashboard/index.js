@@ -34,6 +34,8 @@ const Dashboard = () => {
     const [totalPrices,setTotalPrices] = useState([])
     const [dates,setDates] = useState("")
     const [interval,setTimeInterval] = useState("15")
+    const [unixStart,setUnixStart] = useState("")
+    const [unixEnd,setUnixEnd] = useState("")
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio)
 
@@ -92,22 +94,71 @@ const Dashboard = () => {
 
 
     }
-    const data = [{time: 'Page A', uv: 400, pv: 2400, amt: 2400},{name: 'Page B', uv: 500, pv: 2000, amt: 2000},{name: 'Page C', uv: 600, pv: 1500, amt: 1500}];
 
     useEffect(()=>{
 
-        let start = new Date()
-        let end = new Date()
-        start.setHours(6,0,0,0)
-        let startUnix = Math.floor(Number(start.getTime() / 1000))
-        let endUnix = Math.floor(Number(end.getTime() / 1000))
-        dispatch(getPortfolioData(user.holdings, interval, startUnix, endUnix, api_key.apiKey))
-
-    },[interval])
+        if(interval && unixEnd && unixStart){
+        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
+        }
+    },[interval,unixEnd,unixStart])
 
 
-    const timeFrameClick = (time) => {
+    const timeFrameClick = (time,frame) => {
         setTimeInterval(time)
+
+        if(frame === "1D"){
+            let start = new Date()
+            let end = new Date()
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        } else if (frame === "1W"){
+            let start = new Date()
+            let end = new Date()
+            start = start.getDate()-7
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        } else if (frame === "1M"){
+            let start = new Date()
+            let end = new Date()
+            start.setMonth(start.getMonth()-1)
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        } else if (frame === "3M"){
+            let start = new Date()
+            let end = new Date()
+            start.setMonth(start.getMonth()-3)
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        } else if (frame === "1Y"){
+            let start = new Date()
+            let end = new Date()
+            start.setFullYear(start.getFullYear()-1)
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        } else if (frame === "ALL"){
+            let start = new Date()
+            let end = new Date()
+            start.setHours(6,0,0,0)
+            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            let endUnix = Math.floor(Number(end.getTime() / 1000))
+            setUnixStart(startUnix)
+            setUnixEnd(endUnix)
+        }
     }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
@@ -126,12 +177,12 @@ const Dashboard = () => {
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("15")}} className = "dashboard-graph-timeframe-button">1D</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("30")}} className = "dashboard-graph-timeframe-button">1W</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">1M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">3M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("M")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("15","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = "dashboard-graph-timeframe-button">1M</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = "dashboard-graph-timeframe-button">3M</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
                     </div>
                     <div id = "dashboard-buying-power-container" onClick={()=>toggleBuyingPower(!buyingPower)} >
