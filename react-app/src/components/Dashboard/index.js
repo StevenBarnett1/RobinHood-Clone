@@ -106,6 +106,9 @@ const Dashboard = () => {
     },[interval])
 
 
+    const timeFrameClick = (time) => {
+        setTimeInterval(time)
+    }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
       <Line type="monotone" dataKey="price" stroke="#8884d8" />
@@ -123,12 +126,12 @@ const Dashboard = () => {
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
-                            <span className = "dashboard-graph-timeframe">1D</span>
-                            <span className = "dashboard-graph-timeframe">1W</span>
-                            <span className = "dashboard-graph-timeframe">1M</span>
-                            <span className = "dashboard-graph-timeframe">3M</span>
-                            <span className = "dashboard-graph-timeframe">1Y</span>
-                            <span className = "dashboard-graph-timeframe">ALL</span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("15")}} className = "dashboard-graph-timeframe-button">1D</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("30")}} className = "dashboard-graph-timeframe-button">1W</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">1M</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">3M</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("D")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{setTimeInterval("M")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
                     </div>
                     <div id = "dashboard-buying-power-container" onClick={()=>toggleBuyingPower(!buyingPower)} >

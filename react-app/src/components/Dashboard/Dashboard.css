@@ -123,3 +123,13 @@
     justify-content: space-between;
     border-bottom:1px solid lightgrey
 }
+
+.dashboard-graph-timeframe-button{
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.dashboard-graph-timeframe-button:hover{
+    color:rgb(0, 200, 5);
+}
