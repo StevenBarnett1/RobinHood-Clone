@@ -2,7 +2,9 @@ const SET_PORTFOLIO_DATA = "portfolio/SET_PORTFOLIO_DATA"
 
 const intervalMap = {
   "1":60,
+  "5":300,
   "15":900,
+  "30":1800,
   "60":3600,
   "D":86400,
   "W":604800,
@@ -17,6 +19,7 @@ export const setPortfolioData = (portfolioData) => {
 
 export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) => async dispatch => {
   const portfolioData = {"max":0,"min":Infinity}
+  console.log("FHDHDH",resolution,unixStart,unixEnd)
   let prices = []
   let dates = []
   let jMaxAllowed = Infinity
@@ -25,38 +28,52 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
     const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
     console.log(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
     const data = await response.json()
+
+    // console.log("PRICES: ",prices)
     for(let j = 0; j<data.c.length;j++){
-      if(j > jMax)jMax = j
-      if(j === data.c.length-1 && j < jMaxAllowed)jMaxAllowed = j
-      if(!prices[j]){
-        prices[j] = holdings[i].shares*data.c[j]
+      const newObject = {}
+      // console.log("DATA.C",data.c.length,data.c[j],new Date(data.t[j] * 1000))
+      // if(j > jMax)jMax = j
+      // if(j === data.c.length-1 && j < jMaxAllowed)jMaxAllowed = j
+      console.log("HERE: ", i ,data.c[j])
+      if(i === 0){
+        newObject.unixTime = data.t[j]
+        newObject.dateTime = new Date(data.t[j] * 1000)
+        newObject.price = holdings[i].shares*data.c[j]
+        // console.log("HOURS: ",newObject.dateTime.getHours(), newObject.dateTime.getMinutes())
+
+        if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D"){
+          prices.push(newObject)
+        }
+
       } else {
-        prices[j] += holdings[i].shares*data.c[j]
+        for(let k = 0 ; k < prices.length;k++){
+          if(prices[k].unixTime === data.t[j]){
+            prices[k].price += holdings[i].shares*data.c[j]
+          }
+        }
       }
 
     }
-    let oldPrices = [...prices]
-    prices = prices.slice(0,jMaxAllowed+1)
-    console.log("JMAX HERE: ",jMax, "JMAX ALLOWED HERE: ",jMaxAllowed)
-    for(let i = jMaxAllowed+1; i<jMax+1;i++){
-      prices.push(prices[prices.length-1])
-    }
+    // let oldPrices = [...prices]
+    // prices = prices.slice(0,jMaxAllowed+1)
+    // console.log("JMAX HERE: ",jMax, "JMAX ALLOWED HERE: ",jMaxAllowed)
+    // for(let i = jMaxAllowed+1; i<jMax+1;i++){
+    //   prices.push(prices[prices.length-1])
+    // }
 
   }
   let newData = []
   for(let i =0; i<prices.length;i++){
-    const obj = {}
-      let unixTime = unixStart + (i*intervalMap[resolution])
-      let dateTime = new Date(unixTime * 1000)
 
-      obj.dateTime = dateTime
-      obj.unixTime = unixTime
-      obj.price = prices[i]
-      if(obj.price > portfolioData.max)portfolioData.max = Number(obj.price.toFixed(0))
-      if(obj.price < portfolioData.min)portfolioData.min = Number(obj.price.toFixed(0))
-      newData.push(obj)
+    // console.log("DATETIME: ",dateTime)
+
+      if(prices[i].price > portfolioData.max)portfolioData.max = Number(prices[i].price.toFixed(0))
+      if(prices[i].price < portfolioData.min)portfolioData.min = Number(prices[i].price.toFixed(0))
+
   }
-  portfolioData.data=newData
+  portfolioData.data=prices
+  console.log("DATATATATA: ",portfolioData.data)
   dispatch(setPortfolioData(portfolioData))
 }
 

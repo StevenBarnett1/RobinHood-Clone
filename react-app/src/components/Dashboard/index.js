@@ -11,13 +11,6 @@ const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
 
-const intervalMap = {
-    "1":60,
-    "15":900,
-    "60":3600,
-    "D":86400,
-    "W":604800,
-}
 
 console.log("API KEYYYYYYYYYYYYYYYYY: ", api_key.apiKey)
 
@@ -94,31 +87,56 @@ const Dashboard = () => {
 
 
     }
-
+    console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
 
         if(interval && unixEnd && unixStart){
+            console.log("INT INT INT: ",interval,unixEnd,unixStart)
         dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
         }
     },[interval,unixEnd,unixStart])
 
 
     const timeFrameClick = (time,frame) => {
-        setTimeInterval(time)
-
         if(frame === "1D"){
+            console.log("IN FRAME")
             let start = new Date()
             let end = new Date()
-            start.setHours(6,0,0,0)
+            if(start.getDay() === 6){
+                start.setDate(start.getDate()-1)
+                end.setDate(end.getDate()-1)
+                end.setHours(23,0,0,0)
+
+            }
+            if(start.getDay() === 0){
+                start.setDate(start.getDate()-2)
+                end.setDate(end.getDate()-2)
+                end.setHours(23,0,0,0)
+            }
+            start.setHours(0,0,0,0)
+
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
+            console.log("DFDFDFDFDFDFDF: ",startUnix,endUnix)
             setUnixStart(startUnix)
             setUnixEnd(endUnix)
         } else if (frame === "1W"){
             let start = new Date()
             let end = new Date()
-            start = start.getDate()-7
-            start.setHours(6,0,0,0)
+            if(start.getDay() === 6){
+                start.setDate(start.getDate()-1)
+                end.setDate(end.getDate()-1)
+                end.setHours(23,0,0,0)
+
+            }
+            if(start.getDay() === 0){
+                start.setDate(start.getDate()-2)
+                end.setDate(end.getDate()-2)
+                end.setHours(23,0,0,0)
+            }
+            start.setDate(start.getDate()-7)
+            start.setHours(0,0,0,0)
+            console.log("END TIME: ",end)
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -127,7 +145,8 @@ const Dashboard = () => {
             let start = new Date()
             let end = new Date()
             start.setMonth(start.getMonth()-1)
-            start.setHours(6,0,0,0)
+            start.setHours(0,0,0,0)
+            end.setHours(20,0,0,0)
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -159,6 +178,11 @@ const Dashboard = () => {
             setUnixStart(startUnix)
             setUnixEnd(endUnix)
         }
+
+
+        setTimeInterval(time)
+
+
     }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
@@ -177,7 +201,7 @@ const Dashboard = () => {
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("15","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
+                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
                             <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
                             <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = "dashboard-graph-timeframe-button">1M</button></span>
                             <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = "dashboard-graph-timeframe-button">3M</button></span>
