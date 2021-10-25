@@ -8,7 +8,7 @@ import {
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
 const finnhub = require('finnhub');
-const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg"]
+const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
@@ -175,7 +175,7 @@ const Dashboard = () => {
     }
     useEffect(()=>{
         if(interval && unixEnd){
-        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
+        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)]))
         }
     },[interval,unixEnd,unixStart])
 
@@ -287,12 +287,26 @@ const Dashboard = () => {
             console.log("AA: ",payload)
             console.log("BB",payload[0])
             console.log("CC",payload[0].payload)
+            let year = payload[0].payload.dateTime.getFullYear()
             let month = months[payload[0].payload.dateTime.getMonth()]
             let day = payload[0].payload.dateTime.getDate()
             let hours = payload[0].payload.dateTime.getHours()
             let minutes = payload[0].payload.dateTime.getMinutes()
             if(minutes === 0)minutes = "00"
-            return (<h4>{month} {day},{hours}:{minutes}</h4>)
+            let zone
+            if(hours >= 12) zone = "PM"
+            else zone = "AM"
+            if(interval === "15"){
+                return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
+            } else if (interval === "30"){
+                return (<div className = "chart-date-label">{month} {day}, {hours}:{minutes} {zone}</div>)
+            } else if (interval === "D"){
+                return (<div className = "chart-date-label">{month} {day}, {year}</div>)
+            } else if (interval === "M"){
+                return (<div className = "chart-date-label">{month}, {year}</div>)
+            }
+
+
 
     }return null
 
@@ -307,7 +321,7 @@ const Dashboard = () => {
       <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
       <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
       <CartesianGrid horizontal = {true}/>
-      <Tooltip cursor = {true} content = {<CustomTooltip/>}/>
+      <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
     </LineChart>)
 
     return (
