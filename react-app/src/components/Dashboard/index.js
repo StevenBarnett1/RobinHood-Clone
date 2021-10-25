@@ -5,8 +5,10 @@ import { addBuyingPower } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
+  import Odometer from 'react-odometerjs';
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
+import 'odometer/themes/odometer-theme-car.css';
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -33,6 +35,7 @@ const months = {
 const Dashboard = () => {
     const dispatch = useDispatch()
     const [portfolioValue,setPortfolioValue] = useState(0.00)
+    const [portfolioValueDynamic,setPortfolioValueDynamic] = useState(0)
     const [buyingPower,toggleBuyingPower] = useState(false)
     const [buyingPowerValue,editBuyingPowerValue] = useState("")
     const [openLists,setOpenLists] = useState([])
@@ -42,7 +45,7 @@ const Dashboard = () => {
     const [yMin,setYmin] = useState(Infinity)
     const [totalPrices,setTotalPrices] = useState([])
     const [dates,setDates] = useState("")
-    const [interval,setTimeInterval] = useState("15")
+    const [interval,setTimeInterval] = useState("5")
     const [unixStart,setUnixStart] = useState("")
     const [unixEnd,setUnixEnd] = useState("")
     const [news,setNews] = useState("")
@@ -279,7 +282,7 @@ const Dashboard = () => {
         if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
     }
 
-    var tooltip
+    let tooltip
     const CustomTooltip = ({ active, payload }) => {
     // if (!active || !tooltip)    return null
     if(payload && payload[0]){
@@ -296,7 +299,9 @@ const Dashboard = () => {
             let zone
             if(hours >= 12) zone = "PM"
             else zone = "AM"
-            if(interval === "15"){
+            console.log("INTERVAL: ",interval)
+            setPortfolioValueDynamic(payload[0].payload.price)
+            if(interval === "5"){
                 return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
             } else if (interval === "30"){
                 return (<div className = "chart-date-label">{month} {day}, {hours}:{minutes} {zone}</div>)
@@ -308,15 +313,23 @@ const Dashboard = () => {
 
 
 
-    }return null
+    }
 
     return null
+}
 
+const chartHoverFunction = (e) => {
+    if(e.activePayload){
+        setPortfolioValueDynamic(e.activePayload[0].payload.price);
+    }
+}
 
+const portfolioReset = (e) => {
+    setPortfolioValueDynamic(0)
 }
 
     let renderLineChart = (
-        <LineChart  width={700} height={300} data={graphData}>
+        <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
       <Line dot = {false} type="monotone" dataKey="price" stroke="#8884d8" />
       <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
       <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
@@ -324,11 +337,14 @@ const Dashboard = () => {
       <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
     </LineChart>)
 
+return <Odometer value={1234} format="(.ddd),dd" />
+
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
                 <div id = "dashboard-upper-container">
-                    <div id = "dashboard-portfolio-value"><h1>${portfolioValue.toFixed(2)}</h1></div>
+                    <div id = "dashboard-portfolio-value"><h1>$<Odometer value={10} format="(,ddd).dd" /></h1></div>
+
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
