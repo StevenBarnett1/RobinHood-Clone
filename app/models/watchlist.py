@@ -23,12 +23,12 @@ class Watchlist(db.Model):
             'id':self.id,
             'name':self.name,
             'owner':self.owner,
-            'stocks':self.watchlist_stocks
+            'stocks':[{"name":watchlist_stock.name,"symbol":watchlist_stock.symbol} for watchlist_stock in self.watchlist_stocks]
         }
 
     def get_stocks(self):
         return {
             'id':self.id,
             'name':self.name,
-            'stocks':self.watchlist_stocks
+            'stocks':[{"name":watchlist_stock.name,"symbol":watchlist_stock.symbol} for watchlist_stock in self.watchlist_stocks]
         }

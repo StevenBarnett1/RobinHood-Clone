@@ -3,8 +3,12 @@
     justify-content: row;
     overflow-y: hidden;
     width:100%;
-    height:calc(100% - 65px);
+    height:100%;
     align-items: center;
+}
+
+#light{
+    height:100%
 }
 
 #left-side{

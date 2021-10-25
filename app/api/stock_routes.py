@@ -4,7 +4,7 @@ from app.models import Stock
 
 stock_routes = Blueprint("stocks",__name__)
 
-@stock_routes.route("/")
+@stock_routes.route("")
 def get_stocks():
     stocks = Stock.query.all()
     print("HERE: ",stocks)

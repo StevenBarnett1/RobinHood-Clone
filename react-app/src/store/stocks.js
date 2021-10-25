@@ -5,7 +5,7 @@ export const getStocks = () => async dispatch =>{
 
     if (response.ok) {
         const stocks = await response.json();
-        dispatch(setStocks(stocks.stocks))
+        dispatch(setStocks(stocks))
         return null;
       } else if (response.status < 500) {
         const data = await response.json();

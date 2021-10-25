@@ -26,44 +26,110 @@
 }
 
 #dashboard-outer-container{
-    width:50%;
+    width:1050px;
     display:flex;
     margin:auto;
 }
+
+#watchlist-outer-container{
+    display:flex;
+    flex-direction: column;
+}
+#watchlist-outer-title{
+    border-bottom:1px solid lightgrey;
+}
+.watchlist-inner-container{
+
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+}
+.watchlist-title{
+    display:flex;
+    align-items: center;
+    height:61px;
+    cursor:pointer;
+    width:100%;
+
+}
+.watchlist-title:hover{
+    background-color: var(--button-hover-background-color);
+}
 #dashboard-left-container{
-    width:80%;
+    width:730px;
     margin:auto;
     border:1px solid black;
+    margin-right:47px;
 }
 
 #dashboard-upper-container{
     display:flex;
     flex-direction: column;
+    border-bottom:1px solid lightgrey
 }
 
 #dashboard-buying-power-container-left{
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
+    width:50%;
+
+
+}
+
+#dashboard-buying-power-container-right{
+    width:50%;
+    margin-left:35px;
+
 }
 #dashboard-buying-power-container-heading{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
+    border-bottom:1px solid lightgrey;
 }
 
 #dashboard-buying-power-container-bottom{
-    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-shadow: 0 0 2px 2px lightgrey;
 }
 
 #brokerage-cash-container{
     display:flex;
+    justify-content: space-between;
+    border-bottom:1px solid lightgrey;
 }
 
 #buying-power-container{
     display:flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 #watchlist-outer-container{
-    width:20%;
+    width:275px;
     border:1px solid black;
+}
+
+.watchlist-stock-container{
+    justify-content: space-between;
+}
+
+#dashboard-graph-timeframes-container{
+    width:230px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom:1px solid lightgrey
+}
+
+.dashboard-graph-timeframe-button{
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.dashboard-graph-timeframe-button:hover{
+    color:rgb(0, 200, 5);
 }
