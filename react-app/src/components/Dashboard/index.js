@@ -20,6 +20,7 @@ const Dashboard = () => {
     const dispatch = useDispatch()
     const [portfolioValue,setPortfolioValue] = useState(0.00)
     const [buyingPower,toggleBuyingPower] = useState(false)
+    const [buyingPowerValue,editBuyingPowerValue] = useState("")
     const [openLists,setOpenLists] = useState([])
     const [currentPrices,setCurrentPrices] = useState({})
     const [graphData,setGraphData] = useState("")
@@ -48,6 +49,7 @@ const Dashboard = () => {
                 console.log(data)
                 setNews(data)
               });
+              editBuyingPowerValue(user.buyingPower)
 
         }
     },[user])
@@ -198,7 +200,7 @@ const Dashboard = () => {
 
     const deposit = (value) => {
         setDepositClick(value)
-        if(!value)dispatch(addBuyingPower(user.id,buyingPower))
+        if(!value)dispatch(addBuyingPower(user.id,buyingPowerValue))
     }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
@@ -208,7 +210,7 @@ const Dashboard = () => {
       <Tooltip/>
     </LineChart>)
 
-
+        console.log("USER: ",user)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -228,7 +230,7 @@ const Dashboard = () => {
                     <div id = "dashboard-buying-power-container"  >
                         <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
-                            <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${(user && user.buyingPower) ? user.buyingPower.toFixed(2) : 0.00.toFixed(2)}</div>
+                            <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                         </div>
                         <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
                             <div id = "dashboard-buying-power-container-left">
@@ -238,10 +240,10 @@ const Dashboard = () => {
                                 </div>
                                 <div id = "buying-power-container">
                                     <div>Buying Power</div>
-                                    <div>${(user && user.buyingPower) ? user.buyingPower.toFixed(2) : 0.00.toFixed(2)}</div>
+                                    <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                                 </div>
                                 <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-                                <input type = "text" id = "buying-power-deposit-input" style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+                                <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
 
                             </div>
 
