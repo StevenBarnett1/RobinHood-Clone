@@ -18,6 +18,11 @@
     border-radius:30px;
     align-items: center;
     justify-content: center;
+    cursor:pointer;
+}
+
+#buying-power-deposit-button:hover{
+    background-color: rgb(1, 175, 7);
 }
 
 #trending-list-icons{
@@ -132,4 +137,13 @@
 
 .dashboard-graph-timeframe-button:hover{
     color:rgb(0, 200, 5);
+}
+
+.news-icon-container{
+    border-bottom:1px solid lightgrey;
+
+}
+
+.news-icon-container:first-child{
+    border-top:1px solid lightgrey;
 }

@@ -34,5 +34,4 @@ class User(db.Model, UserMixin):
             'last_name':self.last_name,
             'watchlists':[ watchlist.get_stocks() for watchlist in self.watchlists],
             'holdings':[holding.to_dict() for holding in self.holdings]
-
         }

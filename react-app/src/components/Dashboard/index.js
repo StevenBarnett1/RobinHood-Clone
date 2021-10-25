@@ -1,6 +1,7 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
+import { addBuyingPower } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
@@ -29,6 +30,8 @@ const Dashboard = () => {
     const [interval,setTimeInterval] = useState("15")
     const [unixStart,setUnixStart] = useState("")
     const [unixEnd,setUnixEnd] = useState("")
+    const [news,setNews] = useState("")
+    const [depositClick,setDepositClick] = useState(false)
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio)
 
@@ -41,6 +44,10 @@ const Dashboard = () => {
                     setPortfolioValue(portfolioValue+total)
                 });
             })
+            finnhubClient.marketNews("general", {}, (error, data, response) => {
+                console.log(data)
+                setNews(data)
+              });
 
         }
     },[user])
@@ -118,7 +125,6 @@ const Dashboard = () => {
 
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
-            console.log("DFDFDFDFDFDFDF: ",startUnix,endUnix)
             setUnixStart(startUnix)
             setUnixEnd(endUnix)
         } else if (frame === "1W"){
@@ -188,7 +194,12 @@ const Dashboard = () => {
 
         setTimeInterval(time)
     }
-    
+
+
+    const deposit = (value) => {
+        setDepositClick(value)
+        if(!value)dispatch(addBuyingPower(user.id,buyingPower))
+    }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
       <Line type="monotone" dataKey="price" stroke="#8884d8" />
@@ -214,8 +225,8 @@ const Dashboard = () => {
                             <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
                     </div>
-                    <div id = "dashboard-buying-power-container" onClick={()=>toggleBuyingPower(!buyingPower)} >
-                        <div id = "dashboard-buying-power-container-heading">
+                    <div id = "dashboard-buying-power-container"  >
+                        <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
                             <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${(user && user.buyingPower) ? user.buyingPower.toFixed(2) : 0.00.toFixed(2)}</div>
                         </div>
@@ -229,7 +240,9 @@ const Dashboard = () => {
                                     <div>Buying Power</div>
                                     <div>${(user && user.buyingPower) ? user.buyingPower.toFixed(2) : 0.00.toFixed(2)}</div>
                                 </div>
-                                <button id = "buying-power-deposit-button">Deposit Funds</button>
+                                <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
+                                <input type = "text" id = "buying-power-deposit-input" style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+
                             </div>
 
                             <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase. Learn More</div>
@@ -254,10 +267,18 @@ const Dashboard = () => {
                     <div id = "news-container">
                         <div id="news-title"><h1>News</h1></div>
                         <div id = "news-icons-container">
-                            <div className = "news-icon-title"></div>
-                            <div className = "news-icon-text"></div>
-                            <div className = "news-icon-symbol"></div>
-                            <div className = "news-icon-change"></div>
+                            {news && news.map(post => {
+                                return (
+                                    <div key = {post.id} className = "news-icon-container">
+                                        <div className = "news-icon-source">{post.source}</div>
+                                        <div className = "news-icon-date">{post.datetime*1000}</div>
+                                        <div className = "news-icon-headline">{post.headline}</div>
+                                        <div className = "news-icon-symbol"></div>
+                                        <div className = "news-icon-change"></div>
+                                    </div>
+                                )
+                            })}
+
                         </div>
                     </div>
                 </div>

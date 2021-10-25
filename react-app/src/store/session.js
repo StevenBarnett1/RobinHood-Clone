@@ -20,6 +20,25 @@ export const setTheme = (theme) => {
 }
 const initialState = { user: null, theme:"light" };
 
+export const addBuyingPower = (id,buyingPower) => async dispatch => {
+  const response = await fetch(`/api/users/${id}`,{
+    method:"PUT",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({buyingPower})
+  })
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setUser(data))
+    if (data.errors) {
+      return;
+    }
+  }
+
+}
+
+
 export const authenticate = () => async (dispatch) => {
   const response = await fetch('/api/auth/', {
     headers: {
