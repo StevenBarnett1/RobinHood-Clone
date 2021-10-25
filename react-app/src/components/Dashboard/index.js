@@ -1,6 +1,7 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
+import { addBuyingPower } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
@@ -197,7 +198,7 @@ const Dashboard = () => {
 
     const deposit = (value) => {
         setDepositClick(value)
-        if(!value)dispatch(addBuyingPower())
+        if(!value)dispatch(addBuyingPower(user.id,buyingPower))
     }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
