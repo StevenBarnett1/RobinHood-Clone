@@ -22,8 +22,8 @@ def user(id):
 @login_required
 def edit_user(id):
     user = User.query.get(id)
-    print(f"\n\n\n{request.json}\n\n\n")
-    user.buying_power = request.json.buyingPower
+    print(f"\n\n\n{request.json['buyingPower']}\n\n\n")
+    user.buying_power = float(user.buying_power) + float(request.json['buyingPower'])
     print(f"\n\n\n\n{user.buying_power}\n\n\n\n")
     db.session.commit()
     return user.to_dict()
