@@ -147,3 +147,49 @@
 .news-icon-container:first-child{
     border-top:1px solid lightgrey;
 }
+
+.daily-gainers-icons-value, .daily-gainers-icons-change{
+    color: rgb(0, 200, 5);
+}
+
+.daily-losers-icons-value, .daily-losers-icons-change{
+    color:rgb(255, 80, 0)
+}
+
+.daily-losers-individual{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:160px;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+}
+
+.daily-gainers-individual{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:160px ;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+#daily-gainers-icons{
+    display:inline-flex;
+}
+
+#daily-losers-icons{
+    display:inline-flex;
+
+}
+
+#daily-gainers-container{
+    overflow-x: scroll;
+}
+
+#daily-losers-container{
+    overflow-x: scroll;
+}

@@ -40,7 +40,7 @@ const Dashboard = () => {
 
     useEffect(()=>{
         console.log("MOVERS DATA: ",moversData)
-    },[])
+    },[moversData])
 
     useEffect(()=>{
         if(user){
@@ -218,6 +218,7 @@ const Dashboard = () => {
     </LineChart>)
 
         console.log("USER: ",user)
+        console.log("MOVERS DATA: ",moversData)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -264,13 +265,40 @@ const Dashboard = () => {
                         <div id = "trending-lists-title"><h1>Trending Lists</h1></div>
                         <div id = "trending-lists-icons"></div>
                     </div>
-                    <div id = "daily-movers-container">
-                        <div id = "daily-movers-title"><h1>Daily Movers</h1></div>
-                        <div id = "daily-movers-subtitle"></div>
-                        <div id = "daily-movers-icons">
-                            <div className = "daily-movers-icons-title"></div>
-                            <div className = "daily-movers-icons-value"></div>
-                            <div className = "daily-movers-icons-change"></div>
+                    <div id = "daily-gainers-title"><h1>Daily Gainers</h1></div>
+                    <div id = "daily-gainers-container">
+                        <div id = "daily-gainers-subtitle"></div>
+                        <div id = "daily-gainers-icons">
+                        {moversData && moversData.gainersData.map(data => {
+                            return (
+                                <div key = {data.ticker} className = "daily-gainers-individual">
+                                    <div className = "daily-gainers-icons-title">{data.companyName}</div>
+                                    <div className = "daily-numbers-container">
+                                        <div className = "daily-gainers-icons-value">{data.price}</div>
+                                        <div className = "daily-gainers-icons-change">+{data.changesPercentage}</div>
+                                    </div>
+                                </div>
+                            )
+                            })}
+                        </div>
+                    </div>
+                    <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
+                    <div id = "daily-losers-container">
+                        <div id = "daily-losers-subtitle"></div>
+                        <div id = "daily-losers-icons">
+                            {moversData && moversData.losersData.map(data => {
+                                return (
+                                <div key = {data.ticker} className = "daily-losers-individual">
+                                    <div className = "daily-losers-icons-title">{data.companyName}</div>
+                                    <div className = "daily-numbers-container">
+                                        <div className = "daily-losers-icons-value">{data.price}</div>
+                                        <div className = "daily-losers-icons-change">-{data.changesPercentage}</div>
+                                    </div>
+
+                                </div>
+                                )
+                            })}
+
                         </div>
                     </div>
                     <div id = "news-container">
