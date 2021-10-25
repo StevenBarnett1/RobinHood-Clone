@@ -23,7 +23,7 @@ const Dashboard = () => {
     const [buyingPower,toggleBuyingPower] = useState(false)
     const [buyingPowerValue,editBuyingPowerValue] = useState("")
     const [openLists,setOpenLists] = useState([])
-    const [currentPrices,setCurrentPrices] = useState({})
+    const [currentStockData,setCurrentStockData] = useState({})
     const [graphData,setGraphData] = useState("")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
@@ -74,14 +74,25 @@ const Dashboard = () => {
 
     const toggleOpenLists = (watchlist) => {
         let newList = []
-        let prices = {}
+        let newData = {}
         let found = false
 
         for(let watchlist_stock of watchlist.stocks){
             finnhubClient.quote(watchlist_stock.symbol, (error, data, response) => {
-                prices[watchlist_stock.symbol]=data.c
-
-                setCurrentPrices(prices)
+                newData[watchlist_stock.symbol] = {}
+                console.log("NEW DATA WATCHLIST: ",newData, watchlist_stock)
+                newData[watchlist_stock.symbol].price=data.c
+                newData[watchlist_stock.symbol].graph=(
+                    <ResponsiveContainer className = "responsive-container">
+                        <LineChart width = {107} height = {45} data={graphData}>
+                            <Line type="monotone" dataKey="price" stroke="#8884d8" />
+                            <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                            <YAxis domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                            <Tooltip/>
+                        </LineChart>
+                     </ResponsiveContainer>
+    )
+                setCurrentStockData(newData)
             })
         }
 
@@ -106,7 +117,6 @@ const Dashboard = () => {
     console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
         if(interval && unixEnd){
-            console.log("INT INT INT: ",interval,unixEnd,unixStart)
         dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
         }
     },[interval,unixEnd,unixStart])
@@ -332,9 +342,9 @@ const Dashboard = () => {
                                         return (
                                             <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
-                                                <div className = "watchlist-graph">{}</div>
+                                                <div className = "watchlist-stock-graph">{currentStockData[stock.symbol] && currentStockData[stock.symbol].graph}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">{currentPrices[stock.symbol]}</div>
+                                                    <div className = "watchlist-stock-price">{currentStockData[stock.symbol] && currentStockData[stock.symbol].price}</div>
                                                     <div className = "watchlist-stock-change"></div>
                                                 </div>
                                             </div>

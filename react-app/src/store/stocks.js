@@ -23,6 +23,10 @@ export const setStocks = (stocks) => {
         payload:stocks
     }
 }
+
+export const setStockGraph = stocks => {
+  
+}
 const initialState = {}
 export default function stocksReducer(state = initialState, action) {
     let newState = {...state}
