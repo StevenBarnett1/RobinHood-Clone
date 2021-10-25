@@ -46,7 +46,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
         // console.log("HOURS: ",newObject.dateTime.getHours(), newObject.dateTime.getMinutes())
         console.log("DATE TIME: ",newObject.dateTime, holdings[i].symbol)
 
-        if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D"){
+        if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D" || resolution === "M"){
           prices.push(newObject)
         }
 

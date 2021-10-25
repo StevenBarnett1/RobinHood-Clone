@@ -25,7 +25,7 @@ const Search = () => {
             else{
                 setCurrentStocks(
                     stocks.filter(stock=>{
-                        return stock.name.startsWith(searchValue.toLowerCase()) || stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())
+                        return stock.name.toLowerCase().startsWith(searchValue.toLowerCase()) || stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())
                     }).sort((a,b)=>{
                         if(a.symbol < b.symbol) return -1
                         if(a.symbol > b.symbol) return 1
@@ -46,12 +46,25 @@ const Search = () => {
             }
 
             for(let stock of newCurrentStocks){
-                console.log("stock before: ",stock)
-                let length = searchValue.length
-                stock.name = stock.name.slice(length)
-                stock.symbol = stock.symbol.slice(length)
-                console.log("stock after: ",stock)
+                if(stock.symbol === "TSLA"){
+                    console.log("INSIDE TESLA")
+                    console.log(stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase()))
+                    console.log(stock.name.toLowerCase().startsWith(searchValue.toLowerCase()))
+                }
+                if(stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())){
+                    stock.coloredSymbol = searchValue
+                    stock.nonColoredSymbol = stock.symbol.slice(searchValue.length)
+                } else {
+                    stock.nonColoredSymbol = stock.symbol
+                }
+                if(stock.name.toLowerCase().startsWith(searchValue.toLowerCase())){
+                    stock.coloredName = searchValue
+                    stock.nonColoredName = stock.name.slice(searchValue.length)
+                } else {
+                    stock.nonColoredName = stock.name
+                }
             }
+            console.log("NC STOCKS: ",newCurrentStocks)
              setNonColoredStocks(newCurrentStocks)
 
         }
@@ -73,10 +86,10 @@ const Search = () => {
                     return (
                         <div key = {stock.id} className = "search-item">
                             <NavLink className = "search-item-navlink" to ="/">
-                                <span className="stock-search-symbol colored">{searchValue && searchValue.toUpperCase()}</span>
-                                <span className="stock-search-symbol">{stock.symbol}</span>
-                                <span className="stock-search-name colored">{searchValue && searchValue[0].toUpperCase()+searchValue.slice(1)}</span>
-                                <span className="stock-search-name">{stock.name}</span>
+                                <span className="stock-search-symbol colored">{stock.coloredSymbol && stock.coloredSymbol.toUpperCase()}</span>
+                                <span className="stock-search-symbol">{stock.nonColoredSymbol.toUpperCase()}</span>
+                                <span className="stock-search-name colored">{stock.coloredName && stock.coloredName[0].toUpperCase() + stock.coloredName.slice(1)}</span>
+                                <span className="stock-search-name">{stock.coloredName ? stock.nonColoredName : stock.nonColoredName[0].toUpperCase() + stock.nonColoredName.slice(1)}</span>
                             </NavLink>
                         </div>
                     )

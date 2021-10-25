@@ -89,8 +89,7 @@ const Dashboard = () => {
     }
     console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
-
-        if(interval && unixEnd && unixStart){
+        if(interval && unixEnd){
             console.log("INT INT INT: ",interval,unixEnd,unixStart)
         dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
         }
@@ -98,6 +97,8 @@ const Dashboard = () => {
 
 
     const timeFrameClick = (time,frame) => {
+
+        console.log("FRAME: ",frame)
         if(frame === "1D"){
             console.log("IN FRAME")
             let start = new Date()
@@ -155,7 +156,8 @@ const Dashboard = () => {
             let start = new Date()
             let end = new Date()
             start.setMonth(start.getMonth()-3)
-            start.setHours(6,0,0,0)
+            start.setHours(0,0,0,0)
+            end.setHours(20,0,0,0)
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -163,8 +165,9 @@ const Dashboard = () => {
         } else if (frame === "1Y"){
             let start = new Date()
             let end = new Date()
+            end.setHours(20,0,0,0)
             start.setFullYear(start.getFullYear()-1)
-            start.setHours(6,0,0,0)
+            start.setHours(0,0,0,0)
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -172,8 +175,11 @@ const Dashboard = () => {
         } else if (frame === "ALL"){
             let start = new Date()
             let end = new Date()
-            start.setHours(6,0,0,0)
-            let startUnix = Math.floor(Number(start.getTime() / 1000))
+            start.setHours(0,0,0,0)
+            end.setHours(23,0,0,0)
+            // let startUnix = Math.floor(Number(start.getTime() / 1000))
+            console.log("IN ALL FRAME")
+            let startUnix = 0
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
             setUnixEnd(endUnix)
@@ -181,9 +187,8 @@ const Dashboard = () => {
 
 
         setTimeInterval(time)
-
-
     }
+    
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>
       <Line type="monotone" dataKey="price" stroke="#8884d8" />
