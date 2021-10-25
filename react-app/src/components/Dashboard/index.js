@@ -8,7 +8,7 @@ import {
   import Odometer from 'react-odometerjs';
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
-import 'odometer/themes/odometer-theme-car.css';
+import 'odometer/themes/odometer-theme-minimal.css';
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -337,13 +337,12 @@ const portfolioReset = (e) => {
       <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
     </LineChart>)
 
-return <Odometer value={1234} format="(.ddd),dd" />
 
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
                 <div id = "dashboard-upper-container">
-                    <div id = "dashboard-portfolio-value"><h1>$<Odometer value={10} format="(,ddd).dd" /></h1></div>
+                    <div id = "dashboard-portfolio-value"><h1>$<Odometer value={portfolioValueDynamic ? Number(portfolioValueDynamic.toFixed(2)) : Number(portfolioValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
