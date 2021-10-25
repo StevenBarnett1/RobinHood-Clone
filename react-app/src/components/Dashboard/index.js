@@ -6,6 +6,7 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
   import Odometer from 'react-odometerjs';
+  import {AiOutlinePlus} from "react-icons"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
