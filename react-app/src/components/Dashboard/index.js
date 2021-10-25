@@ -6,6 +6,7 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
+import { getStockGraphData } from "../../store/stocks";
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -14,7 +15,6 @@ const finnhubClient = new finnhub.DefaultApi()
 const moverAPIKeys = [`ff589a311ba428d0075c8c9c152c15dc`]
 
 
-console.log("API KEYYYYYYYYYYYYYYYYY: ", api_key.apiKey)
 
 
 const Dashboard = () => {
@@ -37,13 +37,32 @@ const Dashboard = () => {
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
     const moversData = useSelector(state => state.portfolio.moversData)
-
+    const stocks = useSelector(state=>state.stocks.stocks)
+    const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
+    console.log(watchlistStockData)
     useEffect(()=>{
-        console.log("MOVERS DATA: ",moversData)
-    },[moversData])
+        if(watchlistStockData){
+            console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
+            for(let symbol of Object.keys(watchlistStockData)){
+                watchlistStockData[symbol].graph=(
+                    // <ResponsiveContainer className = "responsive-container">
+                        <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                            <Line type="monotone" dataKey="price" stroke="#8884d8" />
+                            <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                            <YAxis width = {10} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                            <Tooltip/>
+                        </LineChart>
+                    //  </ResponsiveContainer>
+    )
+            }
+
+        }
+    },[watchlistStockData])
+
+    console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
-        if(user){
+        if(user && stocks){
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
@@ -52,14 +71,22 @@ const Dashboard = () => {
                 });
             })
             finnhubClient.marketNews("general", {}, (error, data, response) => {
-                console.log(data)
                 setNews(data)
               });
+              let allWatchListStocks = []
+              let allWatchListStockSymbols = []
               editBuyingPowerValue(user.buyingPower)
               dispatch(getMoversData(moverAPIKeys[Math.floor(Math.random()*moverAPIKeys.length)]))
+              for(let watchlist of user.watchlists){
+                  console.log("WATCHLIST HERE: ",watchlist)
+                  allWatchListStocks = [...allWatchListStocks,...watchlist.stocks.filter(stock => !allWatchListStockSymbols.includes(stock.symbol))]
+                  allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
+
+              }
+              dispatch(getStockGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
 
         }
-    },[user])
+    },[user,stocks])
 
     useEffect(()=>{
         if(portfolioData){
@@ -77,24 +104,23 @@ const Dashboard = () => {
         let newData = {}
         let found = false
 
-        for(let watchlist_stock of watchlist.stocks){
-            finnhubClient.quote(watchlist_stock.symbol, (error, data, response) => {
-                newData[watchlist_stock.symbol] = {}
-                console.log("NEW DATA WATCHLIST: ",newData, watchlist_stock)
-                newData[watchlist_stock.symbol].price=data.c
-                newData[watchlist_stock.symbol].graph=(
-                    <ResponsiveContainer className = "responsive-container">
-                        <LineChart width = {107} height = {45} data={graphData}>
-                            <Line type="monotone" dataKey="price" stroke="#8884d8" />
-                            <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                            <YAxis domain={[yMin-1,yMax+1]} allowDecimals={false}/>
-                            <Tooltip/>
-                        </LineChart>
-                     </ResponsiveContainer>
-    )
-                setCurrentStockData(newData)
-            })
-        }
+    //     for(let watchlist_stock of watchlist.stocks){
+    //         finnhubClient.quote(watchlist_stock.symbol, (error, data, response) => {
+    //             newData[watchlist_stock.symbol] = {}
+    //             newData[watchlist_stock.symbol].price=data.c
+    //             newData[watchlist_stock.symbol].graph=(
+    //                 // <ResponsiveContainer className = "responsive-container">
+    //                     <LineChart width = {107} height = {45} data={graphData}>
+    //                         <Line type="monotone" dataKey="price" stroke="#8884d8" />
+    //                         <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+    //                         <YAxis width = {10} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+    //                         <Tooltip/>
+    //                     </LineChart>
+    //                 //  </ResponsiveContainer>
+    // )
+    //             setCurrentStockData(newData)
+    //         })
+    //     }
 
 
         for(let i=0;i<openLists.length;i++){
@@ -114,7 +140,6 @@ const Dashboard = () => {
 
 
     }
-    console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
         if(interval && unixEnd){
         dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
@@ -124,9 +149,9 @@ const Dashboard = () => {
 
     const timeFrameClick = (time,frame) => {
 
-        console.log("FRAME: ",frame)
+
         if(frame === "1D"){
-            console.log("IN FRAME")
+
             let start = new Date()
             let end = new Date()
             if(start.getDay() === 6){
@@ -162,7 +187,7 @@ const Dashboard = () => {
             }
             start.setDate(start.getDate()-7)
             start.setHours(0,0,0,0)
-            console.log("END TIME: ",end)
+
             let startUnix = Math.floor(Number(start.getTime() / 1000))
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -203,7 +228,7 @@ const Dashboard = () => {
             start.setHours(0,0,0,0)
             end.setHours(23,0,0,0)
             // let startUnix = Math.floor(Number(start.getTime() / 1000))
-            console.log("IN ALL FRAME")
+
             let startUnix = 0
             let endUnix = Math.floor(Number(end.getTime() / 1000))
             setUnixStart(startUnix)
@@ -227,8 +252,6 @@ const Dashboard = () => {
       <Tooltip/>
     </LineChart>)
 
-        console.log("USER: ",user)
-        console.log("MOVERS DATA: ",moversData)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -342,9 +365,9 @@ const Dashboard = () => {
                                         return (
                                             <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
-                                                <div className = "watchlist-stock-graph">{currentStockData[stock.symbol] && currentStockData[stock.symbol].graph}</div>
+                                                <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">{currentStockData[stock.symbol] && currentStockData[stock.symbol].price}</div>
+                                                    <div className = "watchlist-stock-price">{watchlistStockData && watchlistStockData[stock.symbol].price}</div>
                                                     <div className = "watchlist-stock-change"></div>
                                                 </div>
                                             </div>

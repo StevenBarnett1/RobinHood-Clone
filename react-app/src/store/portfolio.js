@@ -53,7 +53,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
       // console.log("DATA.C",data.c.length,data.c[j],new Date(data.t[j] * 1000))
       // if(j > jMax)jMax = j
       // if(j === data.c.length-1 && j < jMaxAllowed)jMaxAllowed = j
-      console.log("HERE: ", i ,data.c[j])
+
       if(i === 0){
         newObject.unixTime = data.t[j]
         newObject.dateTime = new Date(data.t[j] * 1000)
@@ -61,8 +61,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
         if(resolution === "D"){
           newObject.dateTime.setDate(newObject.dateTime.getDate()+1)
         }
-        // console.log("HOURS: ",newObject.dateTime.getHours(), newObject.dateTime.getMinutes())
-        console.log("DATE TIME: ",newObject.dateTime, holdings[i].symbol)
+
 
         if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D" || resolution === "M"){
           prices.push(newObject)
@@ -95,7 +94,6 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
 
   }
   portfolioData.data=prices
-  console.log("DATATATATA: ",portfolioData.data)
   dispatch(setPortfolioData(portfolioData))
 }
 
@@ -110,7 +108,7 @@ export default function portfolioReducer(state = initialState, action) {
     switch (action.type) {
       case SET_PORTFOLIO_DATA:
           newState.portfolioData = action.payload
-          console.log("NEW STATE HERE: ",newState)
+
           return newState
         case SET_MOVERS_DATA:
           newState.moversData = {}
