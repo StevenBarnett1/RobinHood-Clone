@@ -5,12 +5,13 @@ import { addBuyingPower } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
-import { getPortfolioData } from "../../store/portfolio";
+import { getPortfolioData, getMoversData } from "../../store/portfolio";
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
+const moverAPIKeys = [`ff589a311ba428d0075c8c9c152c15dc`]
 
 
 console.log("API KEYYYYYYYYYYYYYYYYY: ", api_key.apiKey)
@@ -34,7 +35,12 @@ const Dashboard = () => {
     const [news,setNews] = useState("")
     const [depositClick,setDepositClick] = useState(false)
     const user = useSelector(state=>state.session.user)
-    const portfolioData = useSelector(state=>state.portfolio)
+    const portfolioData = useSelector(state=>state.portfolio.portfolioData)
+    const moversData = useSelector(state => state.portfolio.moversData)
+
+    useEffect(()=>{
+        console.log("MOVERS DATA: ",moversData)
+    },[])
 
     useEffect(()=>{
         if(user){
@@ -50,12 +56,13 @@ const Dashboard = () => {
                 setNews(data)
               });
               editBuyingPowerValue(user.buyingPower)
+              dispatch(getMoversData(moverAPIKeys[Math.floor(Math.random()*moverAPIKeys.length)]))
 
         }
     },[user])
 
     useEffect(()=>{
-        if(portfolioData.data){
+        if(portfolioData){
             setGraphData(portfolioData.data)
             setYmin(portfolioData.min)
             setYmax(portfolioData.max)
@@ -200,7 +207,7 @@ const Dashboard = () => {
 
     const deposit = (value) => {
         setDepositClick(value)
-        if(!value)dispatch(addBuyingPower(user.id,buyingPowerValue))
+        if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
     }
     let renderLineChart = (
         <LineChart width={700} height={300} data={graphData}>

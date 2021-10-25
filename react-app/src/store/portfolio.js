@@ -1,5 +1,5 @@
 const SET_PORTFOLIO_DATA = "portfolio/SET_PORTFOLIO_DATA"
-
+const SET_MOVERS_DATA = "portfolio/SET_MOVERS_DATA"
 const intervalMap = {
   "1":60,
   "5":300,
@@ -17,6 +17,24 @@ export const setPortfolioData = (portfolioData) => {
   }
 }
 
+export const setMoversData = (losersData,gainersData) => {
+
+  return {
+    type:SET_MOVERS_DATA,
+    gainersData,
+    losersData
+  }
+}
+
+
+export const getMoversData = (apiKey) => async dispatch => {
+  const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=${apiKey}`)
+  const losersData = await losersResponse.json()
+
+  const gainersResponse = await fetch(`https://financialmodelingprep.com/api/v3/gainers?apikey=${apiKey}`)
+  const gainersData = await gainersResponse.json()
+  dispatch(setMoversData(losersData,gainersData))
+}
 export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) => async dispatch => {
   const portfolioData = {"max":0,"min":Infinity}
   console.log("FHDHDH",resolution,unixStart,unixEnd)
@@ -91,7 +109,13 @@ export default function portfolioReducer(state = initialState, action) {
     let newState = {...state}
     switch (action.type) {
       case SET_PORTFOLIO_DATA:
-          newState = action.payload
+          newState.portfolioData = action.payload
+          console.log("NEW STATE HERE: ",newState)
+          return newState
+        case SET_MOVERS_DATA:
+          newState.moversData = {}
+          newState.moversData.gainersData = action.gainersData
+          newState.moversData.losersData = action.losersData
           return newState
       default:
         return newState;
