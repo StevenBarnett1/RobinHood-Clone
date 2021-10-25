@@ -14,7 +14,20 @@ api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
 const moverAPIKeys = [`ff589a311ba428d0075c8c9c152c15dc`]
 
-
+const months = {
+    0:"JAN",
+    1:"FEB",
+    2:"MAR",
+    3:"APR",
+    4:"MAY",
+    5:"JUN",
+    6:"JUL",
+    7:"AUG",
+    8:"SEP",
+    9:"OCT",
+    10:"NOV",
+    11:"DEC"
+}
 
 
 const Dashboard = () => {
@@ -48,10 +61,10 @@ const Dashboard = () => {
                 watchlistStockData[symbol].graph=(
                     // <ResponsiveContainer className = "responsive-container">
                         <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
-                            <Line type="monotone" dataKey="price" stroke="#8884d8" />
+                            <Line dot = {false} type="monotone" dataKey="price"  />
                             <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                            <YAxis width = {10} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
-                            <Tooltip/>
+                            <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                            {/* <Tooltip/> */}
                         </LineChart>
                     //  </ResponsiveContainer>
     )
@@ -84,6 +97,26 @@ const Dashboard = () => {
 
               }
               dispatch(getStockGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+
+              let start = new Date()
+              let end = new Date()
+              if(start.getDay() === 6){
+                  start.setDate(start.getDate()-1)
+                  end.setDate(end.getDate()-1)
+                  end.setHours(23,0,0,0)
+
+              }
+              if(start.getDay() === 0){
+                  start.setDate(start.getDate()-2)
+                  end.setDate(end.getDate()-2)
+                  end.setHours(23,0,0,0)
+              }
+              start.setHours(0,0,0,0)
+
+              let startUnix = Math.floor(Number(start.getTime() / 1000))
+              let endUnix = Math.floor(Number(end.getTime() / 1000))
+              setUnixStart(startUnix)
+              setUnixEnd(endUnix)
 
         }
     },[user,stocks])
@@ -145,6 +178,7 @@ const Dashboard = () => {
         dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, api_key.apiKey))
         }
     },[interval,unixEnd,unixStart])
+
 
 
     const timeFrameClick = (time,frame) => {
@@ -244,12 +278,36 @@ const Dashboard = () => {
         setDepositClick(value)
         if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
     }
+
+    var tooltip
+    const CustomTooltip = ({ active, payload }) => {
+    // if (!active || !tooltip)    return null
+    if(payload && payload[0]){
+
+            console.log("AA: ",payload)
+            console.log("BB",payload[0])
+            console.log("CC",payload[0].payload)
+            let month = months[payload[0].payload.dateTime.getMonth()]
+            let day = payload[0].payload.dateTime.getDate()
+            let hours = payload[0].payload.dateTime.getHours()
+            let minutes = payload[0].payload.dateTime.getMinutes()
+            if(minutes === 0)minutes = "00"
+            return (<h4>{month} {day},{hours}:{minutes}</h4>)
+
+    }return null
+
+    return null
+
+
+}
+
     let renderLineChart = (
-        <LineChart width={700} height={300} data={graphData}>
-      <Line type="monotone" dataKey="price" stroke="#8884d8" />
-      <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-      <YAxis domain={[yMin-1,yMax+1]} allowDecimals={false}/>
-      <Tooltip/>
+        <LineChart  width={700} height={300} data={graphData}>
+      <Line dot = {false} type="monotone" dataKey="price" stroke="#8884d8" />
+      <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+      <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+      <CartesianGrid horizontal = {true}/>
+      <Tooltip cursor = {true} content = {<CustomTooltip/>}/>
     </LineChart>)
 
     return (
@@ -302,7 +360,7 @@ const Dashboard = () => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {moversData && moversData.gainersData.map(data => {
+                        {/* {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -312,14 +370,14 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             )
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {moversData && moversData.losersData.map(data => {
+                            {/* {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -330,7 +388,7 @@ const Dashboard = () => {
 
                                 </div>
                                 )
-                            })}
+                            })} */}
 
                         </div>
                     </div>
