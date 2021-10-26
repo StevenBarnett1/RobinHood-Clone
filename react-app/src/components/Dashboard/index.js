@@ -391,7 +391,7 @@ const handleOpenDots = (e,watchlist) => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
-                  <XAxis tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis tickSize = {1.5} tick = {false} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -461,7 +461,7 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {/* {moversData && moversData.gainersData.map(data => {
+                        {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -471,14 +471,14 @@ const handleOpenDots = (e,watchlist) => {
                                     </div>
                                 </div>
                             )
-                            })} */}
+                            })}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {/* {moversData && moversData.losersData.map(data => {
+                            {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -489,7 +489,7 @@ const handleOpenDots = (e,watchlist) => {
 
                                 </div>
                                 )
-                            })} */}
+                            })}
 
                         </div>
                     </div>

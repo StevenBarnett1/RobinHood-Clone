@@ -16,6 +16,7 @@ import {
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
 
+const overviewTokens = ["3UC4IVVYIGV8RHJB","JHJY5TEK1A5HV67T","8MGCDK87SBTQ7CB5","KH07O8BLSZ2XTJTH","7LI2MOXNZKBJSW21"]
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -40,7 +41,7 @@ const months = {
 const Stockpage = () => {
     const dispatch = useDispatch()
     const params = useParams()
-    console.log("PARAMS HERE: ",params)
+
     const [graphData,setGraphData] = useState("")
     const [renderLineChart,setRenderLineChart] = useState("")
     const [stockValue,setStockValue] = useState(0.00)
@@ -54,13 +55,17 @@ const Stockpage = () => {
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
-        if(stockData){
-            console.log("STOCK DATA FOUND: ",stockData)
+        if(stockData && stockData.symbol){
+            console.log("STOCDNFGIBIERBNo: ",stockData)
             setStockValue(stockData.price)
             setGraphData(stockData.data)
             setYmin(stockData.min)
             setYmax(stockData.max)
-
+            console.log("SMYBOL: ",stockData.symbol)
+            finnhubClient.companyEarnings(stockData.symbol, {'limit': 10}, (error, data, response) => {
+                stockData.earnings = data
+              });
+            console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
         }
     },[stockData])
 
@@ -68,9 +73,6 @@ const Stockpage = () => {
         // if (!active || !tooltip)    return null
         if(payload && payload[0]){
 
-                console.log("AA: ",payload)
-                console.log("BB",payload[0])
-                console.log("CC",payload[0].payload)
                 let year = payload[0].payload.dateTime.getFullYear()
                 let month = months[payload[0].payload.dateTime.getMonth()]
                 let day = payload[0].payload.dateTime.getDate()
@@ -81,7 +83,7 @@ const Stockpage = () => {
                 let zone
                 if(hours >= 12) zone = "PM"
                 else zone = "AM"
-                console.log("INTERVAL: ",interval)
+
                 setStockValueDynamic(payload[0].payload.price)
                 if(interval === "5"){
                     return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
@@ -125,8 +127,8 @@ const Stockpage = () => {
 
     useEffect(()=>{
         if(unixEnd && interval) {
-            console.log("DISPATCHING FOR STOCK DATA")
-            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+
+            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys[Math.floor(Math.random()*apiKeys.length)],overviewTokens[Math.floor(Math.random()*overviewTokens.length)]))
         }
     },[interval,unixEnd,unixStart])
 
@@ -235,7 +237,7 @@ const Stockpage = () => {
     useEffect(()=>{
 
         if(graphData){
-            console.log("GRAPH DATA INDIVIDUAL HERE: ",graphData)
+
             if(graphData[graphData.length-1].price > graphData[0].price){
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
@@ -258,8 +260,8 @@ const Stockpage = () => {
 
     useEffect(()=>{
         if(interval && unixEnd){
-            console.log("KEY IN OTHER: ",apiKeys[Math.floor(Math.random()*apiKeys.length)])
-        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+
+        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)],overviewTokens[Math.floor(Math.random()*overviewTokens.length)]))
         }
     },[interval,unixEnd,unixStart])
 
@@ -305,7 +307,9 @@ const Stockpage = () => {
                 <div id = "stockpage-lower-container">
                     <div id = "about-container">
                         <div id = "about-title">About</div>
-                        <div id = "about-description"></div>
+                        <div id = "about-description">
+                            {stockData && stockData.description}
+                        </div>
                         <div id = "about-lower-container">
                             <div id = "ceo-container">
                                 <div id = "ceo-title"></div>
@@ -370,13 +374,7 @@ const Stockpage = () => {
                             </div>
                         </div>
                     </div>
-                    <div id = "related-stocks-container">
-                        <div id = "related-stocks-title">Related Stocks</div>
-                        <div id = "related-stocks-lower-container">
 
-                        </div>
-
-                    </div>
 
                     <div id = "earnings-container">
                         <div id = "earnings-title">Earnings</div>
@@ -399,6 +397,22 @@ const Stockpage = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div id = "related-stocks-container">
+                        <div id = "related-stocks-title">Related Stocks</div>
+                        <div id = "related-stocks-lower-container">
+                            {(stockData && stockData.peers) ? stockData.peers.map(peer => {
+                                return (
+                                    <div key = {peer.symbol} className = "peer-container">
+                                        <div className = "peer-title">{peer.symbol}</div>
+                                        <div className = "peer-numbers-container">
+                                            <div className = "peer-value">{peer.price}</div>
+                                        </div>
+                                    </div>
+                                )
+                            }): null}
+                        </div>
+
                     </div>
 
                 </div>
@@ -428,7 +442,7 @@ const Stockpage = () => {
                     </div>
                 </div>
                 <div id = "add-to-list-container">
-                    <button id = "add-to-list-button"></button>
+                    <button id = "add-to-list-button">Add to Lists</button>
                 </div>
             </div>
         </div>

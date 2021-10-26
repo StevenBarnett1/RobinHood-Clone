@@ -16,3 +16,46 @@
     flex-direction: column;
     border-bottom:1px solid lightgrey
 }
+
+
+#stockpage-graph-timeframes-container{
+    width:230px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom:1px solid lightgrey
+}
+
+.stockpage-graph-timeframe-button{
+    border:none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.stockpage-graph-timeframe-button:hover{
+    color:rgb(0, 200, 5);
+}
+
+
+#stockpage-right-container{
+    width:275px;
+    border:1px solid black;
+}
+
+.peer-container{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:160px;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+}
+
+#related-stocks-lower-container{
+    display:inline-flex;
+    overflow-x: scroll;
+}
+
+#related-stocks-container{
+    overflow-x: scroll;
+}

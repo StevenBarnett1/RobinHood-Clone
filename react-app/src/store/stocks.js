@@ -55,7 +55,6 @@ export const getWatchlistGraphData = (stocks,token) => async dispatch => {
       end.setHours(23,0,0,0)
   }
   start.setHours(0,0,0,0)
-  console.log("STOCKS IN STOCK GRAPH: ",stocks)
   let startUnix = Math.floor(Number(start.getTime() / 1000))
   let endUnix = Math.floor(Number(end.getTime() / 1000))
   for(let stock of stocks){
@@ -84,16 +83,28 @@ export const getWatchlistGraphData = (stocks,token) => async dispatch => {
   dispatch(setWatchlistGraphData(stocks))
 }
 
-export const getStockData = (symbol,resolution,unixStart,unixEnd,token) => async dispatch => {
-  const stock = {"max":0,"min":Infinity,data:[]}
+export const getStockData = (symbol,resolution,unixStart,unixEnd,token,overviewToken) => async dispatch => {
+  const stock = {"max":0,"min":Infinity,data:[],symbol:symbol,peers:[]}
   const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
   const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
-  console.log(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
-
+  const overviewResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${overviewToken}`)
+  const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${token}`)
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
-    console.log("PRICE DATA: ",priceData)
+    const overviewData = await overviewResponse.json()
+    const peerData = await peerResponse.json()
+    console.log("MADE ANOTHER API CALL GET STOCK DATA")
     stock.price = priceData.c
+    stock.description = overviewData.Description
+
+    for(let peer of peerData){
+      const newObj = {}
+      const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${token}`)
+      const peerPriceData = await peerPriceResponse.json()
+      newObj.symbol = peer
+      newObj.price = peerPriceData.c
+      stock.peers.push(newObj)
+    }
 
     for(let i = 0; i< candleData.c.length;i++){
       const newObj = {}
@@ -104,6 +115,7 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,token) => async
       newObj.price = candleData.c[i]
       stock.data.push(newObj)
     }
+    console.log("STOCK DATA IN THUNK: ",stock)
   dispatch(setStockGraphData(stock))
 }
 

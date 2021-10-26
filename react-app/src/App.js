@@ -56,6 +56,7 @@ function App() {
         )}
         {user && (
           <Route exact = {true} path = "/stocks/:symbol">
+            <NavBar />
             <StockPage/>
           </Route>
         )}
