@@ -1,8 +1,7 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
-import { addBuyingPower, toggleModalView, addModal } from "../../store/session";
-import {addWatchlistThunk,editWatchlistThunk,deleteWatchlistThunk} from "../../store/watchlist"
+import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';

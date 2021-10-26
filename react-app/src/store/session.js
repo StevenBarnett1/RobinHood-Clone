@@ -145,6 +145,41 @@ export const signUp = (first_name, last_name, email, password) => async (dispatc
   }
 }
 
+export const addWatchlistThunk = (name,userId) => async dispatch => {
+  const response = await fetch(`/api/watchlists`,{
+    method:"POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({name,user_id:userId})
+  })
+  const data = await response.json()
+}
+
+export const deleteWatchlistThunk = (id) => async dispatch => {
+  const response = await fetch(`/api/watchlists/${id}`,{
+    method:"DELETE",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
+}
+
+export const editWatchlistThunk = (id,userId,name) => async dispatch => {
+  const response = await fetch(`/api/watchlists/${id}`,{
+    method:"PUT",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({user_id:userId,name})
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
+}
+
+
 export default function reducer(state = initialState, action) {
   const newState = {...state}
   switch (action.type) {

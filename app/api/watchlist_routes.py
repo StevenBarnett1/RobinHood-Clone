@@ -27,8 +27,11 @@ def add_watchlist():
 @login_required
 def delete_watchlist(id):
     watchlist = Watchlist.query.get(id)
+    user = User.query.get(watchlist.user_id)
     db.session.delete(watchlist)
     db.session.commit()
+    user = User.query.get(watchlist.user_id)
+    return user.to_dict()
 
 
 @watchlist_routes.route('/<int:id>',methods=["PUT"])
@@ -41,4 +44,7 @@ def edit_watchlist(id):
         watchlist.name = form.data['name'],
         watchlist.user_id = form.data['user_id']
         db.session.commit()
+        user = User.query.get(watchlist.user_id)
+        return user.to_dict()
+
     else: return None
