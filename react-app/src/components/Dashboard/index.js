@@ -59,7 +59,7 @@ const Dashboard = () => {
     const [news,setNews] = useState("")
     const [depositClick,setDepositClick] = useState(false)
     const [watchlistInput,toggleWatchlistInput] = useState(false)
-
+    const [renderLineChart,setRenderLineChart] = useState("")
 
 
     const user = useSelector(state=>state.session.user)
@@ -73,18 +73,34 @@ const Dashboard = () => {
             console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
             for(let symbol of Object.keys(watchlistStockData)){
-                watchlistStockData[symbol].graph=(
-                    // <ResponsiveContainer className = "responsive-container">
-                        <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
-                            <Line dot = {false} type="monotone" dataKey="price"  />
-                            <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                            <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
-                            {/* <Tooltip/> */}
-                        </LineChart>
-                    //  </ResponsiveContainer>
-    )
-            }
+                console.log("AYYYY: ",watchlistStockData[symbol])
+                if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
+                    watchlistStockData[symbol].graph=(
+                        // <ResponsiveContainer className = "responsive-container">
+                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
+                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                {/* <Tooltip/> */}
+                            </LineChart>
+                        //  </ResponsiveContainer>
 
+                    )
+                } else {
+                    watchlistStockData[symbol].graph=(
+                        // <ResponsiveContainer className = "responsive-container">
+                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
+                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                {/* <Tooltip/> */}
+                            </LineChart>
+                        //  </ResponsiveContainer>
+
+                    )
+                }
+
+            }
         }
     },[watchlistStockData])
 
@@ -368,14 +384,33 @@ const handleOpenDots = (e,watchlist) => {
     }
     else setDotsOpen(watchlist.id)
 }
-    let renderLineChart = (
-        <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
-      <Line dot = {false} type="monotone" dataKey="price" stroke="#8884d8" />
-      <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
-      <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
-      <CartesianGrid horizontal = {true}/>
-      <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
-    </LineChart>)
+
+
+    useEffect(()=>{
+        if(graphData){
+            console.log("HERE GREAPH: ",graphData)
+            console.log("HEREEEEE: ",graphData[graphData.length-1].value > graphData[0].value, graphData[graphData.length-1].value,graphData[0].value)
+            if(graphData[graphData.length-1].price > graphData[0].price){
+                setRenderLineChart((
+                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
+                  <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
+                  <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                  <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                </LineChart>))
+            } else {
+                setRenderLineChart((
+                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
+                  <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
+                  <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                  <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                </LineChart>))
+            }
+        }
+    },[graphData])
+
+
 
 
     return (
