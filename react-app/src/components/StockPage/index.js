@@ -43,11 +43,16 @@ const Stockpage = () => {
     const params = useParams()
 
     const [graphData,setGraphData] = useState("")
+    const [actualScatterData,setActualScatterData] = useState("")
+    const [estimatedScatterData,setEstimatedScatterData] = useState("")
     const [renderLineChart,setRenderLineChart] = useState("")
     const [stockValue,setStockValue] = useState(0.00)
     const [stockValueDynamic,setStockValueDynamic] = useState(0)
     const [unixStart,setUnixStart] = useState("")
     const [unixEnd,setUnixEnd] = useState("")
+    const [dailyLow,setDailyLow] = useState("")
+    const [dailyHigh,setDailyHigh] = useState("")
+    const [openPrice,setOpenPrice] = useState("")
     const [interval,setTimeInterval] = useState("5")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
@@ -61,10 +66,29 @@ const Stockpage = () => {
             setGraphData(stockData.data)
             setYmin(stockData.min)
             setYmax(stockData.max)
-            console.log("SMYBOL: ",stockData.symbol)
-            finnhubClient.companyEarnings(stockData.symbol, {'limit': 10}, (error, data, response) => {
-                stockData.earnings = data
-              });
+            let estimated = []
+            let actual = []
+            console.log(stockData.earnings)
+            for(let i = 0 ; i<stockData.earnings.length;i++){
+                const mapper = {
+                    3:"Q3 FY20",
+                    2:"Q4 FY20",
+                    1:"Q1 FY21",
+                    0:"Q2 FY21"
+                }
+                const newEst = {'estimated':stockData.earnings[i].estimate,'period':mapper[i]}
+                const newAct = {'actual':stockData.earnings[i].actual,'period':mapper[i]}
+                estimated.push(newEst)
+                actual.push(newAct)
+
+            }
+            setActualScatterData(actual)
+            setEstimatedScatterData(estimated)
+            if(interval === "5"){
+                setDailyHigh(stockData.max)
+                setDailyLow(stockData.min)
+                setOpenPrice(stockData.data[0].price)
+            }
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
         }
     },[stockData])
@@ -256,6 +280,7 @@ const Stockpage = () => {
                 </LineChart>))
             }
         }
+
     },[graphData])
 
     useEffect(()=>{
@@ -279,9 +304,11 @@ const Stockpage = () => {
     let scatterChart = (
     <ScatterChart width={400} height={400}>
         <CartesianGrid />
-        <XAxis type="number" dataKey="x" />
-        <YAxis type="number" dataKey="y" />
-        <Scatter data={data} fill="green" />
+        <XAxis dataKey="period" />
+        <YAxis type="number" dataKey="actual" />
+        <Legend/>
+        <Scatter name = "actual" data={actualScatterData} fill="green" />
+        <Scatter name = "estimated" data={estimatedScatterData} fill="red" />
     </ScatterChart>
     )
 
@@ -330,47 +357,47 @@ const Stockpage = () => {
                         </div>
                     </div>
                     <div id = "key-statistics-container">
-                        <div id = "key-statistics-title"></div>
+                        <div id = "key-statistics-title">Key Statistics</div>
                         <div id = "key-statistics-lower-container">
                             <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                                <div className = "key-statistic">Market Cap</div>
+                                <div className = "key-statistic-value">{stockData && stockData.marketCap}</div>
                             </div>
                             <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                                <div className = "key-statistic">Revenue</div>
+                                <div className = "key-statistic-value">{stockData && stockData.revenue}</div>
                             </div>
                             <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                                <div className = "key-statistic">Price-Earnings Ratio</div>
+                                <div className = "key-statistic-value">{stockData && stockData.peRatio}</div>
                             </div>
                             <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                                <div className = "key-statistic">Dividend Yield</div>
+                                <div className = "key-statistic-value">{stockData && stockData.dividendYield}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "eps">
+                                <div className = "key-statistic">Earnings Per Share</div>
+                                <div className = "key-statistic-value">{stockData && stockData.eps}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "high-today">
+                                <div className = "key-statistic">High Today</div>
+                                <div className = "key-statistic-value">{dailyHigh}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "low-today">
+                                <div className = "key-statistic">Low Today</div>
+                                <div className = "key-statistic-value">{dailyLow}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "open-today">
+                                <div className = "key-statistic">Open Price</div>
+                                <div className = "key-statistic-value">{openPrice}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "high">
+                                <div className = "key-statistic">52 Week High</div>
+                                <div className = "key-statistic-value">{stockData && stockData['52WeekHigh']}</div>
                             </div>
-                            <div className = "key-statistic-container">
-                                <div className = "key-statistic"></div>
-                                <div className = "key-statistic-value"></div>
+                            <div className = "key-statistic-container" id = "low">
+                                <div className = "key-statistic">52 Week Low</div>
+                                <div className = "key-statistic-value">{stockData && stockData['52WeekLow']}</div>
                             </div>
                         </div>
                     </div>
@@ -379,7 +406,9 @@ const Stockpage = () => {
                     <div id = "earnings-container">
                         <div id = "earnings-title">Earnings</div>
                         <div id = "earnings-lower-container">
-                            <div id ="earnings-chart-container"></div>
+                            <div id ="earnings-chart-container">
+                                {scatterChart}
+                            </div>
                             <div id = "earnings-labels-container">
                                 <div id = "estimated-container">
                                     <div>Color dot here</div>
@@ -403,12 +432,12 @@ const Stockpage = () => {
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => {
                                 return (
-                                    <div key = {peer.symbol} className = "peer-container">
+                                    <NavLink to = {`/stocks/${peer.symbol}`}key = {peer.symbol} className = "peer-container">
                                         <div className = "peer-title">{peer.symbol}</div>
                                         <div className = "peer-numbers-container">
                                             <div className = "peer-value">{peer.price}</div>
                                         </div>
-                                    </div>
+                                    </NavLink>
                                 )
                             }): null}
                         </div>
@@ -419,16 +448,19 @@ const Stockpage = () => {
             </div>
             <div id = "stockpage-right-container">
                 <div id = "stock-purchase-container">
-                    <div id = "stock-purchase-title"></div>
+                    <div id = "stock-purchase-title">Buy {stockData && stockData.symbol}</div>
                     <div id = "stock-purchase-middle">
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div>Invest In</div>
-                                <div>DropDown here</div>
+                                <select>
+                                    <option value = "shares">Shares</option>
+                                    <option value = "dollars">Dollars</option>
+                                </select>
                             </div>
                             <div id = "amount-container">
                                 <div>Amount</div>
-                                <div>Input here</div>
+                                <input type = "text" placeholder = "$0.00"></input>
                             </div>
                             <div id = "est-quantity-container">
                                 <div>Est. Quantity</div>

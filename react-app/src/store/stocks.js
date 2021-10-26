@@ -89,13 +89,23 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,token,overviewT
   const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
   const overviewResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${overviewToken}`)
   const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${token}`)
+  const earningsResponse = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol.toUpperCase()}&token=${token}`)
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
     const overviewData = await overviewResponse.json()
     const peerData = await peerResponse.json()
+    const earningsData = await earningsResponse.json()
     console.log("MADE ANOTHER API CALL GET STOCK DATA")
+    stock.earnings = earningsData
     stock.price = priceData.c
     stock.description = overviewData.Description
+    stock.marketCap = overviewData.MarketCapitalization
+    stock.peRatio = overviewData.PERatio
+    stock.dividendYield = overviewData.DividendYield
+    stock['52WeekHigh'] = overviewData['52WeekHigh']
+    stock['52WeekLow'] = overviewData['52WeekLow']
+    stock.eps = overviewData.EPS
+    stock.revenue = overviewData.RevenueTTM
 
     for(let peer of peerData){
       const newObj = {}
