@@ -1,5 +1,6 @@
 const SET_STOCKS = "stocks/SET_STOCKS"
-const SET_GRAPH_DATA = "stocks/SET_GRAPH_DATA"
+const SET_STOCK_GRAPH_DATA = "stocks/SET_GRAPH_DATA"
+const SET_WATCHLIST_GRAPH_DATA = "stocks/SET_WATCHLIST_GRAPH_DATA"
 
 export const getStocks = () => async dispatch =>{
     const response = await fetch("/api/stocks")
@@ -25,14 +26,21 @@ export const setStocks = (stocks) => {
     }
 }
 
-const setStockGraphData = data => {
+const setWatchlistGraphData = data => {
   return {
-    type:SET_GRAPH_DATA,
+    type:SET_WATCHLIST_GRAPH_DATA,
     payload:data
   }
 }
 
-export const getStockGraphData = (stocks,token) => async dispatch => {
+const setStockGraphData = data => {
+  return {
+    type:SET_STOCK_GRAPH_DATA,
+    payload:data
+  }
+}
+
+export const getWatchlistGraphData = (stocks,token) => async dispatch => {
   let start = new Date()
   let end = new Date()
   if(start.getDay() === 6){
@@ -73,10 +81,31 @@ export const getStockGraphData = (stocks,token) => async dispatch => {
       stock.data.push(newObj)
     }
   }
-  console.log("STOCKS HERE: ",stocks)
-  dispatch(setStockGraphData(stocks))
+  dispatch(setWatchlistGraphData(stocks))
 }
 
+export const getStockData = (symbol,resolution,unixStart,unixEnd,token) => async dispatch => {
+  const stock = {"max":0,"min":Infinity,data:[]}
+  const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
+  const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
+  console.log(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
+
+    const candleData = await candleResponse.json()
+    const priceData = await priceResponse.json()
+    console.log("PRICE DATA: ",priceData)
+    stock.price = priceData.c
+
+    for(let i = 0; i< candleData.c.length;i++){
+      const newObj = {}
+      if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
+      if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
+      newObj.unixTime = candleData.t[i]
+      newObj.dateTime = new Date(newObj.unixTime * 1000)
+      newObj.price = candleData.c[i]
+      stock.data.push(newObj)
+    }
+  dispatch(setStockGraphData(stock))
+}
 
 const initialState = {}
 export default function stocksReducer(state = initialState, action) {
@@ -84,12 +113,13 @@ export default function stocksReducer(state = initialState, action) {
     switch (action.type) {
       case SET_STOCKS:
           newState.stocks = action.payload
-
+      case SET_STOCK_GRAPH_DATA:
+          newState.stockData = action.payload
           return newState
-        case SET_GRAPH_DATA:
-          newState.stockData = {}
+        case SET_WATCHLIST_GRAPH_DATA:
+          newState.watchlistStockData = {}
           for(let stock of action.payload){
-            newState.stockData[stock.symbol] = stock
+            newState.watchlistStockData[stock.symbol] = stock
           }
           return newState
       default:

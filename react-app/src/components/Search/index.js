@@ -85,7 +85,7 @@ const Search = () => {
                 {nonColoredStocks && nonColoredStocks.map(stock => {
                     return (
                         <div key = {stock.id} className = "search-item">
-                            <NavLink className = "search-item-navlink" to ="/">
+                            <NavLink className = "search-item-navlink" to ={`/stocks/${stock.symbol}`}>
                                 <span className="stock-search-symbol colored">{stock.coloredSymbol && stock.coloredSymbol.toUpperCase()}</span>
                                 <span className="stock-search-symbol">{stock.nonColoredSymbol.toUpperCase()}</span>
                                 <span className="stock-search-name colored">{stock.coloredName && stock.coloredName[0].toUpperCase() + stock.coloredName.slice(1)}</span>

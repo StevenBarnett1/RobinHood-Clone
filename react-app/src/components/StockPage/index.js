@@ -1,26 +1,62 @@
 import "./StockPage.css"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router";
+import { getStockData } from "../../store/stocks";
+import 'odometer/themes/odometer-theme-minimal.css';
+import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
+import {BiDotsHorizontal} from "react-icons/bi"
+import {BsGear, BsFillXCircleFill} from "react-icons/bs"
+import FormModal from "../Modal/Modal";
+import {NavLink} from "react-router-dom"
+import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
+import {
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
+  } from 'recharts';
+  import Odometer from 'react-odometerjs';
+  import {FaPlus} from "react-icons/fa"
 
+const finnhub = require('finnhub');
+const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
+const api_key = finnhub.ApiClient.instance.authentications['api_key'];
+api_key.apiKey = "c5riunqad3ifnpn54h4g"
+const finnhubClient = new finnhub.DefaultApi()
 
-
+const months = {
+    0:"JAN",
+    1:"FEB",
+    2:"MAR",
+    3:"APR",
+    4:"MAY",
+    5:"JUN",
+    6:"JUL",
+    7:"AUG",
+    8:"SEP",
+    9:"OCT",
+    10:"NOV",
+    11:"DEC"
+}
 
 const Stockpage = () => {
-    const [graphData,setGraphDate] = useState("")
+    const dispatch = useDispatch()
+    const params = useParams()
+    console.log("PARAMS HERE: ",params)
+    const [graphData,setGraphData] = useState("")
     const [renderLineChart,setRenderLineChart] = useState("")
-    const [portfolioValue,setPortfolioValue] = useState(0.00)
-    const [portfolioValueDynamic,setPortfolioValueDynamic] = useState(0)
+    const [stockValue,setStockValue] = useState(0.00)
+    const [stockValueDynamic,setStockValueDynamic] = useState(0)
     const [unixStart,setUnixStart] = useState("")
     const [unixEnd,setUnixEnd] = useState("")
     const [interval,setTimeInterval] = useState("5")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
-
     const user = useSelector(state=>state.session.user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
         if(stockData){
+            console.log("STOCK DATA FOUND: ",stockData)
+            setStockValue(stockData.price)
             setGraphData(stockData.data)
             setYmin(stockData.min)
             setYmax(stockData.max)
@@ -46,7 +82,7 @@ const Stockpage = () => {
                 if(hours >= 12) zone = "PM"
                 else zone = "AM"
                 console.log("INTERVAL: ",interval)
-                setPortfolioValueDynamic(payload[0].payload.price)
+                setStockValueDynamic(payload[0].payload.price)
                 if(interval === "5"){
                     return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
                 } else if (interval === "30"){
@@ -65,16 +101,43 @@ const Stockpage = () => {
     }
 
     useEffect(()=>{
+        let start = new Date()
+              let end = new Date()
+              if(start.getDay() === 6){
+                  start.setDate(start.getDate()-1)
+                  end.setDate(end.getDate()-1)
+                  end.setHours(23,0,0,0)
+
+              }
+              if(start.getDay() === 0){
+                  start.setDate(start.getDate()-2)
+                  end.setDate(end.getDate()-2)
+                  end.setHours(23,0,0,0)
+              }
+              start.setHours(0,0,0,0)
+
+              let startUnix = Math.floor(Number(start.getTime() / 1000))
+              let endUnix = Math.floor(Number(end.getTime() / 1000))
+              setUnixStart(startUnix)
+              setUnixEnd(endUnix)
 
     },[])
+
+    useEffect(()=>{
+        if(unixEnd && interval) {
+            console.log("DISPATCHING FOR STOCK DATA")
+            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+        }
+    },[interval,unixEnd,unixStart])
+
     const chartHoverFunction = (e) => {
         if(e.activePayload){
-            setPortfolioValueDynamic(e.activePayload[0].payload.price);
+            setStockValueDynamic(e.activePayload[0].payload.price);
         }
     }
 
-    const portfolioReset = (e) => {
-        setPortfolioValueDynamic(0)
+    const stockReset = (e) => {
+        setStockValueDynamic(0)
     }
 
     const timeFrameClick = (time,frame) => {
@@ -170,48 +233,44 @@ const Stockpage = () => {
     }
 
     useEffect(()=>{
-        if(stockData){
 
-            for(let symbol of Object.keys(stockData)){
-                console.log("AYYYY: ",stockData[symbol])
-                if(stockData[symbol].data[stockData[symbol].data.length-1].price > stockData[symbol].data[0].price){
-                    stockData[symbol].graph=(
-                        // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={stockData[symbol].data}>
-                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
-                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[stockData[symbol].min-1,stockData[symbol].max+1]} allowDecimals={false}/>
-                                {/* <Tooltip/> */}
-                            </LineChart>
-                        //  </ResponsiveContainer>
-
-                    )
-                } else {
-                    stockData[symbol].graph=(
-                        // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={stockData[symbol].data}>
-                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
-                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[stockData[symbol].min-1,stockData[symbol].max+1]} allowDecimals={false}/>
-                                {/* <Tooltip/> */}
-                            </LineChart>
-                        //  </ResponsiveContainer>
-
-                    )
-                }
-
+        if(graphData){
+            console.log("GRAPH DATA INDIVIDUAL HERE: ",graphData)
+            if(graphData[graphData.length-1].price > graphData[0].price){
+                setRenderLineChart((
+                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
+                  <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
+                  <XAxis tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                  <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                </LineChart>))
+            } else {
+                setRenderLineChart((
+                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
+                  <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
+                  <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                  <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                </LineChart>))
             }
         }
-    },[watchlistStockData])
+    },[graphData])
+
+    useEffect(()=>{
+        if(interval && unixEnd){
+            console.log("KEY IN OTHER: ",apiKeys[Math.floor(Math.random()*apiKeys.length)])
+        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+        }
+    },[interval,unixEnd,unixStart])
 
 
-
+    console.log("RENDER LINE CHART: ",renderLineChart)
 
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
                 <div id = "stockpage-upper-container">
-                    <div id = "stockpage-portfolio-value"><h1>$<Odometer value={portfolioValueDynamic ? Number(portfolioValueDynamic.toFixed(2)) : Number(portfolioValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
+                    <div id = "stockpage-stock-value"><h1>$<Odometer value={stockValueDynamic ? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
                     <div id = "stockpage-graph-container">
                         <div id = "stockpage-graph">{renderLineChart}</div>

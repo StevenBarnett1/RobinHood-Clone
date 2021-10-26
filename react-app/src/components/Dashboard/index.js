@@ -8,7 +8,7 @@ import {
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
-import { getStockGraphData } from "../../store/stocks";
+import { getWatchlistGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
@@ -18,7 +18,7 @@ import {NavLink} from "react-router-dom"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
+api_key.apiKey = "c5riunqad3ifnpn54h4g"
 const finnhubClient = new finnhub.DefaultApi()
 const moverAPIKeys = ["ff567560f2ecaf815b36d6a3ce51a55f"]
 const nonWorkingMovers = [`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
@@ -63,7 +63,7 @@ const Dashboard = () => {
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
     const moversData = useSelector(state => state.portfolio.moversData)
-    const watchlistStockData = useSelector(state=>state.stocks.stockData)
+    const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     console.log(watchlistStockData)
     useEffect(()=>{
         if(watchlistStockData){
@@ -107,6 +107,7 @@ const Dashboard = () => {
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
+                    console.log("FINNHUB DATA: ",data, holding.symbol)
                     total += (Number(data.c) * Number(holding.shares))
                     setPortfolioValue(portfolioValue+total)
                 });
@@ -124,7 +125,7 @@ const Dashboard = () => {
                   allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
 
               }
-              dispatch(getStockGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+              dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
 
               let start = new Date()
               let end = new Date()
@@ -154,7 +155,6 @@ const Dashboard = () => {
             setGraphData(portfolioData.data)
             setYmin(portfolioData.min)
             setYmax(portfolioData.max)
-
         }
     },[portfolioData])
 
