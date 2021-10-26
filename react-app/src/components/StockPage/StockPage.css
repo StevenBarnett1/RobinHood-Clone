@@ -1,0 +1,18 @@
+#stockpage-outer-container{
+    width:1050px;
+    display:flex;
+    margin:auto;
+}
+
+#stockpage-left-container{
+    width:730px;
+    margin:auto;
+    border:1px solid black;
+    margin-right:47px;
+}
+
+#stockpage-upper-container{
+    display:flex;
+    flex-direction: column;
+    border-bottom:1px solid lightgrey
+}

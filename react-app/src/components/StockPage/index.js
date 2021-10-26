@@ -11,7 +11,7 @@ import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
 import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
+    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
   } from 'recharts';
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
@@ -263,8 +263,26 @@ const Stockpage = () => {
         }
     },[interval,unixEnd,unixStart])
 
+    const data = [
+        { x: 1, y: 23 },
+        { x: 2, y: 3 },
+        { x: 3, y: 15 },
+        { x: 4, y: 35 },
+        { x: 5, y: 45 },
+        { x: 6, y: 25 },
+        { x: 7, y: 17 },
+        { x: 8, y: 32 },
+        { x: 9, y: 43 },
+    ];
+    let scatterChart = (
+    <ScatterChart width={400} height={400}>
+        <CartesianGrid />
+        <XAxis type="number" dataKey="x" />
+        <YAxis type="number" dataKey="y" />
+        <Scatter data={data} fill="green" />
+    </ScatterChart>
+    )
 
-    console.log("RENDER LINE CHART: ",renderLineChart)
 
     return (
         <div id = "stockpage-outer-container">
@@ -283,6 +301,134 @@ const Stockpage = () => {
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
                     </div>
+                </div>
+                <div id = "stockpage-lower-container">
+                    <div id = "about-container">
+                        <div id = "about-title">About</div>
+                        <div id = "about-description"></div>
+                        <div id = "about-lower-container">
+                            <div id = "ceo-container">
+                                <div id = "ceo-title"></div>
+                                <div id = "ceo-value"></div>
+                            </div>
+                            <div id = "employees-container">
+                            <div id = "employees-title"></div>
+                                <div id = "employees-value"></div>
+                            </div>
+                            <div id = "headquarters-container">
+                            <div id = "headquarters-title"></div>
+                                <div id = "headquarters-value"></div>
+                            </div>
+                            <div id = "founded-container">
+                            <div id = "founded-title"></div>
+                                <div id = "founded-value"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id = "key-statistics-container">
+                        <div id = "key-statistics-title"></div>
+                        <div id = "key-statistics-lower-container">
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                            <div className = "key-statistic-container">
+                                <div className = "key-statistic"></div>
+                                <div className = "key-statistic-value"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id = "related-stocks-container">
+                        <div id = "related-stocks-title">Related Stocks</div>
+                        <div id = "related-stocks-lower-container">
+
+                        </div>
+
+                    </div>
+
+                    <div id = "earnings-container">
+                        <div id = "earnings-title">Earnings</div>
+                        <div id = "earnings-lower-container">
+                            <div id ="earnings-chart-container"></div>
+                            <div id = "earnings-labels-container">
+                                <div id = "estimated-container">
+                                    <div>Color dot here</div>
+                                    <div id = "estimated-container-left">
+                                        <div>Estimated</div>
+                                        <div>--per share</div>
+                                    </div>
+                                </div>
+                                <div id = "actual-container">
+                                    <div>Color dot here</div>
+                                    <div id = "actual-container-left">
+                                        <div>Actual</div>
+                                        <div>--per share</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div id = "stockpage-right-container">
+                <div id = "stock-purchase-container">
+                    <div id = "stock-purchase-title"></div>
+                    <div id = "stock-purchase-middle">
+                        <div id ="stock-purchase-inner">
+                            <div id = "invest-in-container">
+                                <div>Invest In</div>
+                                <div>DropDown here</div>
+                            </div>
+                            <div id = "amount-container">
+                                <div>Amount</div>
+                                <div>Input here</div>
+                            </div>
+                            <div id = "est-quantity-container">
+                                <div>Est. Quantity</div>
+                                <div>Value here</div>
+                            </div>
+                        </div>
+                        <button id = "review-order-button">Review Order</button>
+                    </div>
+                    <div id = "stock-purchase-lower">
+                        Buying Power Available here
+                    </div>
+                </div>
+                <div id = "add-to-list-container">
+                    <button id = "add-to-list-button"></button>
                 </div>
             </div>
         </div>
