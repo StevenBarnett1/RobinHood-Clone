@@ -5,6 +5,7 @@ const TOGGLE_THEME = "session/TOGGLE_THEME"
 const ADD_MODAL_TYPE = "session/ADD_MODAL_TYPE"
 const MODAL_VIEW = "session/MODAL_VIEW"
 const MODAL_REQUIRED = "session/MODAL_REQUIRED"
+const MODAL_INFO = "session/MODAL_INFO"
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -55,8 +56,16 @@ export const toggleModalView = (visible) => {
 }
 
 
+export const addModalInfo = info => {
+  return {
+    type:MODAL_INFO,
+    payload:info
+  }
+}
 
-const initialState = { user: null,theme:"light",modalView:null,modalType:null };
+
+
+const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
 
 
 
@@ -202,6 +211,10 @@ export default function reducer(state = initialState, action) {
       }
       case MODAL_REQUIRED:{
         newState.modalRequired=action.payload
+        return newState
+      }
+      case MODAL_INFO:{
+        newState.modalInfo = action.payload
         return newState
       }
 
