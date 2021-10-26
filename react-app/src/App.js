@@ -13,6 +13,7 @@ import Dashboard from "./components/Dashboard"
 import { getStocks } from './store/stocks';
 import Search from './components/Search';
 import "./index.css"
+import StockPage from "./components/StockPage"
 function App() {
   const [loaded, setLoaded] = useState(false);
   const dispatch = useDispatch();
@@ -52,6 +53,11 @@ function App() {
           <NavBar />
           <Dashboard/>
         </Route>
+        )}
+        {user && (
+          <Route exact = {true} path = "/stocks/:symbol">
+            <StockPage/>
+          </Route>
         )}
       </Switch>
       </div>

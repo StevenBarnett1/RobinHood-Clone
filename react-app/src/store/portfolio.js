@@ -1,5 +1,5 @@
 const SET_PORTFOLIO_DATA = "portfolio/SET_PORTFOLIO_DATA"
-
+const SET_MOVERS_DATA = "portfolio/SET_MOVERS_DATA"
 const intervalMap = {
   "1":60,
   "5":300,
@@ -17,6 +17,24 @@ export const setPortfolioData = (portfolioData) => {
   }
 }
 
+export const setMoversData = (losersData,gainersData) => {
+
+  return {
+    type:SET_MOVERS_DATA,
+    gainersData,
+    losersData
+  }
+}
+
+
+export const getMoversData = (apiKey) => async dispatch => {
+  const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=${apiKey}`)
+  const losersData = await losersResponse.json()
+
+  const gainersResponse = await fetch(`https://financialmodelingprep.com/api/v3/gainers?apikey=${apiKey}`)
+  const gainersData = await gainersResponse.json()
+  dispatch(setMoversData(losersData,gainersData))
+}
 export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) => async dispatch => {
   const portfolioData = {"max":0,"min":Infinity}
   console.log("FHDHDH",resolution,unixStart,unixEnd)
@@ -35,7 +53,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
       // console.log("DATA.C",data.c.length,data.c[j],new Date(data.t[j] * 1000))
       // if(j > jMax)jMax = j
       // if(j === data.c.length-1 && j < jMaxAllowed)jMaxAllowed = j
-      console.log("HERE: ", i ,data.c[j])
+
       if(i === 0){
         newObject.unixTime = data.t[j]
         newObject.dateTime = new Date(data.t[j] * 1000)
@@ -43,8 +61,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
         if(resolution === "D"){
           newObject.dateTime.setDate(newObject.dateTime.getDate()+1)
         }
-        // console.log("HOURS: ",newObject.dateTime.getHours(), newObject.dateTime.getMinutes())
-        console.log("DATE TIME: ",newObject.dateTime, holdings[i].symbol)
+
 
         if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D" || resolution === "M"){
           prices.push(newObject)
@@ -77,7 +94,6 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
 
   }
   portfolioData.data=prices
-  console.log("DATATATATA: ",portfolioData.data)
   dispatch(setPortfolioData(portfolioData))
 }
 
@@ -91,7 +107,13 @@ export default function portfolioReducer(state = initialState, action) {
     let newState = {...state}
     switch (action.type) {
       case SET_PORTFOLIO_DATA:
-          newState = action.payload
+          newState.portfolioData = action.payload
+
+          return newState
+        case SET_MOVERS_DATA:
+          newState.moversData = {}
+          newState.moversData.gainersData = action.gainersData
+          newState.moversData.losersData = action.losersData
           return newState
       default:
         return newState;

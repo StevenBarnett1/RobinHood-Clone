@@ -42,6 +42,8 @@
 }
 #watchlist-outer-title{
     border-bottom:1px solid lightgrey;
+    display:flex;
+    justify-content: space-between;
 }
 .watchlist-inner-container{
 
@@ -57,6 +59,8 @@
     height:61px;
     cursor:pointer;
     width:100%;
+    justify-content: space-between;
+    position:relative;
 
 }
 .watchlist-title:hover{
@@ -141,9 +145,122 @@
 
 .news-icon-container{
     border-bottom:1px solid lightgrey;
+    color:var(--color);
+    text-decoration:none;
 
+}
+
+.news-icon-container:hover{
+    color:red;
 }
 
 .news-icon-container:first-child{
     border-top:1px solid lightgrey;
+}
+
+.daily-gainers-icons-value, .daily-gainers-icons-change{
+    color: rgb(0, 200, 5);
+}
+
+.daily-losers-icons-value, .daily-losers-icons-change{
+    color:rgb(255, 80, 0)
+}
+
+.daily-losers-individual{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:160px;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+}
+
+.daily-gainers-individual{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:160px ;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+#daily-gainers-icons{
+    display:inline-flex;
+}
+
+#daily-losers-icons{
+    display:inline-flex;
+
+}
+
+#daily-gainers-container{
+    overflow-x: scroll;
+}
+
+#daily-losers-container{
+    overflow-x: scroll;
+}
+
+.responsive-container{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 45px;
+}
+
+.chart-date-label{
+
+}
+
+#watchlist-plus-button{
+    border:none;
+    background-color: transparent;
+    cursor:pointer;
+}
+
+#watchlist-plus-button:hover{
+    background-color: var(--button-hover-background-color);
+
+}
+
+.watchlist-title-right{
+    display:flex;
+}
+
+.watchlist-dots{
+    font-size:20px;
+}
+.watchlist-arrow{
+    font-size:20px;
+}
+.watchlist-arrow:hover{
+    color:rgb(0, 200, 5);
+}
+
+.watchlist-dots:hover{
+    color:rgb(0, 200, 5);
+}
+
+.watchlist-dots-dropdown{
+    flex-direction: column;
+    bottom:-112px;
+    right:0;
+    height:110px;
+    width:180px;
+    border:1px solid lightgrey;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.watchlist-edit:hover,.watchlist-delete:hover{
+    color:rgb(0, 200, 5);
+}
+
+.watchlist-edit,.watchlist-delete{
+    text-align:center;
+    width:100%;
 }

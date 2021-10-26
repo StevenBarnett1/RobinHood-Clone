@@ -24,7 +24,7 @@ const Search = () => {
             if(!searchValue) setCurrentStocks("")
             else{
                 setCurrentStocks(
-                    stocks.filter(stock=>{
+                    stocks.stocks.filter(stock=>{
                         return stock.name.toLowerCase().startsWith(searchValue.toLowerCase()) || stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())
                     }).sort((a,b)=>{
                         if(a.symbol < b.symbol) return -1
