@@ -10,6 +10,8 @@ import {
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
+import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
+import {BiDotsHorizontal} from "react-icons/bi"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -464,7 +466,15 @@ const addWatchlist = (e) => {
                     {user && user.watchlists.map(watchlist=>{
                         return (
                             <div key = {watchlist.id} className = "watchlist-inner-container">
-                                <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>{watchlist.name}</div>
+                                <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>
+                                    <div>{watchlist.name}</div>
+                                    <div className = "watchlist-title-right">
+                                        <div className = "watchlist-dots"><BiDotsHorizontal/></div>
+                                        <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
+                                    </div>
+
+
+                                    </div>
                                 <div className = "watchlist-stocks">
                                     {watchlist.stocks.map(stock=>{
                                         return (

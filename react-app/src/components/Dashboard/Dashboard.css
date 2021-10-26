@@ -59,6 +59,7 @@
     height:61px;
     cursor:pointer;
     width:100%;
+    justify-content: space-between;
 
 }
 .watchlist-title:hover{
@@ -217,4 +218,22 @@
 #watchlist-plus-button:hover{
     background-color: var(--button-hover-background-color);
 
+}
+
+.watchlist-title-right{
+    display:flex;
+}
+
+.watchlist-dots{
+    font-size:20px;
+}
+.watchlist-arrow{
+    font-size:20px;
+}
+.watchlist-arrow:hover{
+    color:rgb(0, 200, 5);
+}
+
+.watchlist-dots:hover{
+    color:rgb(0, 200, 5);
 }
