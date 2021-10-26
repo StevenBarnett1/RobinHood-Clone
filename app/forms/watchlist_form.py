@@ -6,3 +6,4 @@ from app.models import User
 
 class WatchlistForm(FlaskForm):
     name = StringField("name", validators = [DataRequired()])
+    user_id = StringField("user_id",validators = [DataRequired()])

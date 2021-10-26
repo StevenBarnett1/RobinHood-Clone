@@ -60,6 +60,7 @@
     cursor:pointer;
     width:100%;
     justify-content: space-between;
+    position:relative;
 
 }
 .watchlist-title:hover{
@@ -236,4 +237,24 @@
 
 .watchlist-dots:hover{
     color:rgb(0, 200, 5);
+}
+
+.watchlist-dots-dropdown{
+    flex-direction: column;
+    bottom:-112px;
+    right:0;
+    height:110px;
+    width:180px;
+    border:1px solid lightgrey;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.watchlist-edit:hover,.watchlist-delete:hover{
+    color:rgb(0, 200, 5);
+}
+
+.watchlist-edit,.watchlist-delete{
+    text-align:center;
+    width:100%;
 }

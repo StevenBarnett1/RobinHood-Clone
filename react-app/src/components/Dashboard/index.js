@@ -1,7 +1,8 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
-import { addBuyingPower, addWatchlistThunk, toggleModalView, addModal } from "../../store/session";
+import { addBuyingPower, toggleModalView, addModal } from "../../store/session";
+import {addWatchlistThunk,editWatchlistThunk,deleteWatchlistThunk} from "../../store/watchlist"
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
@@ -12,6 +13,7 @@ import { getStockGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
+import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import FormModal from "../Modal/Modal";
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
@@ -49,6 +51,7 @@ const Dashboard = () => {
     const [graphData,setGraphData] = useState("")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
+    const [dotsOpen,setDotsOpen] = useState([])
     const [totalPrices,setTotalPrices] = useState([])
     const [dates,setDates] = useState("")
     const [interval,setTimeInterval] = useState("5")
@@ -345,6 +348,24 @@ const portfolioReset = (e) => {
 const addWatchlist = (e) => {
     if(watchlistInputValue)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
 }
+
+const deleteListHandler = (watchlist) => {
+    dispatch(deleteWatchlistThunk(watchlist.id))
+}
+
+const editListHandler = (watchlist) => {
+    dispatch(editWatchlistThunk(watchlist.id,user.id,'new_name_placeholder'))
+}
+
+const handleOpenDots = (e,watchlist) => {
+    console.log("WATCHLIST: ",watchlist)
+    e.stopPropagation()
+
+    if(dotsOpen === watchlist.id){
+        setDotsOpen("")
+    }
+    else setDotsOpen(watchlist.id)
+}
     let renderLineChart = (
         <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
       <Line dot = {false} type="monotone" dataKey="price" stroke="#8884d8" />
@@ -406,7 +427,7 @@ const addWatchlist = (e) => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {moversData && moversData.gainersData.map(data => {
+                        {/* {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -416,14 +437,14 @@ const addWatchlist = (e) => {
                                     </div>
                                 </div>
                             )
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {moversData && moversData.losersData.map(data => {
+                            {/* {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -434,7 +455,7 @@ const addWatchlist = (e) => {
 
                                 </div>
                                 )
-                            })}
+                            })} */}
 
                         </div>
                     </div>
@@ -472,10 +493,16 @@ const addWatchlist = (e) => {
                         return (
                             <div key = {watchlist.id} className = "watchlist-inner-container">
                                 <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>
+
                                     <div>{watchlist.name}</div>
                                     <div className = "watchlist-title-right">
-                                        <div className = "watchlist-dots" onClick = {handleDotsClick}><BiDotsHorizontal/></div>
+                                        <div className = "watchlist-dots" onClick = {(e)=>handleOpenDots(e,watchlist)}><BiDotsHorizontal/></div>
                                         <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
+
+                                    </div>
+                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex"} :{display:"none"}}>
+                                            <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
+                                            <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>
 
 
@@ -496,7 +523,7 @@ const addWatchlist = (e) => {
                                 </div>
                             </div>
                         )})}
-                <FormModal/>
+                {/* <FormModal/> */}
                 </div>
 
         </div>

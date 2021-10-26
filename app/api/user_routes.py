@@ -30,23 +30,23 @@ def add_buying_power(id):
     db.session.commit()
     return user.to_dict()
 
-@user_routes.route('/<int:user_id>/watchlists',methods=["POST"])
-@login_required
-def add_watchlist(user_id):
-    form = WatchlistForm()
-    user = User.query.get(user_id)
-    print(f"\n\n\n before {user.to_dict()} \n\n\n\n")
-    form['csrf_token'].data = request.cookies['csrf_token']
-    if(form.validate_on_submit):
-        watchlist = Watchlist(
-            name = form.data['name'],
-            user_id = user_id
-        )
-        db.session.add(watchlist)
-        db.session.commit()
-        user = User.query.get(user_id)
-        print(f"\n\n\n after {user.to_dict()} \n\n\n\n")
-        return None
-    else:
-        print("\n\n\n\n\n\n\n\n\n\n Form did not validate \n\n\n\n\n\n\n\n\n\n\n\n")
-    # return {'errors': validation_errors_to_error_messages(form.errors)}, 401
+# @user_routes.route('/<int:user_id>/watchlists',methods=["POST"])
+# @login_required
+# def add_watchlist(user_id):
+#     form = WatchlistForm()
+#     user = User.query.get(user_id)
+#     print(f"\n\n\n before {user.to_dict()} \n\n\n\n")
+#     form['csrf_token'].data = request.cookies['csrf_token']
+#     if(form.validate_on_submit):
+#         watchlist = Watchlist(
+#             name = form.data['name'],
+#             user_id = user_id
+#         )
+#         db.session.add(watchlist)
+#         db.session.commit()
+#         user = User.query.get(user_id)
+#         print(f"\n\n\n after {user.to_dict()} \n\n\n\n")
+#         return None
+#     else:
+#         print("\n\n\n\n\n\n\n\n\n\n Form did not validate \n\n\n\n\n\n\n\n\n\n\n\n")
+#     # return {'errors': validation_errors_to_error_messages(form.errors)}, 401
