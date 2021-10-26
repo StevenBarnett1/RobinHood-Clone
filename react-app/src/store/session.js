@@ -2,6 +2,9 @@
 const SET_USER = 'session/SET_USER';
 const REMOVE_USER = 'session/REMOVE_USER';
 const TOGGLE_THEME = "session/TOGGLE_THEME"
+const ADD_MODAL_TYPE = "session/ADD_MODAL_TYPE"
+const MODAL_VIEW = "session/MODAL_VIEW"
+const MODAL_REQUIRED = "session/MODAL_REQUIRED"
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -18,7 +21,6 @@ export const setTheme = (theme) => {
     payload: theme
   }
 }
-const initialState = { user: null, theme:"light" };
 
 export const addBuyingPower = (id,buyingPower) => async dispatch => {
   const response = await fetch(`/api/users/${id}`,{
@@ -37,6 +39,24 @@ export const addBuyingPower = (id,buyingPower) => async dispatch => {
   }
 
 }
+
+export const addModal = (type) => {
+  return {
+    type:ADD_MODAL_TYPE,
+    payload:type
+  }
+}
+
+export const toggleModalView = (visible) => {
+  return {
+    type:MODAL_VIEW,
+    payload:visible
+  }
+}
+
+
+
+const initialState = { user: null,theme:"light",modalView:null,modalType:null };
 
 export const addWatchlistThunk = (name,userId) => async dispatch => {
   const response = await fetch(`/api/users/${userId}/watchlists`,{
@@ -137,15 +157,28 @@ export const signUp = (first_name, last_name, email, password) => async (dispatc
 export default function reducer(state = initialState, action) {
   const newState = {...state}
   switch (action.type) {
-    case SET_USER:
-      newState.user = action.payload
-      return newState
-    case REMOVE_USER:
-      newState.user = null
-      return newState
-    case TOGGLE_THEME:
-      newState.theme=action.payload
-      return newState
+      case SET_USER:
+        newState.user = action.payload
+        return newState
+      case REMOVE_USER:
+        newState.user = null
+        return newState
+      case TOGGLE_THEME:
+        newState.theme=action.payload
+        return newState
+      case ADD_MODAL_TYPE:{
+        newState.modalType=action.payload
+        return newState
+      }
+      case MODAL_VIEW:{
+        newState.modalView=action.payload
+        return newState
+      }
+      case MODAL_REQUIRED:{
+        newState.modalRequired=action.payload
+        return newState
+      }
+
     default:
       return newState;
   }

@@ -1,7 +1,7 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
-import { addBuyingPower, addWatchlistThunk } from "../../store/session";
+import { addBuyingPower, addWatchlistThunk, toggleModalView, addModal } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
@@ -12,6 +12,7 @@ import { getStockGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
+import FormModal from "../Modal/Modal";
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -333,6 +334,10 @@ const chartHoverFunction = (e) => {
     }
 }
 
+const handleDotsClick = () => {
+    dispatch(toggleModalView(true))
+    dispatch(addModal("watchlist-dots"))
+}
 const portfolioReset = (e) => {
     setPortfolioValueDynamic(0)
 }
@@ -469,7 +474,7 @@ const addWatchlist = (e) => {
                                 <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>
                                     <div>{watchlist.name}</div>
                                     <div className = "watchlist-title-right">
-                                        <div className = "watchlist-dots"><BiDotsHorizontal/></div>
+                                        <div className = "watchlist-dots" onClick = {handleDotsClick}><BiDotsHorizontal/></div>
                                         <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
                                     </div>
 
@@ -491,8 +496,9 @@ const addWatchlist = (e) => {
                                 </div>
                             </div>
                         )})}
-
+                <FormModal/>
                 </div>
+
         </div>
 
     )
