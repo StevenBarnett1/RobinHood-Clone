@@ -1,12 +1,12 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
-import { addBuyingPower } from "../../store/session";
+import { addBuyingPower, addWatchlistThunk } from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
   import Odometer from 'react-odometerjs';
-  import {AiOutlinePlus} from "react-icons"
+  import {FaPlus} from "react-icons/fa"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getStockGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
@@ -15,7 +15,8 @@ const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn5
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
 const finnhubClient = new finnhub.DefaultApi()
-const moverAPIKeys = [`ff589a311ba428d0075c8c9c152c15dc`]
+const moverAPIKeys = ["1bf1b668a4216e5a16da2e7b765aa33a"]
+const nonWorkingMovers = [`ff589a311ba428d0075c8c9c152c15dc`]
 
 const months = {
     0:"JAN",
@@ -41,6 +42,7 @@ const Dashboard = () => {
     const [buyingPowerValue,editBuyingPowerValue] = useState("")
     const [openLists,setOpenLists] = useState([])
     const [currentStockData,setCurrentStockData] = useState({})
+    const [watchlistInputValue,setWatchlistInputValue] = useState("")
     const [graphData,setGraphData] = useState("")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
@@ -51,6 +53,10 @@ const Dashboard = () => {
     const [unixEnd,setUnixEnd] = useState("")
     const [news,setNews] = useState("")
     const [depositClick,setDepositClick] = useState(false)
+    const [watchlistInput,toggleWatchlistInput] = useState(false)
+
+
+
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
     const moversData = useSelector(state => state.portfolio.moversData)
@@ -329,6 +335,9 @@ const portfolioReset = (e) => {
     setPortfolioValueDynamic(0)
 }
 
+const addWatchlist = (e) => {
+    if(watchlistInputValue)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+}
     let renderLineChart = (
         <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
       <Line dot = {false} type="monotone" dataKey="price" stroke="#8884d8" />
@@ -390,7 +399,7 @@ const portfolioReset = (e) => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {/* {moversData && moversData.gainersData.map(data => {
+                        {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -400,14 +409,14 @@ const portfolioReset = (e) => {
                                     </div>
                                 </div>
                             )
-                            })} */}
+                            })}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {/* {moversData && moversData.losersData.map(data => {
+                            {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -418,7 +427,7 @@ const portfolioReset = (e) => {
 
                                 </div>
                                 )
-                            })} */}
+                            })}
 
                         </div>
                     </div>
@@ -443,7 +452,15 @@ const portfolioReset = (e) => {
 
             </div>
             <div id = "watchlist-outer-container">
-                    <div id = "watchlist-outer-title">Lists</div>
+                    <div id = "watchlist-outer-title">
+                        <div id = "title-text">Lists</div>
+                        <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
+                        <form onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                        <input placeholder = 'Watchlist Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                        <input type="submit" value = "Submit"/>
+                        </form>
+
+                    </div>
                     {user && user.watchlists.map(watchlist=>{
                         return (
                             <div key = {watchlist.id} className = "watchlist-inner-container">

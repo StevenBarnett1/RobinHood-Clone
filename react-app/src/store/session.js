@@ -38,6 +38,16 @@ export const addBuyingPower = (id,buyingPower) => async dispatch => {
 
 }
 
+export const addWatchlistThunk = (name,userId) => async dispatch => {
+  const response = await fetch(`/api/users/${userId}/watchlists`,{
+    method:"POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({name})
+  })
+  const data = await response.json()
+}
 
 export const authenticate = () => async (dispatch) => {
   const response = await fetch('/api/auth/', {

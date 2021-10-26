@@ -42,6 +42,8 @@
 }
 #watchlist-outer-title{
     border-bottom:1px solid lightgrey;
+    display:flex;
+    justify-content: space-between;
 }
 .watchlist-inner-container{
 
@@ -203,5 +205,16 @@
 }
 
 .chart-date-label{
+
+}
+
+#watchlist-plus-button{
+    border:none;
+    background-color: transparent;
+    cursor:pointer;
+}
+
+#watchlist-plus-button:hover{
+    background-color: var(--button-hover-background-color);
 
 }
