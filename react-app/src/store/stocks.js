@@ -77,9 +77,6 @@ export const getStockGraphData = (stocks,token) => async dispatch => {
   dispatch(setStockGraphData(stocks))
 }
 
-export const getIndividualStockGraphData = (stock,token) => async dispatch => {
-
-}
 
 const initialState = {}
 export default function stocksReducer(state = initialState, action) {
@@ -90,9 +87,9 @@ export default function stocksReducer(state = initialState, action) {
 
           return newState
         case SET_GRAPH_DATA:
-          newState.watchlistStockData = {}
+          newState.stockData = {}
           for(let stock of action.payload){
-            newState.watchlistStockData[stock.symbol] = stock
+            newState.stockData[stock.symbol] = stock
           }
           return newState
       default:

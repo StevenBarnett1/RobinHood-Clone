@@ -145,7 +145,13 @@
 
 .news-icon-container{
     border-bottom:1px solid lightgrey;
+    color:var(--color);
+    text-decoration:none;
 
+}
+
+.news-icon-container:hover{
+    color:red;
 }
 
 .news-icon-container:first-child{

@@ -14,6 +14,7 @@ import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
 import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import FormModal from "../Modal/Modal";
+import {NavLink} from "react-router-dom"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -45,14 +46,11 @@ const Dashboard = () => {
     const [buyingPower,toggleBuyingPower] = useState(false)
     const [buyingPowerValue,editBuyingPowerValue] = useState("")
     const [openLists,setOpenLists] = useState([])
-    const [currentStockData,setCurrentStockData] = useState({})
     const [watchlistInputValue,setWatchlistInputValue] = useState("")
     const [graphData,setGraphData] = useState("")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
     const [dotsOpen,setDotsOpen] = useState([])
-    const [totalPrices,setTotalPrices] = useState([])
-    const [dates,setDates] = useState("")
     const [interval,setTimeInterval] = useState("5")
     const [unixStart,setUnixStart] = useState("")
     const [unixEnd,setUnixEnd] = useState("")
@@ -65,8 +63,7 @@ const Dashboard = () => {
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
     const moversData = useSelector(state => state.portfolio.moversData)
-    const stocks = useSelector(state=>state.stocks.stocks)
-    const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
+    const watchlistStockData = useSelector(state=>state.stocks.stockData)
     console.log(watchlistStockData)
     useEffect(()=>{
         if(watchlistStockData){
@@ -106,7 +103,7 @@ const Dashboard = () => {
 
     console.log("GRAPH DATA: ",graphData)
     useEffect(()=>{
-        if(user && stocks){
+        if(user){
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
@@ -150,7 +147,7 @@ const Dashboard = () => {
               setUnixEnd(endUnix)
 
         }
-    },[user,stocks])
+    },[user])
 
     useEffect(()=>{
         if(portfolioData){
@@ -310,7 +307,6 @@ const Dashboard = () => {
         if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
     }
 
-    let tooltip
     const CustomTooltip = ({ active, payload }) => {
     // if (!active || !tooltip)    return null
     if(payload && payload[0]){
@@ -324,6 +320,7 @@ const Dashboard = () => {
             let hours = payload[0].payload.dateTime.getHours()
             let minutes = payload[0].payload.dateTime.getMinutes()
             if(minutes === 0)minutes = "00"
+            if(minutes === 5)minutes = "05"
             let zone
             if(hours >= 12) zone = "PM"
             else zone = "AM"
@@ -394,7 +391,7 @@ const handleOpenDots = (e,watchlist) => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
-                  <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -402,7 +399,7 @@ const handleOpenDots = (e,watchlist) => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
-                  <XAxis tick = {false} axisLine = {false} tickLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -464,7 +461,7 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {moversData && moversData.gainersData.map(data => {
+                        {/* {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -474,14 +471,14 @@ const handleOpenDots = (e,watchlist) => {
                                     </div>
                                 </div>
                             )
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {moversData && moversData.losersData.map(data => {
+                            {/* {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -492,7 +489,7 @@ const handleOpenDots = (e,watchlist) => {
 
                                 </div>
                                 )
-                            })}
+                            })} */}
 
                         </div>
                     </div>
@@ -501,13 +498,13 @@ const handleOpenDots = (e,watchlist) => {
                         <div id = "news-icons-container">
                             {news && news.map(post => {
                                 return (
-                                    <div key = {post.id} className = "news-icon-container">
+                                    <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-container">
                                         <div className = "news-icon-source">{post.source}</div>
                                         <div className = "news-icon-date">{post.datetime*1000}</div>
                                         <div className = "news-icon-headline">{post.headline}</div>
                                         <div className = "news-icon-symbol"></div>
                                         <div className = "news-icon-change"></div>
-                                    </div>
+                                    </NavLink>
                                 )
                             })}
 
