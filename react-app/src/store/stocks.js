@@ -83,29 +83,38 @@ export const getWatchlistGraphData = (stocks,token) => async dispatch => {
   dispatch(setWatchlistGraphData(stocks))
 }
 
-export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,overviewToken) => async dispatch => {
+export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financialModelingPrepKeys,alphaAdvantageKeys) => async dispatch => {
   const stock = {"max":0,"min":Infinity,data:[],symbol:symbol,peers:[]}
   const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
-  const overviewResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${overviewToken}`)
+  const alphaAdvantageResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${alphaAdvantageKeys[Math.floor(Math.random()*alphaAdvantageKeys.length)]}`)
+  const financialModelingResponse = await fetch(`https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]}`)
   const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   const earningsResponse = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
-    const overviewData = await overviewResponse.json()
+    const alphaAdvantageData = await alphaAdvantageResponse.json()
+    const financialModelingDataArray = await financialModelingResponse.json()
+    const financialModelingData = financialModelingDataArray[0]
     const peerData = await peerResponse.json()
     const earningsData = await earningsResponse.json()
     console.log("MADE ANOTHER API CALL GET STOCK DATA")
     stock.earnings = earningsData
     stock.price = priceData.c
-    stock.description = overviewData.Description
-    stock.marketCap = overviewData.MarketCapitalization
-    stock.peRatio = overviewData.PERatio
-    stock.dividendYield = overviewData.DividendYield
-    stock['52WeekHigh'] = overviewData['52WeekHigh']
-    stock['52WeekLow'] = overviewData['52WeekLow']
-    stock.eps = overviewData.EPS
-    stock.revenue = overviewData.RevenueTTM
+    stock.description = alphaAdvantageData.Description
+    stock.marketCap = alphaAdvantageData.MarketCapitalization
+    stock.peRatio = alphaAdvantageData.PERatio
+    stock.dividendYield = alphaAdvantageData.DividendYield
+    stock['52WeekHigh'] = alphaAdvantageData['52WeekHigh']
+    stock['52WeekLow'] = alphaAdvantageData['52WeekLow']
+    stock.eps = alphaAdvantageData.EPS
+    stock.revenue = alphaAdvantageData.RevenueTTM
+    stock.companyName = financialModelingData.companyName
+    stock.volumeAverage = financialModelingData.volAvg
+    stock.employees = financialModelingData.fullTimeEmployees
+    stock.ceo = financialModelingData.ceo.split(" ").slice(1).join(" ")
+    console.log("FINANCIAL MODELING DATA: ",financialModelingData,financialModelingData.state)
+    stock.headquarters = `${financialModelingData.city}, ${financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()}`
 
     let estimated = []
     let actual = []

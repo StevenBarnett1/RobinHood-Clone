@@ -16,7 +16,7 @@ import {
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
 
-const overviewTokens = ["3UC4IVVYIGV8RHJB","JHJY5TEK1A5HV67T","8MGCDK87SBTQ7CB5","KH07O8BLSZ2XTJTH","7LI2MOXNZKBJSW21"]
+const alphaAdvantageKeys = ["3UC4IVVYIGV8RHJB","JHJY5TEK1A5HV67T","8MGCDK87SBTQ7CB5","KH07O8BLSZ2XTJTH","7LI2MOXNZKBJSW21"]
 const financialModelingPrepKeys = [`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","ff567560f2ecaf815b36d6a3ce51a55f"]
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
@@ -138,7 +138,7 @@ const Stockpage = () => {
     useEffect(()=>{
         if(unixEnd && interval) {
 
-            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys,financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]))
+            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys,financialModelingPrepKeys,alphaAdvantageKeys))
         }
     },[interval,unixEnd,unixStart])
 
@@ -272,7 +272,7 @@ const Stockpage = () => {
     useEffect(()=>{
         if(interval && unixEnd){
 
-        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys,financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]))
+        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys,financialModelingPrepKeys,alphaAdvantageKeys))
         }
     },[interval,unixEnd,unixStart])
 
@@ -329,16 +329,16 @@ const Stockpage = () => {
                         </div>
                         <div id = "about-lower-container">
                             <div id = "ceo-container">
-                                <div id = "ceo-title"></div>
-                                <div id = "ceo-value"></div>
+                                <div id = "ceo-title">CEO</div>
+                                <div id = "ceo-value">{stockData && stockData.ceo}</div>
                             </div>
                             <div id = "employees-container">
-                            <div id = "employees-title"></div>
-                                <div id = "employees-value"></div>
+                            <div id = "employees-title">Employees</div>
+                                <div id = "employees-value">{stockData && stockData.employees}</div>
                             </div>
                             <div id = "headquarters-container">
-                            <div id = "headquarters-title"></div>
-                                <div id = "headquarters-value"></div>
+                            <div id = "headquarters-title">Headquarters</div>
+                                <div id = "headquarters-value">{stockData && stockData.headquarters}</div>
                             </div>
                             <div id = "founded-container">
                             <div id = "founded-title"></div>
