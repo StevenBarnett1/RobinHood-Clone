@@ -1,8 +1,6 @@
-#dashboard-buying-power-container-heading{
-    cursor:pointer;
-}
 
-#dashboard-buying-power-container-heading:hover{
+
+#dashboard-buying-power-container-heading-open:hover, #dashboard-buying-power-container-heading-closed:hover{
     background-color: var(--button-hover-background-color);
 }
 
@@ -12,14 +10,16 @@
     font-size:18px;
     font-weight:700;
     background-color: rgb(0, 200, 5);
-    width:145px;
-    height:50px;
+    width:320px;
+    height:48px;
     border:none;
-    border-radius:30px;
+    border-radius:5px;
     align-items: center;
     justify-content: center;
     cursor:pointer;
     margin-bottom:35px;
+    margin-top:25px;
+    color:var(--opposite-color);
 }
 
 #buying-power-deposit-button:hover{
@@ -100,25 +100,20 @@
     display:flex;
     flex-direction:column;
     width:50%;
-
-
+    margin-left:25px;
 }
 
 #dashboard-buying-power-container{
-
-}
-
-#dashboard-buying-power-container-inner{
-    width:90%;
-    margin:auto;
+    transition: height 0.2s linear;
 }
 
 #dashboard-buying-power-container-right{
     width:50%;
     margin-left:35px;
+    padding-top:20px;
 
 }
-#dashboard-buying-power-container-heading{
+#dashboard-buying-power-container-heading-open{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
@@ -127,19 +122,60 @@
     font-size:16px;
     padding-bottom:25px;
     padding-top:25px;
+    padding-left:25px;
+    padding-right:25px;
+    border-bottom:1px solid lightgrey;
+    cursor:pointer;
 }
 
-#dashboard-buying-power-container-bottom{
+#dashboard-buying-power-container-heading-closed{
+    display:flex;
     flex-direction: row;
     justify-content: space-between;
-    box-shadow: 0 0 2px 2px lightgrey;
+    /* border-bottom:1px solid lightgrey; */
+    font-weight:bold;
+    font-size:16px;
+    padding-bottom:25px;
+    padding-top:25px;
+    padding-left:25px;
+    padding-right:25px;
+    cursor:pointer;
 }
 
-#brokerage-cash-container{
-    display:flex;
-    justify-content: space-between;
-    border-bottom:1px solid lightgrey;
+#dashboard-buying-power-container-bottom-visible, #dashboard-buying-power-container-bottom-invisible{
+    overflow:hidden
 }
+
+#dashboard-buying-power-container-bottom-visible > div, #dashboard-buying-power-container-bottom-invisible > div {
+
+}
+
+#dashboard-buying-power-container-bottom-invisible > div {
+    margin-top: -10000px;
+  transition: margin-top 0s 2s;
+}
+
+#dashboard-buying-power-container-bottom-visible{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s ease-in;
+}
+
+#dashboard-buying-power-container-bottom-invisible{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 2s, opacity 0.1s linear;
+}
+
+
 
 #buying-power-container{
     display:flex;
@@ -201,6 +237,14 @@
     color:rgb(255, 80, 0)
 }
 
+.dashboard-titles{
+    font-size:24px;
+    font-weight:bold;
+    padding-bottom:15px;
+}
+#news-title{
+    border-bottom:1px solid lightgrey;
+}
 .daily-losers-individual{
     display:flex;
     flex-direction: column;
@@ -365,11 +409,20 @@ margin-right:96px !important;
 }
 
 #brokerage-cash-container{
-    padding-top:15px;
-    padding-bottom:15px;
+    padding-top:25px;
+    padding-bottom:25px;
+    display:flex;
+    justify-content: space-between;
+    border-bottom:1px solid lightgrey;
 }
 
 #buying-power-container{
     padding-top:15px;
     padding-bottom:15px;
+}
+
+
+#dashboard-lower-container{
+    margin-top:35px;
+    margin-left:15px;
 }

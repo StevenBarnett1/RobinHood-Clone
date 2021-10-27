@@ -442,13 +442,12 @@ const handleOpenDots = (e,watchlist) => {
                             <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
                     </div>
-                    <div id = "dashboard-buying-power-container"  >
-                        <div id = "dashboard-buying-power-container-inner">
-                            <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
-                                <div id = "dashboard-buying-power-text">Buying Power</div>
-                                <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
-                            </div>
-                            <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
+                    <div id = "dashboard-buying-power-container" style = {buyingPower ? {boxShadow: "0px 0px 15px 3px rgb(238, 237, 237)",height:"300px"} : {height:"66px"}} >
+                        <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
+                            <div id = "dashboard-buying-power-text">Buying Power</div>
+                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                        </div>
+                            <div id = {buyingPower ? "dashboard-buying-power-container-bottom-visible" : "dashboard-buying-power-container-bottom-invisible"}>
                                 <div id = "dashboard-buying-power-container-left">
                                     <div id = "brokerage-cash-container">
                                         <div>Brokerage Cash</div>
@@ -462,23 +461,17 @@ const handleOpenDots = (e,watchlist) => {
                                     <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
 
                                 </div>
-
-                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase. Learn More</div>
-                            </div>
+                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase.</div>
                         </div>
                     </div>
                 </div>
 
                 <div id = "dashboard-lower-container">
-                    <div id = "trending-lists-container">
-                        <div id = "trending-lists-title"><h1>Trending Lists</h1></div>
-                        <div id = "trending-lists-icons"></div>
-                    </div>
-                    <div id = "daily-gainers-title"><h1>Daily Gainers</h1></div>
+                    <div id = "daily-gainers-title" className = "dashboard-titles">Daily Gainers</div>
                     <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-subtitle"></div>
+                        <div id = "daily-gainers-subtitle">Stocks with the biggest gains today.</div>
                         <div id = "daily-gainers-icons">
-                        {/* {moversData && moversData.gainersData.map(data => {
+                        {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -488,14 +481,14 @@ const handleOpenDots = (e,watchlist) => {
                                     </div>
                                 </div>
                             )
-                            })} */}
+                            })}
                         </div>
                     </div>
-                    <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
+                    <div id = "daily-losers-title" className = "dashboard-titles">Daily Losers</div>
                     <div id = "daily-losers-container">
-                        <div id = "daily-losers-subtitle"></div>
+                        <div id = "daily-losers-subtitle">Stocks with the biggest losses today.</div>
                         <div id = "daily-losers-icons">
-                            {/* {moversData && moversData.losersData.map(data => {
+                            {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -506,12 +499,12 @@ const handleOpenDots = (e,watchlist) => {
 
                                 </div>
                                 )
-                            })} */}
+                            })}
 
                         </div>
                     </div>
                     <div id = "news-container">
-                        <div id="news-title"><h1>News</h1></div>
+                        <div id="news-title" className = "dashboard-titles">News</div>
                         <div id = "news-icons-container">
                             {news && news.map(post => {
                                 return (

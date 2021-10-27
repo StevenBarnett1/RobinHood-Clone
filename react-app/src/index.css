@@ -23,6 +23,7 @@ body{
     --watchlist-background-color:rgb(30, 33, 36);
     --input-background-color:rgb(48, 54, 58);
     --color:white;
+    --opposite-color:black;
 }
 
 #light{
@@ -31,5 +32,6 @@ body{
     --watchlist-background-color:white;
     --color:black;
     --button-hover-background-color:rgb(239, 248, 248);
+    --opposite-color:white;
 
 }
