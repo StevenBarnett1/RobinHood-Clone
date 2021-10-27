@@ -134,6 +134,10 @@ const Stockpage = () => {
                   start.setDate(start.getDate()-2)
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
+              } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
+                start.setDate(start.getDate()-1)
+                end.setDate(end.getDate()-1)
+                end.setHours(23,0,0,0)
               }
               start.setHours(0,0,0,0)
 
@@ -407,7 +411,7 @@ const Stockpage = () => {
                     </div>
                     <div id = "related-stocks-container">
                         <h2 id = "related-stocks-title">Related Stocks</h2>
-                        <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own MARK. It’s not an investment recommendation.</div>
+                        <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own {stockData && stockData.symbol}. It’s not an investment recommendation.</div>
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => {
                                 return (

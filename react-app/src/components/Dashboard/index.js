@@ -140,6 +140,10 @@ const Dashboard = () => {
                   start.setDate(start.getDate()-2)
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
+              } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
+                start.setDate(start.getDate()-1)
+                end.setDate(end.getDate()-1)
+                end.setHours(23,0,0,0)
               }
               start.setHours(0,0,0,0)
 
