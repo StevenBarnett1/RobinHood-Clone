@@ -83,13 +83,13 @@ export const getWatchlistGraphData = (stocks,token) => async dispatch => {
   dispatch(setWatchlistGraphData(stocks))
 }
 
-export const getStockData = (symbol,resolution,unixStart,unixEnd,token,overviewToken) => async dispatch => {
+export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,overviewToken) => async dispatch => {
   const stock = {"max":0,"min":Infinity,data:[],symbol:symbol,peers:[]}
-  const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
-  const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${token}`)
+  const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+  const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   const overviewResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${overviewToken}`)
-  const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${token}`)
-  const earningsResponse = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol.toUpperCase()}&token=${token}`)
+  const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+  const earningsResponse = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
     const overviewData = await overviewResponse.json()
@@ -107,9 +107,27 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,token,overviewT
     stock.eps = overviewData.EPS
     stock.revenue = overviewData.RevenueTTM
 
+    let estimated = []
+    let actual = []
+
+    for(let i = stock.earnings.length-1; i>=0; i--){
+      const mapper = {
+        3:"Q3 FY20",
+        2:"Q4 FY20",
+        1:"Q1 FY21",
+        0:"Q2 FY21"
+      }
+      const newEst = {'data':stock.earnings[i].estimate,'period':mapper[i]}
+      const newAct = {'data':stock.earnings[i].actual,'period':mapper[i]}
+      estimated.push(newEst)
+      actual.push(newAct)
+    }
+    stock.estimated = estimated
+    stock.actual = actual
+
     for(let peer of peerData){
       const newObj = {}
-      const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${token}`)
+      const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
       const peerPriceData = await peerPriceResponse.json()
       newObj.symbol = peer
       newObj.price = peerPriceData.c

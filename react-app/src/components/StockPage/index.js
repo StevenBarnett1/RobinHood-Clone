@@ -17,6 +17,7 @@ import {
   import {FaPlus} from "react-icons/fa"
 
 const overviewTokens = ["3UC4IVVYIGV8RHJB","JHJY5TEK1A5HV67T","8MGCDK87SBTQ7CB5","KH07O8BLSZ2XTJTH","7LI2MOXNZKBJSW21"]
+const financialModelingPrepKeys = [`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","ff567560f2ecaf815b36d6a3ce51a55f"]
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -66,24 +67,9 @@ const Stockpage = () => {
             setGraphData(stockData.data)
             setYmin(stockData.min)
             setYmax(stockData.max)
-            let estimated = []
-            let actual = []
-            console.log(stockData.earnings)
-            for(let i = 0 ; i<stockData.earnings.length;i++){
-                const mapper = {
-                    3:"Q3 FY20",
-                    2:"Q4 FY20",
-                    1:"Q1 FY21",
-                    0:"Q2 FY21"
-                }
-                const newEst = {'estimated':stockData.earnings[i].estimate,'period':mapper[i]}
-                const newAct = {'actual':stockData.earnings[i].actual,'period':mapper[i]}
-                estimated.push(newEst)
-                actual.push(newAct)
 
-            }
-            setActualScatterData(actual)
-            setEstimatedScatterData(estimated)
+            setActualScatterData(stockData.actual)
+            setEstimatedScatterData(stockData.estimated)
             if(interval === "5"){
                 setDailyHigh(stockData.max)
                 setDailyLow(stockData.min)
@@ -152,7 +138,7 @@ const Stockpage = () => {
     useEffect(()=>{
         if(unixEnd && interval) {
 
-            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys[Math.floor(Math.random()*apiKeys.length)],overviewTokens[Math.floor(Math.random()*overviewTokens.length)]))
+            dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys,financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]))
         }
     },[interval,unixEnd,unixStart])
 
@@ -286,7 +272,7 @@ const Stockpage = () => {
     useEffect(()=>{
         if(interval && unixEnd){
 
-        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)],overviewTokens[Math.floor(Math.random()*overviewTokens.length)]))
+        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys,financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]))
         }
     },[interval,unixEnd,unixStart])
 
@@ -301,14 +287,18 @@ const Stockpage = () => {
         { x: 8, y: 32 },
         { x: 9, y: 43 },
     ];
+    console.log("ACTUAL SCATTER: ",actualScatterData)
+    console.log("eSTIMATED SCATTER: ",estimatedScatterData)
     let scatterChart = (
-    <ScatterChart width={400} height={400}>
+    <ScatterChart width={400} height={400} >
+
         <CartesianGrid />
-        <XAxis dataKey="period" />
-        <YAxis type="number" dataKey="actual" />
-        <Legend/>
-        <Scatter name = "actual" data={actualScatterData} fill="green" />
-        <Scatter name = "estimated" data={estimatedScatterData} fill="red" />
+        <XAxis dataKey="period" interval = {0} allowDuplicatedCategory={false}/>
+        <YAxis type="number" dataKey="data" />
+        <Legend height = {1}/>
+        <Scatter name = "Actual" data={actualScatterData} fill="green" />
+        <Scatter name = "Estimated" data={estimatedScatterData} fill="red" />
+        <Tooltip/>
     </ScatterChart>
     )
 
@@ -429,6 +419,7 @@ const Stockpage = () => {
                     </div>
                     <div id = "related-stocks-container">
                         <div id = "related-stocks-title">Related Stocks</div>
+                        <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own MARK. It’s not an investment recommendation.</div>
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => {
                                 return (
@@ -443,7 +434,7 @@ const Stockpage = () => {
                         </div>
 
                     </div>
-
+                    <div id = "stockpage-disclosure">All investments involve risks, including the loss of principal. Securities trading offered through Robinhood Financial LLC, a registered broker-dealer and Member SIPC. <NavLink id = "stock-disclosure-navlink" to = {{pathname:`https://robinhood.com/stocks/${stockData && stockData.symbol}#`}} target="_blank"> Full disclosure</NavLink></div>
                 </div>
             </div>
             <div id = "stockpage-right-container">

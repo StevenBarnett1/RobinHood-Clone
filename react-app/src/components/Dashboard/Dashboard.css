@@ -324,3 +324,7 @@ margin-right:96px !important;
 .peer-container:hover{
     background-color: var(--button-hover-background-color);
 }
+
+#stock-disclosure-navlink{
+    text-decoration: none;
+}
