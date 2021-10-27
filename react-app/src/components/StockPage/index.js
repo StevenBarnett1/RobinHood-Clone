@@ -9,6 +9,7 @@ import {BiDotsHorizontal} from "react-icons/bi"
 import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
+import { addHolding } from "../../store/holdings";
 import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
@@ -42,7 +43,7 @@ const months = {
 const Stockpage = () => {
     const dispatch = useDispatch()
     const params = useParams()
-
+    console.log("NEW PARAMS: ",params)
     const [graphData,setGraphData] = useState("")
     const [actualScatterData,setActualScatterData] = useState("")
     const [estimatedScatterData,setEstimatedScatterData] = useState("")
@@ -57,9 +58,17 @@ const Stockpage = () => {
     const [interval,setTimeInterval] = useState("5")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
+    const [render,forceRerender] = useState("")
+    const [investType,setInvestType] = useState("shares")
+    const [investValue,setInvestValue] = useState("")
+
     const user = useSelector(state=>state.session.user)
+    console.log("USER: ",user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
+    useEffect(()=>{
+        forceRerender(!render)
+    },[params])
     useEffect(()=>{
         if(stockData && stockData.symbol){
             console.log("STOCDNFGIBIERBNo: ",stockData)
@@ -133,7 +142,7 @@ const Stockpage = () => {
               setUnixStart(startUnix)
               setUnixEnd(endUnix)
 
-    },[])
+    },[params])
 
     useEffect(()=>{
         if(unixEnd && interval) {
@@ -269,24 +278,19 @@ const Stockpage = () => {
 
     },[graphData])
 
-    useEffect(()=>{
-        if(interval && unixEnd){
-
-        dispatch(getStockData(params.symbol, interval, unixStart, unixEnd, apiKeys,financialModelingPrepKeys,alphaAdvantageKeys))
+    const submitOrder = () => {
+        if(investValue && investType === "shares"){
+            if(investValue*stockData.price > user.buying_power)return
+            dispatch(addHolding(stockData.symbol,stockData.price*investValue,investValue,user.id))
+            dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
+            //dispatch to decrement users buying power, add number of shares to holdings
+        } else if (investValue && investType === "dollars"){
+            if(investValue > user.buying_power)return
+            dispatch(addHolding(stockData.symbol,investValue,investValue/stockData.price,user.id))
+            dispatch(addBuyingPower(user.id,-investValue))
         }
-    },[interval,unixEnd,unixStart])
+    }
 
-    const data = [
-        { x: 1, y: 23 },
-        { x: 2, y: 3 },
-        { x: 3, y: 15 },
-        { x: 4, y: 35 },
-        { x: 5, y: 45 },
-        { x: 6, y: 25 },
-        { x: 7, y: 17 },
-        { x: 8, y: 32 },
-        { x: 9, y: 43 },
-    ];
     console.log("ACTUAL SCATTER: ",actualScatterData)
     console.log("eSTIMATED SCATTER: ",estimatedScatterData)
     let scatterChart = (
@@ -323,31 +327,31 @@ const Stockpage = () => {
                 </div>
                 <div id = "stockpage-lower-container">
                     <div id = "about-container">
-                        <div id = "about-title">About</div>
+                        <h2 id = "about-title">About</h2>
                         <div id = "about-description">
                             {stockData && stockData.description}
                         </div>
                         <div id = "about-lower-container">
-                            <div id = "ceo-container">
+                            <div className = "about-individual-container" id = "ceo-container">
                                 <div id = "ceo-title">CEO</div>
                                 <div id = "ceo-value">{stockData && stockData.ceo}</div>
                             </div>
-                            <div id = "employees-container">
+                            <div className = "about-individual-container" id = "employees-container">
                             <div id = "employees-title">Employees</div>
                                 <div id = "employees-value">{stockData && stockData.employees}</div>
                             </div>
-                            <div id = "headquarters-container">
+                            <div className = "about-individual-container" id = "headquarters-container">
                             <div id = "headquarters-title">Headquarters</div>
                                 <div id = "headquarters-value">{stockData && stockData.headquarters}</div>
                             </div>
-                            <div id = "founded-container">
+                            <div className = "about-individual-container" id = "founded-container">
                             <div id = "founded-title"></div>
                                 <div id = "founded-value"></div>
                             </div>
                         </div>
                     </div>
                     <div id = "key-statistics-container">
-                        <div id = "key-statistics-title">Key Statistics</div>
+                        <h2 id = "key-statistics-title">Key Statistics</h2>
                         <div id = "key-statistics-lower-container">
                             <div className = "key-statistic-container">
                                 <div className = "key-statistic">Market Cap</div>
@@ -394,36 +398,20 @@ const Stockpage = () => {
 
 
                     <div id = "earnings-container">
-                        <div id = "earnings-title">Earnings</div>
+                        <h2 id = "earnings-title">Earnings</h2>
                         <div id = "earnings-lower-container">
                             <div id ="earnings-chart-container">
                                 {scatterChart}
                             </div>
-                            <div id = "earnings-labels-container">
-                                <div id = "estimated-container">
-                                    <div>Color dot here</div>
-                                    <div id = "estimated-container-left">
-                                        <div>Estimated</div>
-                                        <div>--per share</div>
-                                    </div>
-                                </div>
-                                <div id = "actual-container">
-                                    <div>Color dot here</div>
-                                    <div id = "actual-container-left">
-                                        <div>Actual</div>
-                                        <div>--per share</div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div id = "related-stocks-container">
-                        <div id = "related-stocks-title">Related Stocks</div>
+                        <h2 id = "related-stocks-title">Related Stocks</h2>
                         <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own MARK. It’s not an investment recommendation.</div>
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => {
                                 return (
-                                    <NavLink to = {`/stocks/${peer.symbol}`}key = {peer.symbol} className = "peer-container">
+                                    <NavLink to = {`/stocks/${peer.symbol}`} key = {peer.symbol} className = "peer-container">
                                         <div className = "peer-title">{peer.symbol}</div>
                                         <div className = "peer-numbers-container">
                                             <div className = "peer-value">{peer.price}</div>
@@ -444,24 +432,28 @@ const Stockpage = () => {
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div>Invest In</div>
-                                <select>
-                                    <option value = "shares">Shares</option>
+                                <select value = {investType} onChange = {e=>setInvestType(e.target.value)}>
+                                    <option value = "shares" selected>Shares</option>
                                     <option value = "dollars">Dollars</option>
                                 </select>
                             </div>
                             <div id = "amount-container">
-                                <div>Amount</div>
-                                <input type = "text" placeholder = "$0.00"></input>
+                                <div>{investType === "shares" ? 'Shares' : 'Amount'}</div>
+                                <input value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
                             <div id = "est-quantity-container">
-                                <div>Est. Quantity</div>
-                                <div>Value here</div>
+                                <div>{investType === "shares" ? 'Estimated Cost' : 'Est. Quantity' }</div>
+                                {investType === "shares" ? (
+                                    <div>{stockData && stockData.price * investValue}</div>
+                                ) : (
+                                    <div>{stockData && investValue / stockData.price }</div>
+                                )}
                             </div>
                         </div>
-                        <button id = "review-order-button">Review Order</button>
+                        <button id = "review-order-button" onClick = {submitOrder} >Review Order</button>
                     </div>
                     <div id = "stock-purchase-lower">
-                        Buying Power Available here
+                        ${user && user.buying_power} buying power available
                     </div>
                 </div>
                 <div id = "add-to-list-container">

@@ -1,16 +1,23 @@
 import {useState, useEffect} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import "./Search.css"
-import { NavLink } from "react-router-dom"
+import { NavLink, useHistory} from "react-router-dom"
 import { getStocks } from "../../store/stocks"
+import { useParams } from "react-router"
 
 const Search = () => {
+
     const [searchValue,setSearchValue] = useState("")
     const [currentStocks,setCurrentStocks] = useState("")
     const [focus,setFocus] = useState(true)
     const [coloredStocks,setColoredStocks] = useState("")
     const [nonColoredStocks,setNonColoredStocks] = useState("")
     const dispatch = useDispatch()
+    const history = useHistory()
+    const navigateTo = (location) => {
+        setFocus(false)
+        history.push(location)
+    }
     useEffect(()=>{
         dispatch(getStocks())
     },[])
@@ -71,26 +78,26 @@ const Search = () => {
 
     },[currentStocks])
 
-    // if(stocks.length)setIsLoaded(true)
     const changeFocus = (param) => {
-        setFocus(param)
+
+       setFocus(param)
     }
 
     console.log("CURRNET STOCKS : ",currentStocks)
     console.log("FOCUS: ", focus)
     return (
         <div id = "search-container">
-            <input id = "search-input" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
+            <input id = "search-input" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} />
             <div style = {(currentStocks && focus) ? {display:"block"} : {display:"none"}} id = "search-list">
                 {nonColoredStocks && nonColoredStocks.map(stock => {
                     return (
-                        <div key = {stock.id} className = "search-item">
-                            <NavLink className = "search-item-navlink" to ={`/stocks/${stock.symbol}`}>
+                        <div key = {stock.id} className = "search-item" >
+                            <div onMouseDown = {()=>navigateTo(`/stocks/${stock.symbol}`)} className = "search-item-navlink" >
                                 <span className="stock-search-symbol colored">{stock.coloredSymbol && stock.coloredSymbol.toUpperCase()}</span>
                                 <span className="stock-search-symbol">{stock.nonColoredSymbol.toUpperCase()}</span>
                                 <span className="stock-search-name colored">{stock.coloredName && stock.coloredName[0].toUpperCase() + stock.coloredName.slice(1)}</span>
                                 <span className="stock-search-name">{stock.coloredName ? stock.nonColoredName : stock.nonColoredName[0].toUpperCase() + stock.nonColoredName.slice(1)}</span>
-                            </NavLink>
+                            </div>
                         </div>
                     )
                 })}

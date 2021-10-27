@@ -62,6 +62,7 @@ const Dashboard = () => {
 
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
+    console.log("PORTFOLIO DATA OUTSIDE USE EFFECT: ",portfolioData)
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     console.log(watchlistStockData)
@@ -384,7 +385,7 @@ const handleOpenDots = (e,watchlist) => {
 
 
     useEffect(()=>{
-        if(graphData){
+        if(graphData.length && graphData[0] !== "no_data"){
             console.log("HERE GREAPH: ",graphData)
             console.log("HEREEEEE: ",graphData[graphData.length-1].value > graphData[0].value, graphData[graphData.length-1].value,graphData[0].value)
             if(graphData[graphData.length-1].price > graphData[0].price){
@@ -405,6 +406,16 @@ const handleOpenDots = (e,watchlist) => {
                 </LineChart>))
             }
         }
+        else if (portfolioData && portfolioData.data[0] === "no_data"){
+            setRenderLineChart((
+                <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
+              <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
+              <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+              <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+              <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+            </LineChart>))
+        }
+        console.log("PORTFOLIO DATA: ",portfolioData)
     },[graphData])
 
 

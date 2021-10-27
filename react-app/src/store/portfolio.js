@@ -35,6 +35,8 @@ export const getMoversData = (apiKey) => async dispatch => {
   const gainersData = await gainersResponse.json()
   dispatch(setMoversData(losersData,gainersData))
 }
+
+
 export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) => async dispatch => {
   const portfolioData = {"max":0,"min":Infinity}
   console.log("FHDHDH",resolution,unixStart,unixEnd)
@@ -93,7 +95,8 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
       if(prices[i].price < portfolioData.min)portfolioData.min = Number(prices[i].price.toFixed(0))
 
   }
-  portfolioData.data=prices
+  if(prices.length)portfolioData.data=prices
+  else portfolioData.data = ["no_data"]
   dispatch(setPortfolioData(portfolioData))
 }
 

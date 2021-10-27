@@ -101,7 +101,7 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     console.log("MADE ANOTHER API CALL GET STOCK DATA")
     stock.earnings = earningsData
     stock.price = priceData.c
-    stock.description = alphaAdvantageData.Description
+    stock.description = financialModelingData.description
     stock.marketCap = alphaAdvantageData.MarketCapitalization
     stock.peRatio = alphaAdvantageData.PERatio
     stock.dividendYield = alphaAdvantageData.DividendYield
