@@ -37,7 +37,7 @@ export const getMoversData = (apiKey) => async dispatch => {
 }
 
 
-export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) => async dispatch => {
+export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,tokens) => async dispatch => {
   const portfolioData = {"max":0,"min":Infinity}
   console.log("FHDHDH",resolution,unixStart,unixEnd)
   let prices = []
@@ -45,8 +45,8 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,token) =>
   let jMaxAllowed = Infinity
   let jMax = 0
   for(let i = 0 ; i< holdings.length;i++){
-    const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
-    console.log(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${token}`)
+    const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
+    console.log(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
     const data = await response.json()
 
     // console.log("PRICES: ",prices)

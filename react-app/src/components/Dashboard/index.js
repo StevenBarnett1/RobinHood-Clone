@@ -126,7 +126,7 @@ const Dashboard = () => {
                   allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
 
               }
-              dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+              dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys))
 
               let start = new Date()
               let end = new Date()
@@ -208,7 +208,7 @@ const Dashboard = () => {
     }
     useEffect(()=>{
         if(interval && unixEnd){
-        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, apiKeys))
         }
     },[interval,unixEnd,unixStart])
 
@@ -467,37 +467,37 @@ const handleOpenDots = (e,watchlist) => {
                 </div>
 
                 <div id = "dashboard-lower-container">
-                    <div id = "daily-gainers-title" className = "dashboard-titles">Daily Gainers</div>
+                    <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
                     <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-subtitle">Stocks with the biggest gains today.</div>
-                        <div id = "daily-gainers-icons">
+                        <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
+                        <div id = "daily-gainers-icons" className= "movers-icons">
                         {moversData && moversData.gainersData.map(data => {
                             return (
-                                <div key = {data.ticker} className = "daily-gainers-individual">
-                                    <div className = "daily-gainers-icons-title">{data.companyName}</div>
+                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
+                                    <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
                                     <div className = "daily-numbers-container">
                                         <div className = "daily-gainers-icons-value">{data.price}</div>
                                         <div className = "daily-gainers-icons-change">+{data.changesPercentage}</div>
                                     </div>
-                                </div>
+                                </NavLink>
                             )
                             })}
                         </div>
                     </div>
-                    <div id = "daily-losers-title" className = "dashboard-titles">Daily Losers</div>
+                    <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
                     <div id = "daily-losers-container">
-                        <div id = "daily-losers-subtitle">Stocks with the biggest losses today.</div>
-                        <div id = "daily-losers-icons">
+                        <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
+                        <div id = "daily-losers-icons" className= "movers-icons">
                             {moversData && moversData.losersData.map(data => {
                                 return (
-                                <div key = {data.ticker} className = "daily-losers-individual">
-                                    <div className = "daily-losers-icons-title">{data.companyName}</div>
+                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
+                                    <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
                                     <div className = "daily-numbers-container">
                                         <div className = "daily-losers-icons-value">{data.price}</div>
                                         <div className = "daily-losers-icons-change">-{data.changesPercentage}</div>
                                     </div>
 
-                                </div>
+                                </NavLink>
                                 )
                             })}
 

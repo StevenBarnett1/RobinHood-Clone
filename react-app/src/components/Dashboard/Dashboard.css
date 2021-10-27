@@ -240,31 +240,48 @@
 .dashboard-titles{
     font-size:24px;
     font-weight:bold;
-    padding-bottom:15px;
+    padding-bottom:20px;
+}
+
+.dashboard-movers-titles{
+    padding-bottom:10px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.movers-subtitle{
+    font-size:13px;
+    color:rgb(106, 114, 120);
+}
+
+.movers-individual{
+    display:flex;
+    flex-direction: column;
+    height:185px;
+    width:162px;
+    border: 1px solid lightgrey;
+    margin-right:15px;
+    justify-content: space-between;
+    cursor:pointer;
+    text-decoration: none;
+}
+
+.movers-title{
+    color:var(--color)
+}
+
+.movers-individual:hover{
+    background-color: var(--button-hover-background-color);
+}
+
+.movers-icons{
+    margin-top:15px;
+    margin-bottom:15px;
 }
 #news-title{
     border-bottom:1px solid lightgrey;
 }
-.daily-losers-individual{
-    display:flex;
-    flex-direction: column;
-    height:185px;
-    width:160px;
-    border: 1px solid lightgrey;
-    margin-right:15px;
-    justify-content: space-between;
-}
 
-.daily-gainers-individual{
-    display:flex;
-    flex-direction: column;
-    height:185px;
-    width:160px ;
-    border: 1px solid lightgrey;
-    margin-right:15px;
-    justify-content: space-between;
-    box-sizing: border-box;
-}
 
 #daily-gainers-icons{
     display:inline-flex;

@@ -327,7 +327,7 @@ const Stockpage = () => {
             dispatch(toggleModalView(true))
             dispatch(addModal("add-to-watchlist"))
         }
-
+        console.log("STOCK DATA: ",stockData)
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
@@ -418,7 +418,7 @@ const Stockpage = () => {
                     </div>
 
 
-                    <div id = "earnings-container">
+                    <div id = "earnings-container" style = {(stockData && stockData.earnings.length === 4) ? {display:"block"} : {display:"none"}}>
                         <h2 id = "earnings-title">Earnings</h2>
                         <div id = "earnings-lower-container">
                             <div id ="earnings-chart-container">
