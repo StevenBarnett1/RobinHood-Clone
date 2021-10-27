@@ -70,6 +70,8 @@ export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
     stock.price = priceData.c
+    let num = stock.price - candleData.c[0]
+    stock.change = (num / candleData.c[0])*100
     for(let i = 0; i< candleData.c.length;i++){
       const newObj = {}
       if(candleData.c[i] > stock.max)stock.max = candleData.c[i]

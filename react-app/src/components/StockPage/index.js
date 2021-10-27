@@ -418,7 +418,7 @@ const Stockpage = () => {
                     </div>
 
 
-                    <div id = "earnings-container" style = {(stockData && stockData.earnings.length === 4) ? {display:"block"} : {display:"none"}}>
+                    <div id = "earnings-container" style = {(estimatedScatterData && estimatedScatterData.length===4) ? {display:"block"}: {display:"none"} }>
                         <h2 id = "earnings-title">Earnings</h2>
                         <div id = "earnings-lower-container">
                             <div id ="earnings-chart-container">

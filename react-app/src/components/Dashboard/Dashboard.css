@@ -214,19 +214,38 @@
     color:rgb(0, 200, 5);
 }
 
-.news-icon-container{
-    border-bottom:1px solid lightgrey;
+.news-icon-navlink{
     color:var(--color);
     text-decoration:none;
+}
 
+.news-icon-container{
+    border-bottom:1px solid lightgrey;
+    padding-top:15px;
+    padding-bottom:15px;
+}
+
+.news-icon-headline{
+    margin-top:25px;
 }
 
 .news-icon-container:hover{
     color:red;
 }
 
-.news-icon-container:first-child{
-    border-top:1px solid lightgrey;
+.news-top-container{
+    display:flex;
+}
+
+.news-icon-source{
+    padding-right:8px;
+    font-weight:bold;
+}
+
+.movers-change{
+    font-size:13px;
+    margin-top:5px;
+    margin-left:15px;
 }
 
 .daily-gainers-icons-value, .daily-gainers-icons-change{
@@ -267,13 +286,25 @@
 }
 
 .movers-title{
-    color:var(--color)
+    color:var(--color);
+    font-size:13px;
+    margin-top:20px;
+    margin-left:15px;
+    font-weight:bold;
 }
-
+.movers-value{
+    font-size:24px;
+    font-weight:bold;
+    margin-top:20px;
+    margin-left:15px;
+}
 .movers-individual:hover{
     background-color: var(--button-hover-background-color);
 }
 
+.movers-numbers{
+    margin-bottom:20px;
+}
 .movers-icons{
     margin-top:15px;
     margin-bottom:15px;
@@ -319,7 +350,7 @@
 }
 
 #watchlist-plus-button:hover{
-    background-color: var(--button-hover-background-color);
+    color: rgb(0, 200, 5);
 
 }
 
@@ -442,4 +473,10 @@ margin-right:96px !important;
 #dashboard-lower-container{
     margin-top:35px;
     margin-left:15px;
+}
+
+#title-text{
+    padding-top:15px;
+    padding-bottom:15px;
+    padding-left:15px;
 }

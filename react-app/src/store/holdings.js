@@ -45,7 +45,6 @@ export default function holdingsReducer(state = initialState, action) {
     switch (action.type) {
       case SET_HOLDINGS:
           newState = action.payload
-          console.log("PAYLOAD: ", action.payload)
           return newState
       default:
         return newState;

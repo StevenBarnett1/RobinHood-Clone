@@ -20,8 +20,7 @@ const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn5
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = "c5riunqad3ifnpn54h4g"
 const finnhubClient = new finnhub.DefaultApi()
-const moverAPIKeys = ["ff567560f2ecaf815b36d6a3ce51a55f"]
-const nonWorkingMovers = [`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
+const moverAPIKeys = ["ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
 
 const months = {
     0:"JAN",
@@ -62,16 +61,13 @@ const Dashboard = () => {
 
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
-    console.log("PORTFOLIO DATA OUTSIDE USE EFFECT: ",portfolioData)
+
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
-    console.log(watchlistStockData)
     useEffect(()=>{
         if(watchlistStockData){
-            console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
             for(let symbol of Object.keys(watchlistStockData)){
-                console.log("AYYYY: ",watchlistStockData[symbol])
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
@@ -102,18 +98,38 @@ const Dashboard = () => {
         }
     },[watchlistStockData])
 
-    console.log("GRAPH DATA: ",graphData)
+
     useEffect(()=>{
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
-                    console.log("FINNHUB DATA: ",data, holding.symbol)
+
                     total += (Number(data.c) * Number(holding.shares))
                     setPortfolioValue(portfolioValue+total)
                 });
             })
             finnhubClient.marketNews("general", {}, (error, data, response) => {
+                const currentTime = new Date().getTime()/1000
+                data.sort((a,b)=>a.datetime > b.datetime)
+                console.log("DATA: ",data)
+                data.forEach(article => {
+                    let seconds = currentTime - article.datetime
+                    let timeInHours = seconds/3600
+                    let timeInDays
+                    let timeInMinutes
+                    if(timeInHours >= 24){
+                        timeInDays = timeInHours / 24
+                    }
+                    if(timeInDays)article.time = `${timeInDays} D`
+                    else {
+                        if(timeInHours < 1){
+                            timeInMinutes = timeInHours*60
+                            article.time = `${timeInMinutes.toFixed(0)} M`
+                        }
+                        else article.time = `${Math.floor(timeInHours).toFixed(0)} H ${((timeInHours % 1) * 60).toFixed(0)} M`
+                    }
+                })
                 setNews(data)
               });
               let allWatchListStocks = []
@@ -121,7 +137,6 @@ const Dashboard = () => {
               editBuyingPowerValue(user.buyingPower)
               dispatch(getMoversData(moverAPIKeys[Math.floor(Math.random()*moverAPIKeys.length)]))
               for(let watchlist of user.watchlists){
-                  console.log("WATCHLIST HERE: ",watchlist)
                   allWatchListStocks = [...allWatchListStocks,...watchlist.stocks.filter(stock => !allWatchListStockSymbols.includes(stock.symbol))]
                   allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
 
@@ -213,7 +228,7 @@ const Dashboard = () => {
     },[interval,unixEnd,unixStart])
 
 
-
+    console.log("NEWS: ",news)
     const timeFrameClick = (time,frame) => {
 
 
@@ -316,9 +331,6 @@ const Dashboard = () => {
     // if (!active || !tooltip)    return null
     if(payload && payload[0]){
 
-            console.log("AA: ",payload)
-            console.log("BB",payload[0])
-            console.log("CC",payload[0].payload)
             let year = payload[0].payload.dateTime.getFullYear()
             let month = months[payload[0].payload.dateTime.getMonth()]
             let day = payload[0].payload.dateTime.getDate()
@@ -329,7 +341,7 @@ const Dashboard = () => {
             let zone
             if(hours >= 12) zone = "PM"
             else zone = "AM"
-            console.log("INTERVAL: ",interval)
+
             setPortfolioValueDynamic(payload[0].payload.price)
             if(interval === "5"){
                 return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
@@ -378,7 +390,7 @@ const editListHandler = (watchlist) => {
 }
 
 const handleOpenDots = (e,watchlist) => {
-    console.log("WATCHLIST: ",watchlist)
+
     e.stopPropagation()
 
     if(dotsOpen === watchlist.id){
@@ -390,8 +402,7 @@ const handleOpenDots = (e,watchlist) => {
 
     useEffect(()=>{
         if(graphData.length && graphData[0] !== "no_data"){
-            console.log("HERE GREAPH: ",graphData)
-            console.log("HEREEEEE: ",graphData[graphData.length-1].value > graphData[0].value, graphData[graphData.length-1].value,graphData[0].value)
+
             if(graphData[graphData.length-1].price > graphData[0].price){
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
@@ -419,7 +430,6 @@ const handleOpenDots = (e,watchlist) => {
               <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
             </LineChart>))
         }
-        console.log("PORTFOLIO DATA: ",portfolioData)
     },[graphData])
 
 
@@ -475,9 +485,9 @@ const handleOpenDots = (e,watchlist) => {
                             return (
                                 <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
                                     <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container">
-                                        <div className = "daily-gainers-icons-value">{data.price}</div>
-                                        <div className = "daily-gainers-icons-change">+{data.changesPercentage}</div>
+                                    <div className = "daily-numbers-container movers-numbers">
+                                        <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                        <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
                                     </div>
                                 </NavLink>
                             )
@@ -492,9 +502,9 @@ const handleOpenDots = (e,watchlist) => {
                                 return (
                                 <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
                                     <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container">
-                                        <div className = "daily-losers-icons-value">{data.price}</div>
-                                        <div className = "daily-losers-icons-change">-{data.changesPercentage}</div>
+                                    <div className = "daily-numbers-container movers-numbers">
+                                        <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                        <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
                                     </div>
 
                                 </NavLink>
@@ -508,13 +518,15 @@ const handleOpenDots = (e,watchlist) => {
                         <div id = "news-icons-container">
                             {news && news.map(post => {
                                 return (
-                                    <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-container">
-                                        <div className = "news-icon-source">{post.source}</div>
-                                        <div className = "news-icon-date">{post.datetime*1000}</div>
+                                    <div className = "news-icon-container">
+                                    <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-navlink">
+                                        <div className = "news-top-container">
+                                            <div className = "news-icon-source">{post.source}</div>
+                                            <div className = "news-icon-date">{post.time}</div>
+                                        </div>
                                         <div className = "news-icon-headline">{post.headline}</div>
-                                        <div className = "news-icon-symbol"></div>
-                                        <div className = "news-icon-change"></div>
                                     </NavLink>
+                                    </div>
                                 )
                             })}
 
@@ -560,7 +572,7 @@ const handleOpenDots = (e,watchlist) => {
                                                 <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
                                                 <div className = "watchlist-stock-price-container">
                                                     <div className = "watchlist-stock-price">{watchlistStockData && watchlistStockData[stock.symbol].price}</div>
-                                                    <div className = "watchlist-stock-change"></div>
+                                                    <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
                                         )
