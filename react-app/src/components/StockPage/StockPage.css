@@ -82,3 +82,17 @@
 #related-stocks-lower-container{
     margin-bottom:25px;
 }
+
+#stock-purchase-title{
+    display:flex;
+}
+#stock-purchase-container{
+    height:415px;
+    border:1px solid black;
+}
+#stock-purchase-container > div{
+    cursor:pointer;
+}
+#stock-purchase-container > div:hover{
+
+}

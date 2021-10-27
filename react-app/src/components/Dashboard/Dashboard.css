@@ -19,10 +19,24 @@
     align-items: center;
     justify-content: center;
     cursor:pointer;
+    margin-bottom:35px;
 }
 
 #buying-power-deposit-button:hover{
     background-color: rgb(1, 175, 7);
+}
+
+#dashboard-buying-power-value-visible{
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s linear;
+}
+
+#dashboard-buying-power-value-invisible{
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1s, opacity 1s linear;
+
 }
 
 #trending-list-icons{
@@ -39,6 +53,9 @@
 #watchlist-outer-container{
     display:flex;
     flex-direction: column;
+    height:900px;
+    position:sticky;
+    top:65px;
 }
 #watchlist-outer-title{
     border-bottom:1px solid lightgrey;
@@ -87,6 +104,15 @@
 
 }
 
+#dashboard-buying-power-container{
+
+}
+
+#dashboard-buying-power-container-inner{
+    width:90%;
+    margin:auto;
+}
+
 #dashboard-buying-power-container-right{
     width:50%;
     margin-left:35px;
@@ -96,7 +122,11 @@
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey;
+    /* border-bottom:1px solid lightgrey; */
+    font-weight:bold;
+    font-size:16px;
+    padding-bottom:25px;
+    padding-top:25px;
 }
 
 #dashboard-buying-power-container-bottom{
@@ -130,13 +160,18 @@
     width:230px;
     display: flex;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey
+}
+
+#dashboard-graph-container{
+    border-bottom:1px solid lightgrey;
+    padding-bottom:10px;
 }
 
 .dashboard-graph-timeframe-button{
     border:none;
     background-color: transparent;
     cursor: pointer;
+    font-weight:bold;
 }
 
 .dashboard-graph-timeframe-button:hover{
@@ -327,4 +362,14 @@ margin-right:96px !important;
 
 #stock-disclosure-navlink{
     text-decoration: none;
+}
+
+#brokerage-cash-container{
+    padding-top:15px;
+    padding-bottom:15px;
+}
+
+#buying-power-container{
+    padding-top:15px;
+    padding-bottom:15px;
 }

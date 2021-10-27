@@ -163,6 +163,7 @@ export const addWatchlistThunk = (name,userId) => async dispatch => {
     body:JSON.stringify({name,user_id:userId})
   })
   const data = await response.json()
+  dispatch(setUser(data))
 }
 
 export const deleteWatchlistThunk = (id) => async dispatch => {
@@ -183,6 +184,18 @@ export const editWatchlistThunk = (id,userId,name) => async dispatch => {
       'Content-Type': 'application/json'
     },
     body:JSON.stringify({user_id:userId,name})
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
+}
+
+export const addToWatchlist = (id,symbol) => async dispatch => {
+  const response = await fetch(`/api/watchlists/${id}`,{
+    method:"POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify({symbol})
   })
   const data = await response.json()
   dispatch(setUser(data))

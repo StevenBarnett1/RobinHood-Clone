@@ -9,7 +9,7 @@ import {BiDotsHorizontal} from "react-icons/bi"
 import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
-import { addHolding } from "../../store/holdings";
+import holdingsReducer, { addHolding, sellHolding } from "../../store/holdings";
 import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
@@ -60,6 +60,7 @@ const Stockpage = () => {
     const [yMin,setYmin] = useState(Infinity)
     const [render,forceRerender] = useState("")
     const [investType,setInvestType] = useState("shares")
+    const [buySell,setBuySell] = useState("buy")
     const [investValue,setInvestValue] = useState("")
 
     const user = useSelector(state=>state.session.user)
@@ -282,19 +283,31 @@ const Stockpage = () => {
 
     },[graphData])
 
-    const submitOrder = () => {
-        if(investValue && investType === "shares"){
+    const submitOrder = (type) => {
+        if(investValue && investType === "shares" && type === "buy"){
             if(investValue*stockData.price > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,stockData.price*investValue,investValue,user.id))
+            dispatch(addHolding(stockData.symbol,investValue,user.id))
             dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
             //dispatch to decrement users buying power, add number of shares to holdings
-        } else if (investValue && investType === "dollars"){
+        } else if (investValue && investType === "dollars" && type === "buy"){
             if(investValue > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,investValue,investValue/stockData.price,user.id))
+            dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
             dispatch(addBuyingPower(user.id,-investValue))
+        } else if (investValue && investType === "shares" && type === "sell"){
+            if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
+                dispatch(sellHolding(stockData.symbol,investValue,user.id))
+                dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
+            }
+
+        } else if (investValue && investType === "dollars" && type === "sell"){
+            if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
+                dispatch(sellHolding(stockData.symbol,investValue/stockData.price,user.id))
+                dispatch(addBuyingPower(user.id,investValue))
+            }
+
         }
     }
-
+    console.log("USER: ",user)
     console.log("ACTUAL SCATTER: ",actualScatterData)
     console.log("eSTIMATED SCATTER: ",estimatedScatterData)
     let scatterChart = (
@@ -310,6 +323,10 @@ const Stockpage = () => {
     </ScatterChart>
     )
 
+        const addToList = (symbol) => {
+            dispatch(toggleModalView(true))
+            dispatch(addModal("add-to-watchlist"))
+        }
 
     return (
         <div id = "stockpage-outer-container">
@@ -431,11 +448,14 @@ const Stockpage = () => {
             </div>
             <div id = "stockpage-right-container">
                 <div id = "stock-purchase-container">
-                    <div id = "stock-purchase-title">Buy {stockData && stockData.symbol}</div>
+                    <div id = "stock-purchase-titles">
+                        <div id = "stock-buy-title" onClick = {()=>setBuySell('buy')}>Buy {stockData && stockData.symbol}</div>
+                        <div id = "stock-sell-title" onClick = {()=>setBuySell('sell')}>Sell {stockData && stockData.symbol}</div>
+                    </div>
                     <div id = "stock-purchase-middle">
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
-                                <div>Invest In</div>
+                                <div>{buySell === "buy" ? "Invest In" : "Sell In"}</div>
                                 <select value = {investType} onChange = {e=>setInvestType(e.target.value)}>
                                     <option value = "shares" selected>Shares</option>
                                     <option value = "dollars">Dollars</option>
@@ -445,8 +465,15 @@ const Stockpage = () => {
                                 <div>{investType === "shares" ? 'Shares' : 'Amount'}</div>
                                 <input value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
+                                {investType === "shares" ? (
+                                    <div id = "market-price-container">
+                                        <div>Market Price</div>
+                                        <div>{stockData && stockData.price}</div>
+                                    </div>
+                                ) : null}
+
                             <div id = "est-quantity-container">
-                                <div>{investType === "shares" ? 'Estimated Cost' : 'Est. Quantity' }</div>
+                                <div>{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
                                     <div>{stockData && stockData.price * investValue}</div>
                                 ) : (
@@ -454,16 +481,17 @@ const Stockpage = () => {
                                 )}
                             </div>
                         </div>
-                        <button id = "review-order-button" onClick = {submitOrder} >Review Order</button>
+                        <button id = "review-order-button" onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
                     <div id = "stock-purchase-lower">
                         ${user && user.buying_power} buying power available
                     </div>
                 </div>
                 <div id = "add-to-list-container">
-                    <button id = "add-to-list-button">Add to Lists</button>
+                    <button onClick = {()=>addToList(stockData.symbol)}id = "add-to-list-button">Add to Lists</button>
                 </div>
             </div>
+            <FormModal symbol={stockData && stockData.symbol}/>
         </div>
     )
 }

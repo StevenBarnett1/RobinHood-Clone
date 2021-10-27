@@ -1,6 +1,6 @@
 const SET_HOLDINGS = "stocks/SET_HOLDINGS"
 
-export const addHolding = (symbol,price,shares,userId) => async dispatch =>{
+export const addHolding = (symbol,shares,userId) => async dispatch =>{
     const response = await fetch("/api/holdings",{
         method:"POST",
         headers:{
@@ -20,6 +20,16 @@ export const addHolding = (symbol,price,shares,userId) => async dispatch =>{
       } else {
         return ['An error occurred. Please try again.']
       }
+}
+
+export const sellHolding = (symbol,shares,userId) => async dispatch => {
+    const response = await fetch("/api/holdings",{
+      method:"PUT",
+      headers:{
+          "Content-Type":"application/json"
+      },
+      body:JSON.stringify({symbol:symbol.toUpperCase(),user_id:userId,shares})
+  })
 }
 
 export const setHoldings = (holdings) => {

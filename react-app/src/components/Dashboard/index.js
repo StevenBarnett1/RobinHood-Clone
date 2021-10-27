@@ -443,26 +443,28 @@ const handleOpenDots = (e,watchlist) => {
                         </div>
                     </div>
                     <div id = "dashboard-buying-power-container"  >
-                        <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
-                            <div id = "dashboard-buying-power-text">Buying Power</div>
-                            <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
-                        </div>
-                        <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
-                            <div id = "dashboard-buying-power-container-left">
-                                <div id = "brokerage-cash-container">
-                                    <div>Brokerage Cash</div>
-                                    <div>Infinity</div>
-                                </div>
-                                <div id = "buying-power-container">
-                                    <div>Buying Power</div>
-                                    <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
-                                </div>
-                                <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-                                <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
-
+                        <div id = "dashboard-buying-power-container-inner">
+                            <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
+                                <div id = "dashboard-buying-power-text">Buying Power</div>
+                                <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                             </div>
+                            <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
+                                <div id = "dashboard-buying-power-container-left">
+                                    <div id = "brokerage-cash-container">
+                                        <div>Brokerage Cash</div>
+                                        <div>Infinity</div>
+                                    </div>
+                                    <div id = "buying-power-container">
+                                        <div>Buying Power</div>
+                                        <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                                    </div>
+                                    <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
+                                    <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
 
-                            <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase. Learn More</div>
+                                </div>
+
+                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase. Learn More</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -476,7 +478,7 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-subtitle"></div>
                         <div id = "daily-gainers-icons">
-                        {moversData && moversData.gainersData.map(data => {
+                        {/* {moversData && moversData.gainersData.map(data => {
                             return (
                                 <div key = {data.ticker} className = "daily-gainers-individual">
                                     <div className = "daily-gainers-icons-title">{data.companyName}</div>
@@ -486,14 +488,14 @@ const handleOpenDots = (e,watchlist) => {
                                     </div>
                                 </div>
                             )
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-subtitle"></div>
                         <div id = "daily-losers-icons">
-                            {moversData && moversData.losersData.map(data => {
+                            {/* {moversData && moversData.losersData.map(data => {
                                 return (
                                 <div key = {data.ticker} className = "daily-losers-individual">
                                     <div className = "daily-losers-icons-title">{data.companyName}</div>
@@ -504,7 +506,7 @@ const handleOpenDots = (e,watchlist) => {
 
                                 </div>
                                 )
-                            })}
+                            })} */}
 
                         </div>
                     </div>
@@ -534,6 +536,7 @@ const handleOpenDots = (e,watchlist) => {
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
                         <form onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
                         <input placeholder = 'Watchlist Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                        <div onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
                         <input type="submit" value = "Submit"/>
                         </form>
 
