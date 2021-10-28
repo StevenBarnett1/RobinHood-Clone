@@ -443,24 +443,23 @@ const Stockpage = () => {
                             </div>
                         </div>
                     </div>
-                    <div id = "related-stocks-container">
+                    <div id = "related-stocks-container" style = {(stockData && stockData.peers) ? (stockData.peers.length ? {} : {display:"none"}) : {}}>
                         <h2 id = "related-stocks-title">People Also Own</h2>
                         <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own {stockData && stockData.symbol}. It’s not an investment recommendation.</div>
                         <div id = "related-stocks-lower-container">
-                            {(stockData && stockData.peers) ? stockData.peers.map(peer => {
-                                return (
+                            {(stockData && stockData.peers) ? stockData.peers.map(peer => (
+
                                     <NavLink to = {`/stocks/${peer.symbol}`} key = {peer.symbol} className = "peer-container">
                                         <div className = "peer-title">{peer.symbol}</div>
                                         <div className = "peer-numbers-container">
                                             <div className = "peer-value">${peer.price}</div>
                                         </div>
                                     </NavLink>
-                                )
-                            }): null}
+                        )): null}
                         </div>
 
                     </div>
-                    <div id = "stockpage-disclosure">All investments involve risks, including the loss of principal. Securities trading offered through Robinhood Financial LLC, a registered broker-dealer and Member SIPC.</div>
+                    <div id = "stockpage-disclosure" style = {(stockData && stockData.peers) ? (stockData.peers.length ? {} : {marginTop:"60px"}) : {}}>All investments involve risks, including the loss of principal. Securities trading offered through Robinhood Financial LLC, a registered broker-dealer and Member SIPC.</div>
                     {/* <NavLink id = "stock-disclosure-navlink" to = {{pathname:`https://robinhood.com/stocks/${stockData && stockData.symbol}#`}} target="_blank"> Full disclosure</NavLink> */}
                 </div>
             </div>

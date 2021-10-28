@@ -39,7 +39,7 @@ function FormModal(props) {
     <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit}>
       <div id = "edit-watchlist-form-upper">
         <div id = "edit-watchlist-title">Edit List</div>
-        <div id = "exit-edit-watchlist"> <ImCross/> </div>
+        <div id = "exit-edit-watchlist" onClick = {()=>dispatch(toggleModalView(false))}> <ImCross/> </div>
       </div>
       <input id = "edit-watchlist-input" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input"></input>
       <input id = "save-edit-watchlist" value = "Save" type = "submit"></input>

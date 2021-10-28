@@ -7,9 +7,11 @@
 
 #edit-watchlist-title{
     font-weight:bold;
-    font-size:24px;
+    font-size:18px;
 }
-
+#modal-content{
+    border-radius:3px;
+}
 #exit-edit-watchlist{
     cursor:pointer;
 }
@@ -20,7 +22,7 @@
     margin-top:20px;
     align-items: center;
     justify-content: space-between;
-    margin-bottom:30px;
+    margin-bottom:25px;
 }
 
 #edit-watchlist-input{

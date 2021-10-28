@@ -153,10 +153,12 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
 
       const newObj = {}
       const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+
       const peerPriceData = await peerPriceResponse.json()
+      console.log("PEER PRICE DATA: ",peerPriceData)
       newObj.symbol = peer
       newObj.price = peerPriceData.c
-      if(peer.toUpperCase() !== symbol.toUpperCase())stock.peers.push(newObj)
+      if(peer.toUpperCase() !== symbol.toUpperCase() && newObj.price)stock.peers.push(newObj)
     }
 
     for(let i = 0; i< candleData.c.length;i++){
