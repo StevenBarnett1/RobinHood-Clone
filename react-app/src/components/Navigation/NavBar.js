@@ -3,14 +3,20 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import LogoutButton from '../auth/LogoutButton';
 import "./Navigation.css"
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Search from '../Search';
 import {HiOutlineLogout} from "react-icons/hi"
+import {BsSun} from "react-icons/bs"
 import svgfile from "./robinhood.svg";
+import { setTheme } from '../../store/session';
 
 const NavBar = () => {
-
+  const dispatch = useDispatch()
   const user = useSelector(state => state.session.user)
+
+  const changeTheme = () => {
+    dispatch(setTheme())
+  }
 
   return (
     <nav id = "navbar-outer-container">
@@ -40,7 +46,11 @@ const NavBar = () => {
           <div className = "navbar-inner-container">
             <NavLink to = "/"><img id = "robinhood-logo" src={svgfile} width = {80} height = {80} alt="some file" /></NavLink>
             <Search/>
-            <LogoutButton />
+            <div id = "navbar-right-container">
+              <BsSun onClick = {()=>changeTheme()} style = {{cursor:"pointer",fontSize:"20px",marginRight:"25px"}}/>
+              <LogoutButton />
+            </div>
+
           </div>
         )}
     </nav>

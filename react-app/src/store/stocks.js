@@ -156,7 +156,7 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
       const peerPriceData = await peerPriceResponse.json()
       newObj.symbol = peer
       newObj.price = peerPriceData.c
-      stock.peers.push(newObj)
+      if(peer.toUpperCase() !== symbol.toUpperCase())stock.peers.push(newObj)
     }
 
     for(let i = 0; i< candleData.c.length;i++){

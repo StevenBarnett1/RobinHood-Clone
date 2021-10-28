@@ -16,10 +16,9 @@ const removeUser = () => ({
   type: REMOVE_USER,
 })
 
-export const setTheme = (theme) => {
+export const setTheme = () => {
   return {
-    type: "TOGGLE_THEME",
-    payload: theme
+    type: TOGGLE_THEME
   }
 }
 
@@ -62,10 +61,6 @@ export const addModalInfo = info => {
     payload:info
   }
 }
-
-
-
-const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
 
 
 
@@ -201,6 +196,7 @@ export const addToWatchlist = (id,symbol) => async dispatch => {
   dispatch(setUser(data))
 }
 
+const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
 
 export default function reducer(state = initialState, action) {
   const newState = {...state}
@@ -212,7 +208,11 @@ export default function reducer(state = initialState, action) {
         newState.user = null
         return newState
       case TOGGLE_THEME:
-        newState.theme=action.payload
+        console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
+        if(newState.theme === "light"){
+          newState.theme = "dark"
+        } else newState.theme = "light"
+        console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
         return newState
       case ADD_MODAL_TYPE:{
         newState.modalType=action.payload

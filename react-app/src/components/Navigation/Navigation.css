@@ -4,11 +4,12 @@
     box-shadow:0 4px 20px -20px grey;
     display:flex;
     align-items: center;
-    position: sticky;
+    position: fixed;
     top:0px;
     background-color: white;
     z-index:10;
     padding:0px 15px;
+    background-color: var(--background-color);
 }
 
 .navbar-inner-container{
