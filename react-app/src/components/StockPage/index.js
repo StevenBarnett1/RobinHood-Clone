@@ -93,7 +93,6 @@ const Stockpage = () => {
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
         }
     },[stockData])
-
     const CustomTooltip = ({ active, payload }) => {
         // if (!active || !tooltip)    return null
         if(payload && payload[0]){
@@ -344,6 +343,7 @@ const Stockpage = () => {
             dispatch(addModal("add-to-watchlist"))
         }
         console.log("STOCK DATA: ",stockData)
+        console.log("PERFORMANCE IN STOCK PAGE: ",performance)
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
@@ -510,7 +510,7 @@ const Stockpage = () => {
                 </div>
                 </div>
             </div>
-            <FormModal symbol={stockData && stockData.symbol}/>
+            <FormModal symbol={stockData && stockData.symbol} performance = {performance}/>
         </div>
     )
 }

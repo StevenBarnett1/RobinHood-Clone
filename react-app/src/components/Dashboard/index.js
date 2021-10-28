@@ -328,10 +328,6 @@ const Dashboard = () => {
     }
 
 
-    const deposit = (value) => {
-        setDepositClick(value)
-        if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
-    }
 
     const CustomTooltip = ({ active, payload }) => {
     // if (!active || !tooltip)    return null
@@ -370,6 +366,11 @@ const chartHoverFunction = (e) => {
     if(e.activePayload){
         setPortfolioValueDynamic(e.activePayload[0].payload.price);
     }
+}
+
+const deposit = (value) => {
+    setDepositClick(value)
+    if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
 }
 
 const handleDotsClick = () => {
@@ -476,10 +477,13 @@ const handleOpenDots = (e,watchlist) => {
                                         <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                                     </div>
                                     <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-                                    <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+
 
                                 </div>
-                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase.</div>
+                                <div id = "dashboard-buying-power-container-right">
+                                    <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
+                                    <input type = "text" placeholder = "Deposit Amount" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+                                </div>
                         </div>
                     </div>
                 </div>

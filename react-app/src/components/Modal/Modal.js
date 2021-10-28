@@ -18,8 +18,9 @@ function FormModal(props) {
   const modalType= useSelector((state)=>state.session.modalType)
   const modalView = useSelector(state => state.session.modalView)
   const modalInfo = useSelector(state => state.session.modalInfo)
+  const theme = useSelector(state=> state.session.theme)
   let userForm
-  console.log("PROPS: ",props)
+  console.log("PROPS: ",props,)
   const handleEditSubmit = () => {
     if(WatchlistInputValue){
       dispatch(editWatchlistThunk(modalInfo.id,user.id,WatchlistInputValue))
@@ -63,7 +64,6 @@ function FormModal(props) {
     }
 
   }
-
   if (modalView && modalType === "edit-watchlist"){
     userForm = (
     <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit}>
@@ -77,7 +77,7 @@ function FormModal(props) {
       )
   } else if (modalView && modalType === "add-to-watchlist"){
     userForm = (
-      <div id = "add-to-watchlist-outer">
+      <div id = "add-to-watchlist-outer" style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
           <div id = "add-to-watchlist-upper">
               <div id = "add-to-watchlist-title">Add {props.symbol.toUpperCase()} to Your Lists</div>
               <div id = "exit-add-to-watchlist" onClick = {()=>dispatch(toggleModalView(false))}> <ImCross/> </div>
@@ -93,26 +93,26 @@ function FormModal(props) {
 
           </div>
         ) : (
-          <div className = "add-to-watchlist-individual" id = "modal-create-watchlist" onClick = {()=>setAddWatchlist(true)}>
-            <div className = "square-box square-box-add"><AiOutlinePlus style = {{paddingRight:"100px",marginRight:"20px"}}/></div>
+          <div className = {theme === "light" ? "add-to-watchlist-individual-light" : "add-to-watchlist-individual-dark"} id = "modal-create-watchlist" onClick = {()=>setAddWatchlist(true)}>
+            <div style = {props.performance ? {backgroundColor:"rgb(216, 245, 216)"} : {backgroundColor:"rgb(252, 234, 225)"}} className = "square-box square-box-add"><AiOutlinePlus style = {{fontSize:"30px"}}/></div>
             <div>Create New List</div>
             </div>
         )}
 
         {user.watchlists && user.watchlists.map(watchlist => {
 
-          return (<div key = {watchlist.id} className = "add-to-watchlist-individual" onClick = {()=>{changeCheckedBoxes(watchlist)}}>
-            <div className = {checkedBoxes.includes(watchlist.id) ? "checkmark-box-container-checked" : "checkmark-box-container-unchecked"} >
+          return (<div key = {watchlist.id} className = {theme === "light" ? "add-to-watchlist-individual-light" : "add-to-watchlist-individual-dark"} onClick = {()=>{changeCheckedBoxes(watchlist)}}>
+            <div className = {checkedBoxes.includes(watchlist.id) ? "checkmark-box-container-checked" : "checkmark-box-container-unchecked"} style = {props.performance  ? {border:"1px solid rgb(0, 200, 5)"} : { border:"1px solid rgb(255, 80, 0)"}}>
               {checkedBoxes.includes(watchlist.id) ? (<GrCheckmark/>) : null}
             </div>
-            <div className = "square-box" ></div>
+            <div className = "square-box" style = {props.performance ? {backgroundColor:"rgb(216, 245, 216)"} : {backgroundColor:"rgb(252, 234, 225)"}}></div>
             <div className = "watchlist-data-container">
               <div className ="watchlist-list-name">{watchlist.name}</div>
-              <div className = "watchlist-stock-length">{watchlist.stocks.length} items</div>
+              <div className = "watchlist-stock-length" style = {theme === "dark" ? {color:"white"}: {}}>{watchlist.stocks.length} items</div>
             </div>
             </div>)
         })}
-        <button onClick = {()=>handleAddToWatchlist()} id = "add-to-watchlist-save">Save Changes</button>
+        <button onClick = {()=>handleAddToWatchlist()} id = {props.performance ? "add-to-watchlist-save-good" : "add-to-watchlist-save-bad"} style = {theme === "light" ? {color:"white"} : {color:"black"}}>Save Changes</button>
         </div>
       </div>
     )

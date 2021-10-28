@@ -44,6 +44,15 @@
     background-color: var(--good-stock-dark-hover);
 }
 
+#buying-power-deposit-input{
+    margin-top:83px;
+    height:49px;
+    width:290px;
+    background-color: var(--input-watchlist-background-color);
+    border:none;
+    border-radius: 5px;
+}
+
 #buying-power-deposit-button-bad:hover{
     background-color: var(--bad-stock-dark-hover);
 }
@@ -160,6 +169,10 @@
     width:50%;
     margin-left:35px;
     padding-top:20px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height:100%;
 
 }
 #dashboard-buying-power-container-heading-open{

@@ -274,20 +274,20 @@ margin-right:79px !important;
     font-size:13px;
 }
 #stock-buy-title-good{
-    padding-left: 20px;
+    padding-right: 25px;
     padding-bottom: 15px;
     padding-top: 15px;
-    padding-right:32px;
     font-weight:bold;
+    padding-left:25px;
     border-bottom-color: var(--good);
 }
 
 #stock-buy-title-bad{
-    padding-left: 20px;
+    padding-right: 28px;
     padding-bottom: 15px;
     padding-top: 15px;
-    padding-right:32px;
     font-weight:bold;
+    padding-left:32px;
     border-bottom-color: var(--bad);
 }
 
@@ -307,11 +307,11 @@ margin-right:79px !important;
 }
 
 #stock-sell-title-good{
-    padding-right: 28px;
+    padding-right: 25px;
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight:bold;
-    padding-left:32px;
+    padding-left:25px;
     border-bottom-color: var(--good);
 }
 
