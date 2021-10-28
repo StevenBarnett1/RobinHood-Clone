@@ -7,7 +7,6 @@
 #stockpage-left-container{
     width:730px;
     margin:auto;
-    border:1px solid black;
     margin-right:47px;
 }
 
@@ -36,7 +35,6 @@
 
 #stockpage-right-container{
     width:275px;
-    border:1px solid black;
 }
 
 .peer-container{
@@ -89,7 +87,8 @@
 }
 #stock-purchase-container{
     height:415px;
-    border:1px solid black;
+    border:1px solid var(--border-color);
+    /* transition: height 0.1s linear */
 }
 #stock-purchase-container > div{
     cursor:pointer;
@@ -258,14 +257,14 @@ margin-right:79px !important;
     font-size:13px;
 }
 #stock-buy-title{
-    padding-left: 15px;
+    padding-left: 25px;
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight:bold;
 }
 
 #stock-sell-title{
-    padding-right: 15px;
+    padding-right: 25px;
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight:bold;
@@ -327,7 +326,7 @@ margin-right:79px !important;
 #est-quantity-container{
     display:flex;
     justify-content: space-between;
-    margin-bottom:15px;
+    margin-bottom:35px;
 }
 
 #est-quantity-label{
@@ -348,4 +347,45 @@ margin-right:79px !important;
     justify-content: center;
     align-items: center;
     margin:auto;
+    color:var(--opposite-color);
+    border:none;
+    border-radius: 5px;
+    font-weight:bold;
+}
+
+#stock-purchase-lower{
+    margin-top:35px;
+    padding-top:15px;
+    border-top:1px solid var(--border-color);
+    color: rgb(255, 80, 0);
+    font-size:13px;
+    text-align: center;
+}
+
+#add-to-list-container > button {
+    height:48px;
+    width:228px;
+    font-weight:bold;
+    border-radius:5px;
+    border: 1px solid rgb(255, 80, 0);
+    background-color: inherit;
+    color: rgb(255, 80, 0);
+    margin-top:30px;
+    cursor:pointer;
+}
+#add-to-list-container{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+#add-to-list-container > button:hover{
+    background-color: rgb(253, 151, 104);
+}
+
+#stockpage-right-inner-container{
+    position:sticky;
+    top:75px;
 }

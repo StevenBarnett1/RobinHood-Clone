@@ -7,6 +7,7 @@ import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
 import {BsGear, BsFillXCircleFill} from "react-icons/bs"
+import {AiOutlinePlus} from "react-icons/ai"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
 import holdingsReducer, { addHolding, sellHolding } from "../../store/holdings";
@@ -454,7 +455,8 @@ const Stockpage = () => {
                 </div>
             </div>
             <div id = "stockpage-right-container">
-                <div id = "stock-purchase-container">
+                <div id = "stockpage-right-inner-container">
+                <div id = "stock-purchase-container" style = {investType === "shares" ? {} : {height:"365px"}}>
                     <div id = "stock-purchase-titles">
                         <div id = "stock-buy-title" onClick = {()=>setBuySell('buy')}>Buy {stockData && stockData.symbol}</div>
                         <div id = "stock-sell-title" onClick = {()=>setBuySell('sell')}>Sell {stockData && stockData.symbol}</div>
@@ -468,21 +470,21 @@ const Stockpage = () => {
                                     <option value = "dollars">Dollars</option>
                                 </select>
                             </div>
-                            <div id = "amount-container">
+                            <div id = "amount-container" style = {investType === "shares" ? {borderBottom:"none"} : {marginBottom:"15px", paddingBottom:"7px", borderBottom:"1px solid var(--border-color)"}}>
                                 <div id = "amount-label">{investType === "shares" ? 'Shares' : 'Amount'}</div>
                                 <input id = "amount-value" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
                                 {investType === "shares" ? (
                                     <div id = "market-price-container">
                                         <div id ="market-price-label">Market Price</div>
-                                        <div id ="market-price-value">${stockData && stockData.price}</div>
+                                        <div id ="market-price-value">{(stockData && stockData.price) ? `$${stockData.price}`: "-"}</div>
                                     </div>
                                 ) : null}
 
                             <div id = "est-quantity-container">
                                 <div id = "est-quantity-label">{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
-                                    <div id = "est-quantity-value">${stockData && stockData.price * investValue}</div>
+                                    <div id = "est-quantity-value">{(stockData && stockData.price) ? `$${stockData.price * investValue}` : "-"}</div>
                                 ) : (
                                     <div id = "est-quantity-value">{stockData && investValue / stockData.price }</div>
                                 )}
@@ -491,11 +493,12 @@ const Stockpage = () => {
                         <button id = "review-order-button" onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
                     <div id = "stock-purchase-lower">
-                        ${user && user.buying_power} buying power available
+                        ${user && user.buying_power.toFixed(2)} buying power available
                     </div>
                 </div>
                 <div id = "add-to-list-container">
-                    <button onClick = {()=>addToList(stockData.symbol)}id = "add-to-list-button">Add to Lists</button>
+                    <button onClick = {()=>addToList(stockData.symbol)}id = "add-to-list-button"><AiOutlinePlus/> Add to Lists</button>
+                </div>
                 </div>
             </div>
             <FormModal symbol={stockData && stockData.symbol}/>
