@@ -114,7 +114,8 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     stock.revenue = alphaAdvantageData.RevenueTTM === "None" ? "-" : alphaAdvantageData.RevenueTTM
     stock.companyName = financialModelingData.companyName
     stock.volumeAverage = financialModelingData.volAvg
-    stock.employees = financialModelingData.fullTimeEmployees === "" ? "-" : financialModelingData.fullTimeEmployees
+    stock.employees = financialModelingData.fullTimeEmployees === null ? "-" : financialModelingData.fullTimeEmployees
+    console.log("THIS IS WHAT EMPLOYEES RETURNS: ", financialModelingData.fullTimeEmployees)
     if(financialModelingData.ceo){
       stock.ceo = financialModelingData.ceo.split(" ").slice(1).join(" ")
     } else stock.ceo = "-"
@@ -123,7 +124,7 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     else if (!financialModelingData.state)stock.headquarters = financialModelingData.city
     else stock.headquarters = `${financialModelingData.city}, ${financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()}`
     console.log("FINANCIAL MODELING DATA: ",financialModelingData,financialModelingData.state)
-
+    if(stock.dividendYield == 0 )stock.dividendYield = "-"
     console.log("CANDLE DATA: ",candleData, `https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
     let estimated = []
     let actual = []
@@ -144,6 +145,7 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     stock.actual = actual
 
     for(let peer of peerData){
+
       const newObj = {}
       const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
       const peerPriceData = await peerPriceResponse.json()

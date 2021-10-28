@@ -14,7 +14,6 @@
 #stockpage-upper-container{
     display:flex;
     flex-direction: column;
-    border-bottom:1px solid lightgrey
 }
 
 
@@ -22,7 +21,6 @@
     width:230px;
     display: flex;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey
 }
 
 .stockpage-graph-timeframe-button{
@@ -45,10 +43,13 @@
     display:flex;
     flex-direction: column;
     height:185px;
-    width:160px;
-    border: 1px solid lightgrey;
+    width:168px;
+    border: 1px solid var(--border-color);
     margin-right:15px;
     justify-content: space-between;
+    cursor:pointer;
+    text-decoration: none;
+    border-radius:5px;
 }
 
 #related-stocks-lower-container{
@@ -95,4 +96,256 @@
 }
 #stock-purchase-container > div:hover{
 
+}
+
+#stockpage-graph-container{
+    padding-bottom:10px;
+    border-bottom:1px solid var(--border-color)
+}
+
+#about-title{
+    font-weight:bold;
+    font-size:24px;
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-color)
+}
+
+#about-container{
+    margin-top:60px;
+}
+
+#about-description{
+    padding-top:25px;
+    line-height: 24px;
+    height:100px;
+    overflow-y: scroll;
+}
+
+.about-subtitle{
+    font-weight:bold;
+}
+
+.key-statistic{
+    font-weight:bold;
+}
+
+#key-statistics-title{
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-color)
+}
+
+
+#about-container{
+    margin-bottom:0px;
+}
+
+#key-statistics-container{
+    margin-bottom:35px;
+}
+
+#earnings-container{
+    margin-bottom:35px;
+}
+
+.key-statistic-container{
+    display:flex;
+    flex-direction: column;
+}
+
+#key-statistics-lower-container{
+    display:flex;
+    flex-wrap: wrap;
+}
+
+#key-statistics-lower-container > div{
+margin-bottom:25px;
+margin-right:73px;
+}
+
+#key-statistics-lower-container{
+    font-size:13px;
+}
+
+#key-statistics-lower-container:nth-child(5){
+margin-right:0
+}
+
+#eps{
+    margin-right:45px !important;
+}
+
+#high-today{
+    margin-right:100px !important;
+}
+
+#low-today{
+    margin-right:137px !important;
+}
+
+#high{
+margin-right:79px !important;
+}
+
+.peer-container{
+    cursor:pointer;
+    text-decoration: none;
+    color:var(--color)
+}
+.peer-container:hover{
+    background-color: var(--button-hover-background-color);
+}
+
+#stock-disclosure-navlink{
+    text-decoration: none;
+}
+
+#price-to-earnings{
+
+}
+
+#earnings-title{
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-color);
+}
+
+#related-stocks-title{
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-color);
+}
+
+#earnings-container{
+    margin-top:25px;
+    margin-bottom:10px;
+}
+
+#stockpage-disclosure{
+    margin-bottom:25px;
+    font-size:13px;
+    color:gray;
+}
+
+.peer-value{
+    font-size:24px;
+    font-weight:bold;
+    margin-top:20px;
+    margin-left:15px;
+    margin-bottom:25px;
+}
+
+.peer-title{
+    margin-top:20px;
+    margin-left:20px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+
+#related-stocks-subtitle{
+    line-height:24px;
+    font-size:15px;
+    font-weight:400;
+}
+
+#stock-purchase-titles{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color)
+
+}
+
+#stock-purchase-inner{
+    font-size:13px;
+}
+#stock-buy-title{
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    font-weight:bold;
+}
+
+#stock-sell-title{
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    font-weight:bold;
+}
+
+#invest-in-container{
+    display:flex;
+    justify-content: space-between;
+    margin-top:18px;
+    margin-bottom:15px;
+}
+
+#invest-in-label{
+    margin-left:25px;
+    display:flex;
+    align-items: center;
+}
+
+#invest-in-value{
+    margin-right:25px;
+    width:137px;
+    height:37px;
+}
+#amount-container{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom:25px;
+}
+
+#amount-label{
+    margin-left:25px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#amount-value{
+    margin-right:25px;
+    width:82px;
+    height:30px;
+}
+
+#market-price-container{
+    display:flex;
+    justify-content: space-between;
+    padding-bottom:15px;
+    border-bottom:1px solid var(--border-color);
+    margin-bottom:15px;
+    font-weight:bold;
+}
+
+#market-price-label{
+    margin-left:25px;
+}
+#market-price-value{
+    margin-right:25px;
+    font-weight:bold;
+}
+#est-quantity-container{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom:15px;
+}
+
+#est-quantity-label{
+    margin-left:25px;
+    font-weight:bold;
+}
+
+#est-quantity-value{
+    margin-right:25px;
+    font-weight:bold
+}
+
+#review-order-button{
+    height:50px;
+    width:226px;
+    background-color: rgb(255, 80, 0);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
 }

@@ -19,7 +19,7 @@ import {NavLink} from "react-router-dom"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = "c5riunqad3ifnpn54h4g"
+api_key.apiKey = apiKeys[Math.floor(Math.random(apiKeys.length))]
 const finnhubClient = new finnhub.DefaultApi()
 const moverAPIKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
 
@@ -479,8 +479,8 @@ const handleOpenDots = (e,watchlist) => {
 
                 <div id = "dashboard-lower-container">
                     <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
+                    <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
                     <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
                         <div id = "daily-gainers-icons" className= "movers-icons">
                         {moversData && moversData.gainersData.map(data => {
                             return (
@@ -496,8 +496,8 @@ const handleOpenDots = (e,watchlist) => {
                         </div>
                     </div>
                     <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
+                    <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
                     <div id = "daily-losers-container">
-                        <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
                         <div id = "daily-losers-icons" className= "movers-icons">
                             {moversData && moversData.losersData.map(data => {
                                 return (

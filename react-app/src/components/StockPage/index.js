@@ -22,7 +22,7 @@ const financialModelingPrepKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = "c5riunqad3ifnpn54h4g"
+api_key.apiKey = apiKeys[Math.floor(Math.random(apiKeys.length))]
 const finnhubClient = new finnhub.DefaultApi()
 
 const months = {
@@ -62,6 +62,7 @@ const Stockpage = () => {
     const [investType,setInvestType] = useState("shares")
     const [buySell,setBuySell] = useState("buy")
     const [investValue,setInvestValue] = useState("")
+    const [readMore,toggleReadMore] = useState(false)
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
@@ -266,7 +267,7 @@ const Stockpage = () => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
-                  <XAxis tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis tick = {false} tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -274,7 +275,7 @@ const Stockpage = () => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
-                  <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis  tick = {false} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -311,7 +312,7 @@ const Stockpage = () => {
     console.log("ACTUAL SCATTER: ",actualScatterData)
     console.log("eSTIMATED SCATTER: ",estimatedScatterData)
     let scatterChart = (
-    <ScatterChart width={400} height={400} >
+    <ScatterChart width={600} height={300} >
 
         <CartesianGrid />
         <XAxis dataKey="period" interval = {0} allowDuplicatedCategory={false}/>
@@ -335,7 +336,9 @@ const Stockpage = () => {
                     <div id = "stockpage-stock-value"><h1>$<Odometer value={stockValueDynamic ? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
                     <div id = "stockpage-graph-container">
-                        <div id = "stockpage-graph">{renderLineChart}</div>
+                        <div id = "stockpage-graph">
+                            {renderLineChart}
+                        </div>
                         <div id = "stockpage-graph-timeframes-container">
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
@@ -344,33 +347,36 @@ const Stockpage = () => {
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
                         </div>
+
                     </div>
                 </div>
                 <div id = "stockpage-lower-container">
-                    <div id = "about-container">
-                        <h2 id = "about-title">About</h2>
+                    <div id = "about-container" > {/*style = {readMore ? {height:'auto'} : {height:"200px"}}*/}
+                        <div id = "about-title" >About</div>
                         <div id = "about-description">
                             {stockData && stockData.description}
                         </div>
-                        <div id = "about-lower-container">
+                        {/* <span onClick = {()=>toggleReadMore(!readMore)} id = "read-more">Read More</span> */}
+
+                    </div>
+                    <div id = "about-lower-container">
                             <div className = "about-individual-container" id = "ceo-container">
-                                <div id = "ceo-title">CEO</div>
+                                <div id = "ceo-title" className = "about-subtitle">CEO</div>
                                 <div id = "ceo-value">{stockData && stockData.ceo}</div>
                             </div>
                             <div className = "about-individual-container" id = "employees-container">
-                            <div id = "employees-title">Employees</div>
+                            <div id = "employees-title" className = "about-subtitle">Employees</div>
                                 <div id = "employees-value">{stockData && stockData.employees}</div>
                             </div>
                             <div className = "about-individual-container" id = "headquarters-container">
-                            <div id = "headquarters-title">Headquarters</div>
+                            <div id = "headquarters-title" className = "about-subtitle">Headquarters</div>
                                 <div id = "headquarters-value">{stockData && stockData.headquarters}</div>
                             </div>
                             <div className = "about-individual-container" id = "founded-container">
-                            <div id = "founded-title"></div>
+                            <div id = "founded-title" className = "about-subtitle"></div>
                                 <div id = "founded-value"></div>
                             </div>
                         </div>
-                    </div>
                     <div id = "key-statistics-container">
                         <h2 id = "key-statistics-title">Key Statistics</h2>
                         <div id = "key-statistics-lower-container">
@@ -378,15 +384,15 @@ const Stockpage = () => {
                                 <div className = "key-statistic">Market Cap</div>
                                 <div className = "key-statistic-value">{stockData && stockData.marketCap}</div>
                             </div>
-                            <div className = "key-statistic-container">
+                            <div className = "key-statistic-container" id = "revenue">
                                 <div className = "key-statistic">Revenue</div>
                                 <div className = "key-statistic-value">{stockData && stockData.revenue}</div>
                             </div>
-                            <div className = "key-statistic-container">
+                            <div className = "key-statistic-container" id = "price-to-earnings">
                                 <div className = "key-statistic">Price-Earnings Ratio</div>
                                 <div className = "key-statistic-value">{stockData && stockData.peRatio}</div>
                             </div>
-                            <div className = "key-statistic-container">
+                            <div className = "key-statistic-container" id = "dividend-yield">
                                 <div className = "key-statistic">Dividend Yield</div>
                                 <div className = "key-statistic-value">{stockData && stockData.dividendYield}</div>
                             </div>
@@ -427,7 +433,7 @@ const Stockpage = () => {
                         </div>
                     </div>
                     <div id = "related-stocks-container">
-                        <h2 id = "related-stocks-title">Related Stocks</h2>
+                        <h2 id = "related-stocks-title">People Also Own</h2>
                         <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own {stockData && stockData.symbol}. It’s not an investment recommendation.</div>
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => {
@@ -435,7 +441,7 @@ const Stockpage = () => {
                                     <NavLink to = {`/stocks/${peer.symbol}`} key = {peer.symbol} className = "peer-container">
                                         <div className = "peer-title">{peer.symbol}</div>
                                         <div className = "peer-numbers-container">
-                                            <div className = "peer-value">{peer.price}</div>
+                                            <div className = "peer-value">${peer.price}</div>
                                         </div>
                                     </NavLink>
                                 )
@@ -443,7 +449,8 @@ const Stockpage = () => {
                         </div>
 
                     </div>
-                    <div id = "stockpage-disclosure">All investments involve risks, including the loss of principal. Securities trading offered through Robinhood Financial LLC, a registered broker-dealer and Member SIPC. <NavLink id = "stock-disclosure-navlink" to = {{pathname:`https://robinhood.com/stocks/${stockData && stockData.symbol}#`}} target="_blank"> Full disclosure</NavLink></div>
+                    <div id = "stockpage-disclosure">All investments involve risks, including the loss of principal. Securities trading offered through Robinhood Financial LLC, a registered broker-dealer and Member SIPC.</div>
+                    {/* <NavLink id = "stock-disclosure-navlink" to = {{pathname:`https://robinhood.com/stocks/${stockData && stockData.symbol}#`}} target="_blank"> Full disclosure</NavLink> */}
                 </div>
             </div>
             <div id = "stockpage-right-container">
@@ -455,29 +462,29 @@ const Stockpage = () => {
                     <div id = "stock-purchase-middle">
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
-                                <div>{buySell === "buy" ? "Invest In" : "Sell In"}</div>
-                                <select value = {investType} onChange = {e=>setInvestType(e.target.value)}>
+                                <div id = "invest-in-label">{buySell === "buy" ? "Invest In" : "Sell"}</div>
+                                <select id = "invest-in-value" value = {investType} onChange = {e=>setInvestType(e.target.value)}>
                                     <option value = "shares" selected>Shares</option>
                                     <option value = "dollars">Dollars</option>
                                 </select>
                             </div>
                             <div id = "amount-container">
-                                <div>{investType === "shares" ? 'Shares' : 'Amount'}</div>
-                                <input value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
+                                <div id = "amount-label">{investType === "shares" ? 'Shares' : 'Amount'}</div>
+                                <input id = "amount-value" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
                                 {investType === "shares" ? (
                                     <div id = "market-price-container">
-                                        <div>Market Price</div>
-                                        <div>{stockData && stockData.price}</div>
+                                        <div id ="market-price-label">Market Price</div>
+                                        <div id ="market-price-value">${stockData && stockData.price}</div>
                                     </div>
                                 ) : null}
 
                             <div id = "est-quantity-container">
-                                <div>{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
+                                <div id = "est-quantity-label">{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
-                                    <div>{stockData && stockData.price * investValue}</div>
+                                    <div id = "est-quantity-value">${stockData && stockData.price * investValue}</div>
                                 ) : (
-                                    <div>{stockData && investValue / stockData.price }</div>
+                                    <div id = "est-quantity-value">{stockData && investValue / stockData.price }</div>
                                 )}
                             </div>
                         </div>
