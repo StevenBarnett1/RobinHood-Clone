@@ -126,9 +126,12 @@ const Dashboard = () => {
                     else {
                         if(timeInHours < 1){
                             timeInMinutes = timeInHours*60
-                            article.time = `${timeInMinutes.toFixed(0)} M`
+                            article.time = `${timeInMinutes.toFixed(0)} Min`
                         }
-                        else article.time = `${Math.floor(timeInHours).toFixed(0)} H ${((timeInHours % 1) * 60).toFixed(0)} M`
+                        else {
+                            if(timeInHours % 1 == 0) article.time = `${Math.floor(timeInHours).toFixed(0)}H`
+                            else article.time = `${Math.floor(timeInHours).toFixed(0)}H ${((timeInHours % 1) * 60).toFixed(0)} Min`
+                            }
                     }
                 })
                 setNews(data)

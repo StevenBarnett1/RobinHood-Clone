@@ -100,30 +100,35 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     const financialModelingData = financialModelingDataArray[0]
     const peerData = await peerResponse.json()
     const earningsData = await earningsResponse.json()
+
     console.log("MADE ANOTHER API CALL GET STOCK DATA")
+
     console.log("ALPHA ADVANTAGE DATA: ",alphaAdvantageData)
-    stock.earnings = earningsData
-    stock.price = priceData.c
-    stock.description = financialModelingData.description
-    stock.marketCap = alphaAdvantageData.MarketCapitalization === "None" ? "-" : alphaAdvantageData.MarketCapitalization
-    stock.peRatio = alphaAdvantageData.PERatio === "None" ? "-" : alphaAdvantageData.PERatio
-    stock.dividendYield = alphaAdvantageData.DividendYield === "None" ? "-" : alphaAdvantageData.DividendYield
-    stock['52WeekHigh'] = alphaAdvantageData['52WeekHigh'] === "None" ? "-" : alphaAdvantageData['52WeekHigh']
-    stock['52WeekLow'] = alphaAdvantageData['52WeekLow'] === "None" ? "-" : alphaAdvantageData['52WeekLow']
-    stock.eps = alphaAdvantageData.EPS === "None" ? "-" : alphaAdvantageData.EPS
-    stock.revenue = alphaAdvantageData.RevenueTTM === "None" ? "-" : alphaAdvantageData.RevenueTTM
-    stock.companyName = financialModelingData.companyName
-    stock.volumeAverage = financialModelingData.volAvg
-    stock.employees = financialModelingData.fullTimeEmployees === null ? "-" : financialModelingData.fullTimeEmployees
-    console.log("THIS IS WHAT EMPLOYEES RETURNS: ", financialModelingData.fullTimeEmployees)
-    if(financialModelingData.ceo){
-      stock.ceo = financialModelingData.ceo.split(" ").slice(1).join(" ")
-    } else stock.ceo = "-"
-    if(!financialModelingData.city && !financialModelingData.state)stock.headquarters = "-"
+    if(alphaAdvantageData){
+      stock.marketCap = alphaAdvantageData.MarketCapitalization === "None" ? "-" : alphaAdvantageData.MarketCapitalization
+      stock.peRatio = alphaAdvantageData.PERatio === "None" ? "-" : alphaAdvantageData.PERatio
+      stock.dividendYield = alphaAdvantageData.DividendYield === "None" ? "-" : alphaAdvantageData.DividendYield
+      stock['52WeekHigh'] = alphaAdvantageData['52WeekHigh'] === "None" ? "-" : alphaAdvantageData['52WeekHigh']
+      stock['52WeekLow'] = alphaAdvantageData['52WeekLow'] === "None" ? "-" : alphaAdvantageData['52WeekLow']
+      stock.eps = alphaAdvantageData.EPS === "None" ? "-" : alphaAdvantageData.EPS
+      stock.revenue = alphaAdvantageData.RevenueTTM === "None" ? "-" : alphaAdvantageData.RevenueTTM
+    }
+    if(financialModelingData){
+      stock.description = financialModelingData.description
+      stock.companyName = financialModelingData.companyName
+      stock.volumeAverage = financialModelingData.volAvg
+      stock.employees = financialModelingData.fullTimeEmployees === null ? "-" : financialModelingData.fullTimeEmployees
+      if(financialModelingData.ceo){
+        stock.ceo = financialModelingData.ceo.split(" ").slice(1).join(" ")
+      } else stock.ceo = "-"
+      if(!financialModelingData.city && !financialModelingData.state)stock.headquarters = "-"
     else if (!financialModelingData.city)stock.headquarters = financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()
     else if (!financialModelingData.state)stock.headquarters = financialModelingData.city
     else stock.headquarters = `${financialModelingData.city}, ${financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()}`
-    console.log("FINANCIAL MODELING DATA: ",financialModelingData,financialModelingData.state)
+    }
+    stock.earnings = earningsData
+    stock.price = priceData.c
+
     if(stock.dividendYield == 0 )stock.dividendYield = "-"
     console.log("CANDLE DATA: ",candleData, `https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
     let estimated = []

@@ -64,6 +64,7 @@ const Stockpage = () => {
     const [buySell,setBuySell] = useState("buy")
     const [investValue,setInvestValue] = useState("")
     const [readMore,toggleReadMore] = useState(false)
+    const [currentShares,setCurrentShares] = useState("")
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
@@ -123,6 +124,15 @@ const Stockpage = () => {
 
         return null
     }
+
+    useEffect(()=>{
+        if(user && stockData){
+            let holding = user.holdings.filter(holding => holding.symbol === stockData.symbol)
+            if(holding.length){
+                setCurrentShares(Number(holding[0].shares))
+            } else setCurrentShares(0)
+        }
+    },[user,stockData])
 
     useEffect(()=>{
         let start = new Date()
@@ -458,8 +468,8 @@ const Stockpage = () => {
                 <div id = "stockpage-right-inner-container">
                 <div id = "stock-purchase-container" style = {investType === "shares" ? {} : {height:"365px"}}>
                     <div id = "stock-purchase-titles">
-                        <div id = "stock-buy-title" onClick = {()=>setBuySell('buy')}>Buy {stockData && stockData.symbol}</div>
-                        <div id = "stock-sell-title" onClick = {()=>setBuySell('sell')}>Sell {stockData && stockData.symbol}</div>
+                        <div id = "stock-buy-title" style = {buySell === "buy" ? {borderBottom:"1px solid rgb(255, 80, 0)"} : {}} onClick = {()=>setBuySell('buy')}>Buy {stockData && stockData.symbol}</div>
+                        <div id = "stock-sell-title" style = {buySell === "sell" ? {borderBottom:"1px solid rgb(255, 80, 0)"} : {}} onClick = {()=>setBuySell('sell')}>Sell {stockData && stockData.symbol}</div>
                     </div>
                     <div id = "stock-purchase-middle">
                         <div id ="stock-purchase-inner">
@@ -484,7 +494,7 @@ const Stockpage = () => {
                             <div id = "est-quantity-container">
                                 <div id = "est-quantity-label">{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
-                                    <div id = "est-quantity-value">{(stockData && stockData.price) ? `$${stockData.price * investValue}` : "-"}</div>
+                                    <div id = "est-quantity-value">{(stockData && stockData.price) ? `$${(stockData.price * investValue)}` : "-"}</div>
                                 ) : (
                                     <div id = "est-quantity-value">{stockData && investValue / stockData.price }</div>
                                 )}
@@ -493,7 +503,7 @@ const Stockpage = () => {
                         <button id = "review-order-button" onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
                     <div id = "stock-purchase-lower">
-                        ${user && user.buying_power.toFixed(2)} buying power available
+                        {(buySell === "buy" && user) ? `$${user.buying_power.toFixed(2)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${currentShares} share available`: `${currentShares} shares available`}` }`}
                     </div>
                 </div>
                 <div id = "add-to-list-container">

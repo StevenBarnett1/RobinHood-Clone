@@ -88,11 +88,10 @@
 #stock-purchase-container{
     height:415px;
     border:1px solid var(--border-color);
+    border-radius:5px;
     /* transition: height 0.1s linear */
 }
-#stock-purchase-container > div{
-    cursor:pointer;
-}
+
 #stock-purchase-container > div:hover{
 
 }
@@ -253,21 +252,35 @@ margin-right:79px !important;
 
 }
 
+#stock-purchase-titles > div {
+    cursor:pointer;
+}
+
 #stock-purchase-inner{
     font-size:13px;
 }
 #stock-buy-title{
-    padding-left: 25px;
+    padding-left: 28px;
     padding-bottom: 15px;
     padding-top: 15px;
+    padding-right:32px;
     font-weight:bold;
 }
 
+#stock-buy-title:hover{
+    color:rgb(255, 80, 0)
+}
+
+#stock-sell-title:hover{
+    color:rgb(255, 80, 0)
+}
+
 #stock-sell-title{
-    padding-right: 25px;
+    padding-right: 28px;
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight:bold;
+    padding-left:32px;
 }
 
 #invest-in-container{
@@ -287,6 +300,7 @@ margin-right:79px !important;
     margin-right:25px;
     width:137px;
     height:37px;
+    cursor:pointer;
 }
 #amount-container{
     display:flex;
@@ -351,6 +365,7 @@ margin-right:79px !important;
     border:none;
     border-radius: 5px;
     font-weight:bold;
+    cursor:pointer;
 }
 
 #stock-purchase-lower{
@@ -387,5 +402,5 @@ margin-right:79px !important;
 
 #stockpage-right-inner-container{
     position:sticky;
-    top:75px;
+    top:85px;
 }
