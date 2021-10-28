@@ -73,10 +73,10 @@ const Dashboard = () => {
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
@@ -85,10 +85,10 @@ const Dashboard = () => {
                 } else {
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
@@ -340,8 +340,16 @@ const Dashboard = () => {
             let minutes = payload[0].payload.dateTime.getMinutes()
             if(minutes === 0)minutes = "00"
             if(minutes === 5)minutes = "05"
+            console.log("IN TOO:LTIP: ",hours)
             let zone
-            if(hours >= 12) zone = "PM"
+            if(hours >= 12) {
+                zone = "PM"
+                if(hours > 12){
+                    console.log("HOURS BEFORE: ",hours)
+                    hours = hours % 12
+                    console.log("HOURS AFTER: ",hours)
+                }
+            }
             else zone = "AM"
 
             setPortfolioValueDynamic(payload[0].payload.price)
@@ -579,6 +587,7 @@ const handleOpenDots = (e,watchlist) => {
                                 <div className = "watchlist-stocks">
                                     {watchlist.stocks.map(stock=>{
                                         return (
+                                            <NavLink className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
                                             <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
@@ -587,6 +596,7 @@ const handleOpenDots = (e,watchlist) => {
                                                     <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
+                                            </NavLink>
                                         )
                                     })}
                                 </div>

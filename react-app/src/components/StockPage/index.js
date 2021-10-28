@@ -105,7 +105,14 @@ const Stockpage = () => {
                 if(minutes === 0)minutes = "00"
                 if(minutes === 5)minutes = "05"
                 let zone
-                if(hours >= 12) zone = "PM"
+                if(hours >= 12){
+                    zone = "PM"
+                    if(hours > 12){
+                        console.log("HOURS BEFORE: ",hours)
+                        hours = hours % 12
+                        console.log("HOURS AFTER: ",hours)
+                    }
+                }
                 else zone = "AM"
 
                 setStockValueDynamic(payload[0].payload.price)
