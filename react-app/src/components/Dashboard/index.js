@@ -7,6 +7,7 @@ import {
   } from 'recharts';
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
+  import {CgInfinity} from "react-icons/cg"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
 import { getWatchlistGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
@@ -415,7 +416,7 @@ const handleOpenDots = (e,watchlist) => {
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
-                  <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis  tick = {false} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
@@ -461,7 +462,7 @@ const handleOpenDots = (e,watchlist) => {
                                 <div id = "dashboard-buying-power-container-left">
                                     <div id = "brokerage-cash-container">
                                         <div>Brokerage Cash</div>
-                                        <div>Infinity</div>
+                                        <div style = {{fontSize:"30px"}}><CgInfinity/></div>
                                     </div>
                                     <div id = "buying-power-container">
                                         <div>Buying Power</div>
@@ -539,25 +540,25 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "watchlist-outer-title">
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
-                        <form onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
-                        <input placeholder = 'Watchlist Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
-                        <div onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
-                        <input type="submit" value = "Submit"/>
-                        </form>
-
                     </div>
+                    <form id = "add-watchlist-form" onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                        <div id = "watchlist-add-buttons-container">
+                            <div onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
+                            <input type="submit" value = "Create List"/>
+                        </div>
+                    </form>
                     {user && user.watchlists.map(watchlist=>{
                         return (
                             <div key = {watchlist.id} className = "watchlist-inner-container">
                                 <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>
-
-                                    <div>{watchlist.name}</div>
+                                    <div className = "watchlist-name">{watchlist.name}</div>
                                     <div className = "watchlist-title-right">
                                         <div className = "watchlist-dots" onClick = {(e)=>handleOpenDots(e,watchlist)}><BiDotsHorizontal/></div>
                                         <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
 
                                     </div>
-                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex"} :{display:"none"}}>
+                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex", zIndex:100,backgroundColor:"white"} :{display:"none"}}>
                                             <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
                                             <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>

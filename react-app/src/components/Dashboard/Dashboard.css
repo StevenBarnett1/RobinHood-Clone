@@ -53,9 +53,13 @@
 #watchlist-outer-container{
     display:flex;
     flex-direction: column;
-    height:900px;
+    height:800px;
     position:sticky;
-    top:65px;
+    top:120px;
+    width:275px;
+    border:1px solid lightgrey;
+    box-shadow: 0 0 10px 2px rgb(230, 229, 229);
+    border-radius:5px;
 }
 #watchlist-outer-title{
     border-bottom:1px solid lightgrey;
@@ -78,7 +82,16 @@
     width:100%;
     justify-content: space-between;
     position:relative;
+}
 
+.watchlist-name{
+    margin-left:20px;
+}
+.watchlist-title-right{
+    margin-right:20px;
+}
+.watchlist-dots{
+    margin-right:20px;
 }
 .watchlist-title:hover{
     background-color: var(--button-hover-background-color);
@@ -86,7 +99,6 @@
 #dashboard-left-container{
     width:730px;
     margin:auto;
-    border:1px solid black;
     margin-right:47px;
 }
 
@@ -105,6 +117,8 @@
 
 #dashboard-buying-power-container{
     transition: height 0.2s linear;
+    border-radius:5px;
+    margin-top:10px;
 }
 
 #dashboard-buying-power-container-right{
@@ -114,6 +128,7 @@
 
 }
 #dashboard-buying-power-container-heading-open{
+
     display:flex;
     flex-direction: row;
     justify-content: space-between;
@@ -122,13 +137,14 @@
     font-size:16px;
     padding-bottom:25px;
     padding-top:25px;
-    padding-left:25px;
+    padding-left:15px;
     padding-right:25px;
     border-bottom:1px solid lightgrey;
     cursor:pointer;
 }
 
 #dashboard-buying-power-container-heading-closed{
+
     display:flex;
     flex-direction: row;
     justify-content: space-between;
@@ -137,17 +153,9 @@
     font-size:16px;
     padding-bottom:25px;
     padding-top:25px;
-    padding-left:25px;
+    padding-left:15px;
     padding-right:25px;
     cursor:pointer;
-}
-
-#dashboard-buying-power-container-bottom-visible, #dashboard-buying-power-container-bottom-invisible{
-    overflow:hidden
-}
-
-#dashboard-buying-power-container-bottom-visible > div, #dashboard-buying-power-container-bottom-invisible > div {
-
 }
 
 #dashboard-buying-power-container-bottom-invisible > div {
@@ -183,13 +191,12 @@
     justify-content: space-between;
 }
 
-#watchlist-outer-container{
-    width:275px;
-    border:1px solid black;
+.watchlist-stock-symbol{
+    font-weight:bold;
 }
 
 .watchlist-stock-container{
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 #dashboard-graph-timeframes-container{
@@ -223,6 +230,7 @@
     border-bottom:1px solid lightgrey;
     padding-top:15px;
     padding-bottom:15px;
+    cursor:pointer;
 }
 
 .news-icon-headline{
@@ -230,7 +238,7 @@
 }
 
 .news-icon-container:hover{
-    color:red;
+    background-color:var(--button-hover-background-color);
 }
 
 .news-top-container{
@@ -347,6 +355,7 @@
     border:none;
     background-color: transparent;
     cursor:pointer;
+    margin-right:10px;
 }
 
 #watchlist-plus-button:hover{
@@ -374,10 +383,10 @@
 
 .watchlist-dots-dropdown{
     flex-direction: column;
-    bottom:-112px;
-    right:0;
+    bottom:-90px;
+    right:20px;
     height:110px;
-    width:180px;
+    width:150px;
     border:1px solid lightgrey;
     justify-content: space-around;
     align-items: center;
@@ -458,7 +467,7 @@ margin-right:96px !important;
 
 #brokerage-cash-container{
     padding-top:25px;
-    padding-bottom:25px;
+    padding-bottom:5px;
     display:flex;
     justify-content: space-between;
     border-bottom:1px solid lightgrey;
@@ -479,4 +488,66 @@ margin-right:96px !important;
     padding-top:15px;
     padding-bottom:15px;
     padding-left:15px;
+    font-weight:bold;
+}
+
+#add-watchlist-form{
+    display:flex;
+    flex-direction: column;
+    margin-top:15px;
+}
+
+#add-watchlist-form > input {
+    display:flex;
+    align-items: center;
+    border:none;
+    width:94%;
+    padding:0;
+    height:36px;
+    background-color: var(--input-background-color);
+    margin:auto;
+    border-radius: 5px;
+    border:1px solid lightgrey;
+}
+
+#add-watchlist-form > input:hover{
+    background-color: var(--watchlist-background-color);
+
+}
+
+#watchlist-add-buttons-container{
+    display:flex;
+    justify-content: space-around;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+#watchlist-add-buttons-container > div {
+    width:96px;
+    height:36px;
+    border:1px solid rgb(0, 200, 5);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:rgb(0, 200, 5);
+    cursor:pointer;
+    border-radius: 5px;
+}
+
+#watchlist-add-buttons-container > input{
+    width:112px;
+    height:38px;
+    border:none;
+    background-color: rgb(0, 200, 5);
+    cursor:pointer;
+    border-radius:5px;
+
+}
+
+#watchlist-add-buttons-container > input:hover{
+    background-color:rgb(1, 175, 7);
+}
+
+#watchlist-add-buttons-container > div:hover{
+    background-color: rgb(202, 248, 202);
 }
