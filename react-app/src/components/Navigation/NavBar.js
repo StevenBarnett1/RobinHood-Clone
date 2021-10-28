@@ -6,6 +6,7 @@ import "./Navigation.css"
 import { useSelector } from 'react-redux';
 import Search from '../Search';
 import {HiOutlineLogout} from "react-icons/hi"
+import svgfile from "./robinhood.svg";
 
 const NavBar = () => {
 
@@ -37,7 +38,7 @@ const NavBar = () => {
         )}
         {user && (
           <div className = "navbar-inner-container">
-            <div>Robinhood Logo</div>
+            <NavLink to = "/"><img id = "robinhood-logo" src={svgfile} width = {80} height = {80} alt="some file" /></NavLink>
             <Search/>
             <LogoutButton />
           </div>

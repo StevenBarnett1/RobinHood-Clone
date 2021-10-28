@@ -64,3 +64,11 @@
 #navbar-signup-navlink:hover{
     background-color: rgb(1, 175, 7);
 }
+
+#robinhood-logo{
+    cursor:pointer;
+    position:absolute;
+    top:-20px;
+    left:0;
+
+}
