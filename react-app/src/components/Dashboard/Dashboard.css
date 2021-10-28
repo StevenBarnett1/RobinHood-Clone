@@ -1,28 +1,64 @@
-#dashboard-buying-power-container-heading{
-    cursor:pointer;
-}
 
-#dashboard-buying-power-container-heading:hover{
+
+#dashboard-buying-power-container-heading-open:hover, #dashboard-buying-power-container-heading-closed:hover{
     background-color: var(--button-hover-background-color);
 }
 
 
-#buying-power-deposit-button{
+#buying-power-deposit-button-good{
     display:flex;
     font-size:18px;
     font-weight:700;
-    background-color: rgb(0, 200, 5);
-    width:145px;
-    height:50px;
+    background-color: var(--good-stock);
+    width:320px;
+    height:48px;
     border:none;
-    border-radius:30px;
+    border-radius:5px;
     align-items: center;
     justify-content: center;
     cursor:pointer;
+    margin-bottom:35px;
+    margin-top:25px;
+    color:var(--opposite-color);
 }
 
-#buying-power-deposit-button:hover{
-    background-color: rgb(1, 175, 7);
+#buying-power-deposit-button-bad{
+    display:flex;
+    font-size:18px;
+    font-weight:700;
+    background-color: var(--bad-stock);
+    width:320px;
+    height:48px;
+    border:none;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    cursor:pointer;
+    margin-bottom:35px;
+    margin-top:25px;
+    color:var(--opposite-color);
+}
+
+
+#buying-power-deposit-button-good:hover{
+    background-color: var(--good-stock-dark-hover);
+}
+
+#buying-power-deposit-button-bad:hover{
+    background-color: var(--bad-stock-dark-hover);
+}
+
+#dashboard-buying-power-value-visible{
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s linear;
+}
+
+#dashboard-buying-power-value-invisible{
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 1s, opacity 1s linear;
+
 }
 
 #trending-list-icons{
@@ -34,14 +70,23 @@
     width:1050px;
     display:flex;
     margin:auto;
+
 }
 
 #watchlist-outer-container{
     display:flex;
     flex-direction: column;
+    height:880px;
+    position:sticky;
+    top:85px;
+    width:275px;
+    border:1px solid var(--border-color);
+    box-shadow: 0 0 10px 2px var(--box-shadow-color);
+    border-radius:5px;
+    background-color: var(--watchlist-background-color);
 }
 #watchlist-outer-title{
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
     display:flex;
     justify-content: space-between;
 }
@@ -61,7 +106,16 @@
     width:100%;
     justify-content: space-between;
     position:relative;
+}
 
+.watchlist-name{
+    margin-left:20px;
+}
+.watchlist-title-right{
+    margin-right:20px;
+}
+.watchlist-dots{
+    margin-right:20px;
 }
 .watchlist-title:hover{
     background-color: var(--button-hover-background-color);
@@ -69,47 +123,101 @@
 #dashboard-left-container{
     width:730px;
     margin:auto;
-    border:1px solid black;
     margin-right:47px;
+    margin-top:70px;
 }
 
 #dashboard-upper-container{
     display:flex;
     flex-direction: column;
-    border-bottom:1px solid lightgrey
+    border-bottom:1px solid var(--border-color)
 }
 
 #dashboard-buying-power-container-left{
     display:flex;
     flex-direction:column;
     width:50%;
+    margin-left:25px;
+}
 
+#dashboard-buying-power-container{
+    transition: height 0.2s linear;
+    border-radius:5px;
+    margin-top:10px;
+    height:66px;
+}
 
+#dashboard-buying-power-container-closed{
+    transition: height 0.2s linear;
+    border-radius:5px;
+    margin-top:10px;
+    background-color: var(--buying-power-background-color);
+   box-shadow: 0px 0px 15px 3px var(--box-shadow-color);
+   height:300px
 }
 
 #dashboard-buying-power-container-right{
     width:50%;
     margin-left:35px;
+    padding-top:20px;
 
 }
-#dashboard-buying-power-container-heading{
+#dashboard-buying-power-container-heading-open{
+
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey;
+    /* border-bottom:1px solid lightgrey; */
+    font-weight:bold;
+    font-size:16px;
+    padding-bottom:25px;
+    padding-top:25px;
+    padding-left:15px;
+    padding-right:15px;
+    border-bottom:1px solid var(--border-color);
+    cursor:pointer;
 }
 
-#dashboard-buying-power-container-bottom{
+#dashboard-buying-power-container-heading-closed{
+
+    display:flex;
     flex-direction: row;
     justify-content: space-between;
-    box-shadow: 0 0 2px 2px lightgrey;
+    /* border-bottom:1px solid lightgrey; */
+    font-weight:bold;
+    font-size:16px;
+    padding-bottom:25px;
+    padding-top:25px;
+    padding-left:15px;
+    padding-right:15px;
+    cursor:pointer;
+    border-radius:5px;
 }
 
-#brokerage-cash-container{
-    display:flex;
-    justify-content: space-between;
-    border-bottom:1px solid lightgrey;
+#dashboard-buying-power-container-bottom-invisible > div {
+    margin-top: -10000px;
+  transition: margin-top 0s 2s;
 }
+
+#dashboard-buying-power-container-bottom-visible{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s ease-in;
+}
+
+#dashboard-buying-power-container-bottom-invisible{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 2s, opacity 0.1s linear;
+}
+
+
 
 #buying-power-container{
     display:flex;
@@ -117,45 +225,102 @@
     justify-content: space-between;
 }
 
-#watchlist-outer-container{
-    width:275px;
-    border:1px solid black;
+.watchlist-stock-symbol{
+    font-weight:bold;
+    font-size:13px;
+    margin-left:25px;
+
+}
+
+.watchlist-stock-price{
+    font-size:13px;
+}
+
+.watchlist-stock-change{
+    font-size:13px;
+}
+.watchlist-stock-price-container{
+display:flex;
+flex-direction: column;
+margin-right:10px;
 }
 
 .watchlist-stock-container{
-    justify-content: space-between;
+    display:flex;
+    margin-top:10px;
+    /* justify-content: space-between; */
+}
+
+.watchlist-stock-graph{
+    margin-left:20px;
+    margin-right:45px;
 }
 
 #dashboard-graph-timeframes-container{
     width:230px;
     display: flex;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey
 }
 
-.dashboard-graph-timeframe-button{
+#dashboard-graph-container{
+    border-bottom:1px solid var(--border-color);
+    padding-bottom:10px;
+}
+
+.dashboard-graph-timeframe-button-good,.dashboard-graph-timeframe-button-bad{
     border:none;
     background-color: transparent;
     cursor: pointer;
+    font-weight:bold;
+    color: var(--color);
+    padding-bottom:7px;
 }
 
-.dashboard-graph-timeframe-button:hover{
-    color:rgb(0, 200, 5);
+.dashboard-graph-timeframe-button-good:hover{
+    color:var(--good-stock);
+    border-bottom:1px solid var(--good-stock);
+    padding-bottom:6px;
+}
+
+.dashboard-graph-timeframe-button-bad:hover{
+    color:var(--bad-stock);
+    border-bottom:1px solid var(--bad-stock);
+    padding-bottom:6px;
+}
+
+.news-icon-navlink{
+    color:var(--color);
+    text-decoration:none;
 }
 
 .news-icon-container{
-    border-bottom:1px solid lightgrey;
-    color:var(--color);
-    text-decoration:none;
+    border-bottom:1px solid var(--border-color);
+    padding-top:15px;
+    padding-bottom:15px;
+    cursor:pointer;
+}
 
+.news-icon-headline{
+    margin-top:25px;
 }
 
 .news-icon-container:hover{
-    color:red;
+    background-color:var(--button-hover-background-color);
 }
 
-.news-icon-container:first-child{
-    border-top:1px solid lightgrey;
+.news-top-container{
+    display:flex;
+}
+
+.news-icon-source{
+    padding-right:8px;
+    font-weight:bold;
+}
+
+.movers-change{
+    font-size:13px;
+    margin-top:5px;
+    margin-left:15px;
 }
 
 .daily-gainers-icons-value, .daily-gainers-icons-change{
@@ -166,26 +331,64 @@
     color:rgb(255, 80, 0)
 }
 
-.daily-losers-individual{
-    display:flex;
-    flex-direction: column;
-    height:185px;
-    width:160px;
-    border: 1px solid lightgrey;
-    margin-right:15px;
-    justify-content: space-between;
+.dashboard-titles{
+    font-size:24px;
+    font-weight:bold;
+    padding-bottom:20px;
 }
 
-.daily-gainers-individual{
+.dashboard-movers-titles{
+    padding-bottom:10px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.movers-subtitle{
+    font-size:13px;
+    color:rgb(106, 114, 120);
+}
+
+.movers-individual{
     display:flex;
     flex-direction: column;
     height:185px;
-    width:160px ;
-    border: 1px solid lightgrey;
+    width:162px;
+    border: 1px solid var(--border-color);
     margin-right:15px;
     justify-content: space-between;
-    box-sizing: border-box;
+    cursor:pointer;
+    text-decoration: none;
+    border-radius:5px;
 }
+
+.movers-title{
+    color:var(--color);
+    font-size:13px;
+    margin-top:20px;
+    margin-left:15px;
+    font-weight:bold;
+}
+.movers-value{
+    font-size:24px;
+    font-weight:bold;
+    margin-top:20px;
+    margin-left:15px;
+}
+.movers-individual:hover{
+    background-color: var(--button-hover-background-color);
+}
+
+.movers-numbers{
+    margin-bottom:20px;
+}
+.movers-icons{
+    margin-top:15px;
+    margin-bottom:15px;
+}
+#news-title{
+    border-bottom:1px solid var(--border-color);
+}
+
 
 #daily-gainers-icons{
     display:inline-flex;
@@ -220,10 +423,12 @@
     border:none;
     background-color: transparent;
     cursor:pointer;
+    margin-right:10px;
+    color: var(--color);
 }
 
 #watchlist-plus-button:hover{
-    background-color: var(--button-hover-background-color);
+    color: rgb(0, 200, 5);
 
 }
 
@@ -247,13 +452,15 @@
 
 .watchlist-dots-dropdown{
     flex-direction: column;
-    bottom:-112px;
-    right:0;
+    bottom:-90px;
+    right:20px;
     height:110px;
-    width:180px;
-    border:1px solid lightgrey;
+    width:150px;
+    /* border:1px solid var(--border-color); */
     justify-content: space-around;
     align-items: center;
+    background-color: var(--watchlist-background-color);
+    box-shadow: 0px 0px 10px 3px var(--box-shadow-color);
 }
 
 .watchlist-edit:hover,.watchlist-delete:hover{
@@ -263,4 +470,122 @@
 .watchlist-edit,.watchlist-delete{
     text-align:center;
     width:100%;
+}
+
+
+#brokerage-cash-container{
+    padding-top:25px;
+    padding-bottom:5px;
+    display:flex;
+    justify-content: space-between;
+    border-bottom:1px solid var(--border-color);
+}
+
+#buying-power-container{
+    padding-top:15px;
+    padding-bottom:15px;
+}
+
+
+#dashboard-lower-container{
+    margin-top:35px;
+    margin-left:15px;
+}
+
+#title-text{
+    padding-top:15px;
+    padding-bottom:15px;
+    padding-left:15px;
+    font-weight:bold;
+}
+
+#add-watchlist-form{
+    display:flex;
+    flex-direction: column;
+    margin-top:15px;
+}
+
+#add-watchlist-form > input {
+    display:flex;
+    align-items: center;
+    border:none;
+    width:94%;
+    padding:0;
+    height:36px;
+    background-color: var(--input-watchlist-background-color);
+    margin:auto;
+    border-radius: 5px;
+    border:1px solid var(--border-color);
+}
+
+#add-watchlist-form > input:hover{
+    background-color: var(--watchlist-background-color);
+
+}
+
+#watchlist-add-buttons-container{
+    display:flex;
+    justify-content: space-around;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+#watchlist-add-cancel-good {
+    width:96px;
+    height:36px;
+    border:1px solid var(--good-stock);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:var(--good-stock);
+    cursor:pointer;
+    border-radius: 5px;
+}
+
+#watchlist-add-cancel-bad {
+    width:96px;
+    height:36px;
+    border:1px solid var(--bad-stock);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:var(--bad-stock);
+    cursor:pointer;
+    border-radius: 5px;
+}
+
+#watchlist-add-submit-good{
+    width:112px;
+    height:38px;
+    border:none;
+    background-color: var(--good-stock);
+    cursor:pointer;
+    border-radius:5px;
+
+}
+
+#watchlist-add-submit-bad{
+    width:112px;
+    height:38px;
+    border:none;
+    background-color: var(--bad-stock);
+    cursor:pointer;
+    border-radius:5px;
+
+}
+
+#watchlist-add-submit-good:hover{
+    background-color:var(--good-stock-dark-hover);
+}
+
+#watchlist-add-submit-bad:hover{
+    background-color:var(--bad-stock-dark-hover);
+}
+
+#watchlist-add-cancel-good:hover{
+    background-color: var(--good-stock-light-hover);
+}
+
+#watchlist-add-cancel-bad:hover{
+    background-color: var(--bad-stock-light-hover);
 }

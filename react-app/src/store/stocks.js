@@ -1,5 +1,6 @@
 const SET_STOCKS = "stocks/SET_STOCKS"
-const SET_GRAPH_DATA = "stocks/SET_GRAPH_DATA"
+const SET_STOCK_GRAPH_DATA = "stocks/SET_GRAPH_DATA"
+const SET_WATCHLIST_GRAPH_DATA = "stocks/SET_WATCHLIST_GRAPH_DATA"
 
 export const getStocks = () => async dispatch =>{
     const response = await fetch("/api/stocks")
@@ -25,14 +26,21 @@ export const setStocks = (stocks) => {
     }
 }
 
-const setStockGraphData = data => {
+const setWatchlistGraphData = data => {
   return {
-    type:SET_GRAPH_DATA,
+    type:SET_WATCHLIST_GRAPH_DATA,
     payload:data
   }
 }
 
-export const getStockGraphData = (stocks,token) => async dispatch => {
+const setStockGraphData = data => {
+  return {
+    type:SET_STOCK_GRAPH_DATA,
+    payload:data
+  }
+}
+
+export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
   let start = new Date()
   let end = new Date()
   if(start.getDay() === 6){
@@ -47,7 +55,6 @@ export const getStockGraphData = (stocks,token) => async dispatch => {
       end.setHours(23,0,0,0)
   }
   start.setHours(0,0,0,0)
-  console.log("STOCKS IN STOCK GRAPH: ",stocks)
   let startUnix = Math.floor(Number(start.getTime() / 1000))
   let endUnix = Math.floor(Number(end.getTime() / 1000))
   for(let stock of stocks){
@@ -57,12 +64,14 @@ export const getStockGraphData = (stocks,token) => async dispatch => {
   }
   for(let stock of stocks){
 
-    const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${stock.symbol}&resolution=15&from=${startUnix}&to=${endUnix}&token=${token}`)
-    const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stock.symbol}&token=${token}`)
+    const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${stock.symbol}&resolution=15&from=${startUnix}&to=${endUnix}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
+    const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stock.symbol}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
 
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
     stock.price = priceData.c
+    let num = stock.price - candleData.c[0]
+    stock.change = (num / candleData.c[0])*100
     for(let i = 0; i< candleData.c.length;i++){
       const newObj = {}
       if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
@@ -73,10 +82,97 @@ export const getStockGraphData = (stocks,token) => async dispatch => {
       stock.data.push(newObj)
     }
   }
-  console.log("STOCKS HERE: ",stocks)
-  dispatch(setStockGraphData(stocks))
+  dispatch(setWatchlistGraphData(stocks))
 }
 
+export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financialModelingPrepKeys,alphaAdvantageKeys) => async dispatch => {
+  const stock = {"max":0,"min":Infinity,data:[],symbol:symbol,peers:[]}
+  const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+  const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+  const alphaAdvantageResponse = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${alphaAdvantageKeys[Math.floor(Math.random()*alphaAdvantageKeys.length)]}`)
+  const financialModelingResponse = await fetch(`https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${financialModelingPrepKeys[Math.floor(Math.random()*financialModelingPrepKeys.length)]}`)
+  const peerResponse = await fetch(`https://finnhub.io/api/v1/stock/peers?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+  const earningsResponse = await fetch(`https://finnhub.io/api/v1/stock/earnings?symbol=${symbol.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+    const candleData = await candleResponse.json()
+    const priceData = await priceResponse.json()
+    const alphaAdvantageData = await alphaAdvantageResponse.json()
+    const financialModelingDataArray = await financialModelingResponse.json()
+    const financialModelingData = financialModelingDataArray[0]
+    const peerData = await peerResponse.json()
+    const earningsData = await earningsResponse.json()
+
+    console.log("MADE ANOTHER API CALL GET STOCK DATA")
+
+    console.log("ALPHA ADVANTAGE DATA: ",alphaAdvantageData)
+    if(alphaAdvantageData){
+      stock.marketCap = alphaAdvantageData.MarketCapitalization === "None" ? "-" : alphaAdvantageData.MarketCapitalization
+      stock.peRatio = alphaAdvantageData.PERatio === "None" ? "-" : alphaAdvantageData.PERatio
+      stock.dividendYield = alphaAdvantageData.DividendYield === "None" ? "-" : alphaAdvantageData.DividendYield
+      stock['52WeekHigh'] = alphaAdvantageData['52WeekHigh'] === "None" ? "-" : alphaAdvantageData['52WeekHigh']
+      stock['52WeekLow'] = alphaAdvantageData['52WeekLow'] === "None" ? "-" : alphaAdvantageData['52WeekLow']
+      stock.eps = alphaAdvantageData.EPS === "None" ? "-" : alphaAdvantageData.EPS
+      stock.revenue = alphaAdvantageData.RevenueTTM === "None" ? "-" : alphaAdvantageData.RevenueTTM
+    }
+    if(financialModelingData){
+      stock.description = financialModelingData.description
+      stock.companyName = financialModelingData.companyName
+      stock.volumeAverage = financialModelingData.volAvg
+      stock.employees = financialModelingData.fullTimeEmployees === null ? "-" : financialModelingData.fullTimeEmployees
+      if(financialModelingData.ceo){
+        stock.ceo = financialModelingData.ceo.split(" ").slice(1).join(" ")
+      } else stock.ceo = "-"
+      if(!financialModelingData.city && !financialModelingData.state)stock.headquarters = "-"
+    else if (!financialModelingData.city)stock.headquarters = financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()
+    else if (!financialModelingData.state)stock.headquarters = financialModelingData.city
+    else stock.headquarters = `${financialModelingData.city}, ${financialModelingData.state[0].toUpperCase() + financialModelingData.state.slice(1).toLowerCase()}`
+    }
+    stock.earnings = earningsData
+    stock.price = priceData.c
+
+    if(stock.dividendYield == 0 )stock.dividendYield = "-"
+    console.log("CANDLE DATA: ",candleData, `https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+    let estimated = []
+    let actual = []
+
+    for(let i = stock.earnings.length-1; i>=0; i--){
+      const mapper = {
+        3:"Q3 FY20",
+        2:"Q4 FY20",
+        1:"Q1 FY21",
+        0:"Q2 FY21"
+      }
+      const newEst = {'data':stock.earnings[i].estimate,'period':mapper[i]}
+      const newAct = {'data':stock.earnings[i].actual,'period':mapper[i]}
+      estimated.push(newEst)
+      actual.push(newAct)
+    }
+    stock.estimated = estimated
+    stock.actual = actual
+
+    for(let peer of peerData){
+
+      const newObj = {}
+      const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+
+      const peerPriceData = await peerPriceResponse.json()
+      console.log("PEER PRICE DATA: ",peerPriceData)
+      newObj.symbol = peer
+      newObj.price = peerPriceData.c
+      if(peer.toUpperCase() !== symbol.toUpperCase() && newObj.price)stock.peers.push(newObj)
+    }
+
+    for(let i = 0; i< candleData.c.length;i++){
+      const newObj = {}
+      if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
+      if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
+      newObj.unixTime = candleData.t[i]
+      newObj.dateTime = new Date(newObj.unixTime * 1000)
+      newObj.price = candleData.c[i]
+      stock.data.push(newObj)
+    }
+    console.log("STOCK DATA IN THUNK: ",stock)
+  dispatch(setStockGraphData(stock))
+}
 
 const initialState = {}
 export default function stocksReducer(state = initialState, action) {
@@ -84,12 +180,13 @@ export default function stocksReducer(state = initialState, action) {
     switch (action.type) {
       case SET_STOCKS:
           newState.stocks = action.payload
-
+      case SET_STOCK_GRAPH_DATA:
+          newState.stockData = action.payload
           return newState
-        case SET_GRAPH_DATA:
-          newState.stockData = {}
+        case SET_WATCHLIST_GRAPH_DATA:
+          newState.watchlistStockData = {}
           for(let stock of action.payload){
-            newState.stockData[stock.symbol] = stock
+            newState.watchlistStockData[stock.symbol] = stock
           }
           return newState
       default:

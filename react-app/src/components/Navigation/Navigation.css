@@ -4,18 +4,23 @@
     box-shadow:0 4px 20px -20px grey;
     display:flex;
     align-items: center;
-    position: sticky;
+    position: fixed;
+    width:99%;
     top:0px;
     background-color: white;
     z-index:10;
     padding:0px 15px;
+    background-color: var(--background-color);
 }
 
 .navbar-inner-container{
-    width:100%;
+    position:relative;
+    width:82%;
+    margin:auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
 
 }
 
@@ -63,4 +68,12 @@
 
 #navbar-signup-navlink:hover{
     background-color: rgb(1, 175, 7);
+}
+
+#robinhood-logo{
+    position:absolute;
+    top:-30px;
+    cursor:pointer;
+    color:red;
+
 }

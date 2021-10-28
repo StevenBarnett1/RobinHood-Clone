@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
-from app.models import User, db, Watchlist
+from app.models import User, db, Watchlist, Stock
 from app.forms import WatchlistForm
 
 watchlist_routes = Blueprint('watchlists', __name__)
@@ -20,6 +20,8 @@ def add_watchlist():
         )
         db.session.add(watchlist)
         db.session.commit()
+        user = User.query.get(watchlist.user_id)
+        return user.to_dict()
     else: return None
 
 
@@ -48,3 +50,14 @@ def edit_watchlist(id):
         return user.to_dict()
 
     else: return None
+
+@watchlist_routes.route('/<int:id>',methods=["POST"])
+@login_required
+def add_to_watchlist(id):
+    symbol = request.json['symbol']
+    watchlist = Watchlist.query.get(id)
+    stock = Stock.query.filter_by(symbol=symbol).first()
+    watchlist.watchlist_stocks.append(stock)
+    db.session.commit()
+    user = User.query.get(watchlist.user_id)
+    return user.to_dict()

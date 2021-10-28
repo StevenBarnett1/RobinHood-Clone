@@ -7,8 +7,9 @@ import {
   } from 'recharts';
   import Odometer from 'react-odometerjs';
   import {FaPlus} from "react-icons/fa"
+  import {CgInfinity} from "react-icons/cg"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
-import { getStockGraphData } from "../../store/stocks";
+import { getWatchlistGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
@@ -18,10 +19,9 @@ import {NavLink} from "react-router-dom"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
-api_key.apiKey = apiKeys[Math.floor(Math.random()*apiKeys.length)]
+api_key.apiKey = apiKeys[Math.floor(Math.random(apiKeys.length))]
 const finnhubClient = new finnhub.DefaultApi()
-const moverAPIKeys = ["ff567560f2ecaf815b36d6a3ce51a55f"]
-const nonWorkingMovers = [`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
+const moverAPIKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","738b215d43b9f00852b64cd8ea4feeb9"]
 
 const months = {
     0:"JAN",
@@ -58,23 +58,22 @@ const Dashboard = () => {
     const [depositClick,setDepositClick] = useState(false)
     const [watchlistInput,toggleWatchlistInput] = useState(false)
     const [renderLineChart,setRenderLineChart] = useState("")
+    const [performance,setPerformance] = useState(true)
 
 
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
+
     const moversData = useSelector(state => state.portfolio.moversData)
-    const watchlistStockData = useSelector(state=>state.stocks.stockData)
-    console.log(watchlistStockData)
+    const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     useEffect(()=>{
         if(watchlistStockData){
-            console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
             for(let symbol of Object.keys(watchlistStockData)){
-                console.log("AYYYY: ",watchlistStockData[symbol])
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
                                 <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
@@ -86,7 +85,7 @@ const Dashboard = () => {
                 } else {
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
                                 <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
@@ -101,30 +100,54 @@ const Dashboard = () => {
         }
     },[watchlistStockData])
 
-    console.log("GRAPH DATA: ",graphData)
+
     useEffect(()=>{
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
+
                     total += (Number(data.c) * Number(holding.shares))
                     setPortfolioValue(portfolioValue+total)
                 });
             })
             finnhubClient.marketNews("general", {}, (error, data, response) => {
+                const currentTime = new Date().getTime()/1000
+                data.sort((a,b)=>a.datetime > b.datetime)
+                console.log("DATA: ",data)
+                data.forEach(article => {
+                    let seconds = currentTime - article.datetime
+                    let timeInHours = seconds/3600
+                    let timeInDays
+                    let timeInMinutes
+                    if(timeInHours >= 24){
+                        timeInDays = timeInHours / 24
+                    }
+                    if(timeInDays)article.time = `${timeInDays} D`
+                    else {
+                        if(timeInHours < 1){
+                            timeInMinutes = timeInHours*60
+                            article.time = `${timeInMinutes.toFixed(0)} Min`
+                        }
+                        else {
+                            if(timeInHours % 1 == 0) article.time = `${Math.floor(timeInHours).toFixed(0)}H`
+                            else article.time = `${Math.floor(timeInHours).toFixed(0)}H ${((timeInHours % 1) * 60).toFixed(0)} Min`
+                            }
+                    }
+                })
                 setNews(data)
               });
               let allWatchListStocks = []
               let allWatchListStockSymbols = []
               editBuyingPowerValue(user.buyingPower)
-              dispatch(getMoversData(moverAPIKeys[Math.floor(Math.random()*moverAPIKeys.length)]))
+              dispatch(getMoversData(moverAPIKeys))
               for(let watchlist of user.watchlists){
-                  console.log("WATCHLIST HERE: ",watchlist)
+                  console.log("WATCHLIST: ",watchlist)
                   allWatchListStocks = [...allWatchListStocks,...watchlist.stocks.filter(stock => !allWatchListStockSymbols.includes(stock.symbol))]
                   allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
 
               }
-              dispatch(getStockGraphData(allWatchListStocks,apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+              dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys))
 
               let start = new Date()
               let end = new Date()
@@ -138,6 +161,10 @@ const Dashboard = () => {
                   start.setDate(start.getDate()-2)
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
+              } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
+                start.setDate(start.getDate()-1)
+                end.setDate(end.getDate()-1)
+                end.setHours(23,0,0,0)
               }
               start.setHours(0,0,0,0)
 
@@ -154,7 +181,6 @@ const Dashboard = () => {
             setGraphData(portfolioData.data)
             setYmin(portfolioData.min)
             setYmax(portfolioData.max)
-
         }
     },[portfolioData])
 
@@ -203,12 +229,12 @@ const Dashboard = () => {
     }
     useEffect(()=>{
         if(interval && unixEnd){
-        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, apiKeys[Math.floor(Math.random()*apiKeys.length)]))
+        dispatch(getPortfolioData(user.holdings, interval, unixStart, unixEnd, apiKeys))
         }
     },[interval,unixEnd,unixStart])
 
 
-
+    console.log("NEWS: ",news)
     const timeFrameClick = (time,frame) => {
 
 
@@ -311,9 +337,6 @@ const Dashboard = () => {
     // if (!active || !tooltip)    return null
     if(payload && payload[0]){
 
-            console.log("AA: ",payload)
-            console.log("BB",payload[0])
-            console.log("CC",payload[0].payload)
             let year = payload[0].payload.dateTime.getFullYear()
             let month = months[payload[0].payload.dateTime.getMonth()]
             let day = payload[0].payload.dateTime.getDate()
@@ -324,7 +347,7 @@ const Dashboard = () => {
             let zone
             if(hours >= 12) zone = "PM"
             else zone = "AM"
-            console.log("INTERVAL: ",interval)
+
             setPortfolioValueDynamic(payload[0].payload.price)
             if(interval === "5"){
                 return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
@@ -373,7 +396,7 @@ const editListHandler = (watchlist) => {
 }
 
 const handleOpenDots = (e,watchlist) => {
-    console.log("WATCHLIST: ",watchlist)
+
     e.stopPropagation()
 
     if(dotsOpen === watchlist.id){
@@ -384,26 +407,36 @@ const handleOpenDots = (e,watchlist) => {
 
 
     useEffect(()=>{
-        if(graphData){
-            console.log("HERE GREAPH: ",graphData)
-            console.log("HEREEEEE: ",graphData[graphData.length-1].value > graphData[0].value, graphData[graphData.length-1].value,graphData[0].value)
+        if(graphData.length && graphData[0] !== "no_data"){
+
             if(graphData[graphData.length-1].price > graphData[0].price){
+                setPerformance(true)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
-                  <XAxis tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis tickSize = {1.5} tick = {false} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             } else {
+                setPerformance(false)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
-                  <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                  <XAxis  tick = {false} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             }
+        }
+        else if (portfolioData && portfolioData.data[0] === "no_data"){
+            setRenderLineChart((
+                <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
+              <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
+              <XAxis  axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+              <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+              <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+            </LineChart>))
         }
     },[graphData])
 
@@ -419,92 +452,89 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = "dashboard-graph-timeframe-button">1M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = "dashboard-graph-timeframe-button">3M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
+                        <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1D</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1W</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>3M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1Y</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
                     </div>
-                    <div id = "dashboard-buying-power-container"  >
-                        <div id = "dashboard-buying-power-container-heading" onClick={()=>toggleBuyingPower(!buyingPower)}>
+                    <div id = {buyingPower ? "dashboard-buying-power-container-closed" : "dashboard-buying-power-container" } >
+                        <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
-                            <div id = "dashboard-buying-power-value" style = {buyingPower ? {display:"none"} : {display:"block"}}>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                         </div>
-                        <div id = "dashboard-buying-power-container-bottom" style = {buyingPower ? {display:"flex"} : {display:"none"}}>
-                            <div id = "dashboard-buying-power-container-left">
-                                <div id = "brokerage-cash-container">
-                                    <div>Brokerage Cash</div>
-                                    <div>Infinity</div>
-                                </div>
-                                <div id = "buying-power-container">
-                                    <div>Buying Power</div>
-                                    <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
-                                </div>
-                                <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-                                <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+                            <div id = {buyingPower ? "dashboard-buying-power-container-bottom-visible" : "dashboard-buying-power-container-bottom-invisible"}>
+                                <div id = "dashboard-buying-power-container-left">
+                                    <div id = "brokerage-cash-container">
+                                        <div>Brokerage Cash</div>
+                                        <div style = {{fontSize:"30px"}}><CgInfinity/></div>
+                                    </div>
+                                    <div id = "buying-power-container">
+                                        <div>Buying Power</div>
+                                        <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                                    </div>
+                                    <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
+                                    <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
 
-                            </div>
-
-                            <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase. Learn More</div>
+                                </div>
+                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase.</div>
                         </div>
                     </div>
                 </div>
 
                 <div id = "dashboard-lower-container">
-                    <div id = "trending-lists-container">
-                        <div id = "trending-lists-title"><h1>Trending Lists</h1></div>
-                        <div id = "trending-lists-icons"></div>
-                    </div>
-                    <div id = "daily-gainers-title"><h1>Daily Gainers</h1></div>
+                    <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
+                    <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
                     <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-subtitle"></div>
-                        <div id = "daily-gainers-icons">
-                        {/* {moversData && moversData.gainersData.map(data => {
+                        <div id = "daily-gainers-icons" className= "movers-icons">
+                        {moversData && moversData.gainersData.map(data => {
                             return (
-                                <div key = {data.ticker} className = "daily-gainers-individual">
-                                    <div className = "daily-gainers-icons-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container">
-                                        <div className = "daily-gainers-icons-value">{data.price}</div>
-                                        <div className = "daily-gainers-icons-change">+{data.changesPercentage}</div>
+                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
+                                    <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
+                                    <div className = "daily-numbers-container movers-numbers">
+                                        <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                        <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
                                     </div>
-                                </div>
+                                </NavLink>
                             )
-                            })} */}
+                            })}
                         </div>
                     </div>
-                    <div id = "daily-losers-title"><h1>Daily Losers</h1></div>
+                    <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
+                    <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
                     <div id = "daily-losers-container">
-                        <div id = "daily-losers-subtitle"></div>
-                        <div id = "daily-losers-icons">
-                            {/* {moversData && moversData.losersData.map(data => {
+                        <div id = "daily-losers-icons" className= "movers-icons">
+                            {moversData && moversData.losersData.map(data => {
                                 return (
-                                <div key = {data.ticker} className = "daily-losers-individual">
-                                    <div className = "daily-losers-icons-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container">
-                                        <div className = "daily-losers-icons-value">{data.price}</div>
-                                        <div className = "daily-losers-icons-change">-{data.changesPercentage}</div>
+                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
+                                    <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
+                                    <div className = "daily-numbers-container movers-numbers">
+                                        <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                        <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
                                     </div>
 
-                                </div>
+                                </NavLink>
                                 )
-                            })} */}
+                            })}
 
                         </div>
                     </div>
                     <div id = "news-container">
-                        <div id="news-title"><h1>News</h1></div>
+                        <div id="news-title" className = "dashboard-titles">News</div>
                         <div id = "news-icons-container">
                             {news && news.map(post => {
                                 return (
-                                    <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-container">
-                                        <div className = "news-icon-source">{post.source}</div>
-                                        <div className = "news-icon-date">{post.datetime*1000}</div>
+                                    <div className = "news-icon-container">
+                                    <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-navlink">
+                                        <div className = "news-top-container">
+                                            <div className = "news-icon-source">{post.source}</div>
+                                            <div className = "news-icon-date">{post.time}</div>
+                                        </div>
                                         <div className = "news-icon-headline">{post.headline}</div>
-                                        <div className = "news-icon-symbol"></div>
-                                        <div className = "news-icon-change"></div>
                                     </NavLink>
+                                    </div>
                                 )
                             })}
 
@@ -517,24 +547,25 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "watchlist-outer-title">
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
-                        <form onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
-                        <input placeholder = 'Watchlist Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
-                        <input type="submit" value = "Submit"/>
-                        </form>
-
                     </div>
+                    <form id = "add-watchlist-form" onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                        <div id = "watchlist-add-buttons-container">
+                            <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
+                            <input id = {performance ? "watchlist-add-submit-good" : "watchlist-add-submit-bad"} type="submit" value = "Create List"/>
+                        </div>
+                    </form>
                     {user && user.watchlists.map(watchlist=>{
                         return (
                             <div key = {watchlist.id} className = "watchlist-inner-container">
                                 <div className = "watchlist-title" onClick = {()=>toggleOpenLists(watchlist)}>
-
-                                    <div>{watchlist.name}</div>
+                                    <div className = "watchlist-name">{watchlist.name}</div>
                                     <div className = "watchlist-title-right">
                                         <div className = "watchlist-dots" onClick = {(e)=>handleOpenDots(e,watchlist)}><BiDotsHorizontal/></div>
                                         <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
 
                                     </div>
-                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex"} :{display:"none"}}>
+                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex", zIndex:100} :{display:"none"}}>
                                             <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
                                             <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>
@@ -548,8 +579,8 @@ const handleOpenDots = (e,watchlist) => {
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">{watchlistStockData && watchlistStockData[stock.symbol].price}</div>
-                                                    <div className = "watchlist-stock-change"></div>
+                                                    <div className = "watchlist-stock-price">${watchlistStockData && watchlistStockData[stock.symbol].price}</div>
+                                                    <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
                                         )
