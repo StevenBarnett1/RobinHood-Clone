@@ -57,12 +57,12 @@
     position:sticky;
     top:120px;
     width:275px;
-    border:1px solid lightgrey;
+    border:1px solid var(--border-color);
     box-shadow: 0 0 10px 2px rgb(230, 229, 229);
     border-radius:5px;
 }
 #watchlist-outer-title{
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
     display:flex;
     justify-content: space-between;
 }
@@ -105,7 +105,7 @@
 #dashboard-upper-container{
     display:flex;
     flex-direction: column;
-    border-bottom:1px solid lightgrey
+    border-bottom:1px solid var(--border-color)
 }
 
 #dashboard-buying-power-container-left{
@@ -138,8 +138,8 @@
     padding-bottom:25px;
     padding-top:25px;
     padding-left:15px;
-    padding-right:25px;
-    border-bottom:1px solid lightgrey;
+    padding-right:15px;
+    border-bottom:1px solid var(--border-color);
     cursor:pointer;
 }
 
@@ -154,7 +154,7 @@
     padding-bottom:25px;
     padding-top:25px;
     padding-left:15px;
-    padding-right:25px;
+    padding-right:15px;
     cursor:pointer;
 }
 
@@ -193,10 +193,33 @@
 
 .watchlist-stock-symbol{
     font-weight:bold;
+    font-size:13px;
+    margin-left:25px;
+
+}
+
+.watchlist-stock-price{
+    font-size:13px;
+}
+
+.watchlist-stock-change{
+    font-size:13px;
+}
+.watchlist-stock-price-container{
+display:flex;
+flex-direction: column;
+margin-right:10px;
 }
 
 .watchlist-stock-container{
-    justify-content: space-around;
+    display:flex;
+    margin-top:10px;
+    /* justify-content: space-between; */
+}
+
+.watchlist-stock-graph{
+    margin-left:20px;
+    margin-right:45px;
 }
 
 #dashboard-graph-timeframes-container{
@@ -206,7 +229,7 @@
 }
 
 #dashboard-graph-container{
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
     padding-bottom:10px;
 }
 
@@ -227,7 +250,7 @@
 }
 
 .news-icon-container{
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
     padding-top:15px;
     padding-bottom:15px;
     cursor:pointer;
@@ -286,11 +309,12 @@
     flex-direction: column;
     height:185px;
     width:162px;
-    border: 1px solid lightgrey;
+    border: 1px solid var(--border-color);
     margin-right:15px;
     justify-content: space-between;
     cursor:pointer;
     text-decoration: none;
+    border-radius:5px;
 }
 
 .movers-title{
@@ -318,7 +342,7 @@
     margin-bottom:15px;
 }
 #news-title{
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
 }
 
 
@@ -387,7 +411,7 @@
     right:20px;
     height:110px;
     width:150px;
-    border:1px solid lightgrey;
+    border:1px solid var(--border-color);
     justify-content: space-around;
     align-items: center;
 }
@@ -470,7 +494,7 @@ margin-right:96px !important;
     padding-bottom:5px;
     display:flex;
     justify-content: space-between;
-    border-bottom:1px solid lightgrey;
+    border-bottom:1px solid var(--border-color);
 }
 
 #buying-power-container{
@@ -507,7 +531,7 @@ margin-right:96px !important;
     background-color: var(--input-background-color);
     margin:auto;
     border-radius: 5px;
-    border:1px solid lightgrey;
+    border:1px solid var(--border-color);
 }
 
 #add-watchlist-form > input:hover{

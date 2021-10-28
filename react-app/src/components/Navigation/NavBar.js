@@ -5,6 +5,7 @@ import LogoutButton from '../auth/LogoutButton';
 import "./Navigation.css"
 import { useSelector } from 'react-redux';
 import Search from '../Search';
+import {HiOutlineLogout} from "react-icons/hi"
 
 const NavBar = () => {
 

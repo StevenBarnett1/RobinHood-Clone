@@ -24,6 +24,7 @@ body{
     --input-background-color:rgb(48, 54, 58);
     --color:white;
     --opposite-color:black;
+    --border-color: rgb(231, 230, 230);
 }
 
 #light{
@@ -33,5 +34,6 @@ body{
     --color:black;
     --button-hover-background-color:rgb(239, 248, 248);
     --opposite-color:white;
+    --border-color: rgb(231, 230, 230);
 
 }

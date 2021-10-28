@@ -21,7 +21,7 @@ const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn5
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = "c5riunqad3ifnpn54h4g"
 const finnhubClient = new finnhub.DefaultApi()
-const moverAPIKeys = ["ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
+const moverAPIKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a"]
 
 const months = {
     0:"JAN",
@@ -72,7 +72,7 @@ const Dashboard = () => {
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
                                 <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
@@ -84,7 +84,7 @@ const Dashboard = () => {
                 } else {
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {107} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
                                 <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
@@ -572,7 +572,7 @@ const handleOpenDots = (e,watchlist) => {
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">{watchlistStockData && watchlistStockData[stock.symbol].price}</div>
+                                                    <div className = "watchlist-stock-price">${watchlistStockData && watchlistStockData[stock.symbol].price}</div>
                                                     <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
