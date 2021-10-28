@@ -58,6 +58,7 @@ const Dashboard = () => {
     const [depositClick,setDepositClick] = useState(false)
     const [watchlistInput,toggleWatchlistInput] = useState(false)
     const [renderLineChart,setRenderLineChart] = useState("")
+    const [performance,setPerformance] = useState(true)
 
 
     const user = useSelector(state=>state.session.user)
@@ -408,6 +409,7 @@ const handleOpenDots = (e,watchlist) => {
         if(graphData.length && graphData[0] !== "no_data"){
 
             if(graphData[graphData.length-1].price > graphData[0].price){
+                setPerformance(true)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
@@ -416,6 +418,7 @@ const handleOpenDots = (e,watchlist) => {
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             } else {
+                setPerformance(false)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>portfolioReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
@@ -448,12 +451,12 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "dashboard-graph-container">
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = "dashboard-graph-timeframe-button">1M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = "dashboard-graph-timeframe-button">3M</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
-                            <span className = "dashboard-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
+                        <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1D</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1W</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>3M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1Y</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
                     </div>
                     <div id = "dashboard-buying-power-container" style = {buyingPower ? {boxShadow: "0px 0px 15px 3px rgb(238, 237, 237)",height:"300px"} : {height:"66px"}} >

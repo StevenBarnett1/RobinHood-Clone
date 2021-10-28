@@ -5,6 +5,7 @@
     display:flex;
     align-items: center;
     position: fixed;
+    width:99%;
     top:0px;
     background-color: white;
     z-index:10;
@@ -17,6 +18,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
 
 }
 

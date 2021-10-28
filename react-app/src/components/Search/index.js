@@ -4,6 +4,7 @@ import "./Search.css"
 import { NavLink, useHistory} from "react-router-dom"
 import { getStocks } from "../../store/stocks"
 import { useParams } from "react-router"
+import {AiOutlineSearch} from "react-icons/ai"
 
 const Search = () => {
 
@@ -12,6 +13,7 @@ const Search = () => {
     const [focus,setFocus] = useState(true)
     const [coloredStocks,setColoredStocks] = useState("")
     const [nonColoredStocks,setNonColoredStocks] = useState("")
+    const theme = useSelector(state=>state.session.theme)
     const dispatch = useDispatch()
     const history = useHistory()
     const navigateTo = (location) => {
@@ -87,8 +89,11 @@ const Search = () => {
     console.log("FOCUS: ", focus)
     return (
         <div id = "search-container">
-            <input id = "search-input" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} />
-            <div style = {(currentStocks && focus) ? {display:"block"} : {display:"none"}} id = "search-list">
+            <div id = "search-input-outer-container" style = {theme === "dark" ? {boxShadow:"none"} : {}}>
+             <AiOutlineSearch id = "magnifying-glass"/>
+                <input id = "search-input" placeholder = "Search" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
+            </div>
+                <div style = {(currentStocks && focus) ? {display:"block"} : {display:"none"}} id = "search-list">
                 {nonColoredStocks && nonColoredStocks.map(stock => {
                     return (
                         <div key = {stock.id} className = "search-item" >

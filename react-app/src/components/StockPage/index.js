@@ -59,18 +59,20 @@ const Stockpage = () => {
     const [interval,setTimeInterval] = useState("5")
     const [yMax,setYmax] = useState(0)
     const [yMin,setYmin] = useState(Infinity)
-    const [render,forceRerender] = useState("")
+    const [render,forceRerender] = useState(false)
     const [investType,setInvestType] = useState("shares")
     const [buySell,setBuySell] = useState("buy")
     const [investValue,setInvestValue] = useState("")
     const [readMore,toggleReadMore] = useState(false)
     const [currentShares,setCurrentShares] = useState("")
+    const [performance,setPerformance] = useState(true)
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
+        console.log("FORCING RERENDER?")
         forceRerender(!render)
     },[params])
     useEffect(()=>{
@@ -166,7 +168,7 @@ const Stockpage = () => {
 
             dispatch(getStockData(params.symbol,interval,unixStart,unixEnd,apiKeys,financialModelingPrepKeys,alphaAdvantageKeys))
         }
-    },[interval,unixEnd,unixStart])
+    },[render,interval,unixEnd,unixStart])
 
     const chartHoverFunction = (e) => {
         if(e.activePayload){
@@ -275,6 +277,7 @@ const Stockpage = () => {
         if(graphData){
 
             if(graphData[graphData.length-1].price > graphData[0].price){
+                setPerformance(true)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
@@ -283,6 +286,7 @@ const Stockpage = () => {
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             } else {
+                setPerformance(false)
                 setRenderLineChart((
                     <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
@@ -329,8 +333,8 @@ const Stockpage = () => {
         <XAxis dataKey="period" interval = {0} allowDuplicatedCategory={false}/>
         <YAxis type="number" dataKey="data" />
         <Legend height = {1}/>
-        <Scatter name = "Actual" data={actualScatterData} fill="green" />
-        <Scatter name = "Estimated" data={estimatedScatterData} fill="red" />
+        <Scatter name = "Actual" data={actualScatterData} fill={performance ? "rgb(0, 200, 5)" :"rgb(255, 80, 0)"} />
+        <Scatter name = "Estimated" data={estimatedScatterData} fill={performance ? "rgb(0, 122, 4)" :"rgb(167, 53, 0)"} />
         <Tooltip/>
     </ScatterChart>
     )
@@ -351,41 +355,37 @@ const Stockpage = () => {
                             {renderLineChart}
                         </div>
                         <div id = "stockpage-graph-timeframes-container">
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = "dashboard-graph-timeframe-button">1D</button></span>
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = "dashboard-graph-timeframe-button">1W</button></span>
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = "dashboard-graph-timeframe-button">1M</button></span>
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = "dashboard-graph-timeframe-button">3M</button></span>
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = "dashboard-graph-timeframe-button">1Y</button></span>
-                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = "dashboard-graph-timeframe-button">ALL</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1D</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("30","1W")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1W</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","3M")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>3M</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1Y</button></span>
+                            <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
 
                     </div>
                 </div>
                 <div id = "stockpage-lower-container">
-                    <div id = "about-container" > {/*style = {readMore ? {height:'auto'} : {height:"200px"}}*/}
+                    <div id = "about-container"  > {/*style = {readMore ? {height:'auto'} : {height:"200px"}}*/}
                         <div id = "about-title" >About</div>
-                        <div id = "about-description">
+                        <div id = "about-description" style = {(stockData && !stockData.description) ? {display:"none"}:{}}>
                             {stockData && stockData.description}
                         </div>
                         {/* <span onClick = {()=>toggleReadMore(!readMore)} id = "read-more">Read More</span> */}
 
                     </div>
-                    <div id = "about-lower-container">
+                    <div id = "about-lower-container" style = {(stockData && !stockData.description) ? {marginTop:"40px"}:{}}>
                             <div className = "about-individual-container" id = "ceo-container">
                                 <div id = "ceo-title" className = "about-subtitle">CEO</div>
-                                <div id = "ceo-value">{stockData && stockData.ceo}</div>
+                                <div id = "ceo-value">{(stockData && stockData.ceo) ? stockData.ceo : "-"}</div>
                             </div>
                             <div className = "about-individual-container" id = "employees-container">
                             <div id = "employees-title" className = "about-subtitle">Employees</div>
-                                <div id = "employees-value">{stockData && stockData.employees}</div>
+                                <div id = "employees-value">{(stockData && stockData.employees) ? stockData.employees : "-"}</div>
                             </div>
                             <div className = "about-individual-container" id = "headquarters-container">
                             <div id = "headquarters-title" className = "about-subtitle">Headquarters</div>
-                                <div id = "headquarters-value">{stockData && stockData.headquarters}</div>
-                            </div>
-                            <div className = "about-individual-container" id = "founded-container">
-                            <div id = "founded-title" className = "about-subtitle"></div>
-                                <div id = "founded-value"></div>
+                                <div id = "headquarters-value">{(stockData && stockData.headquarters) ? stockData.headquarters : "-"}</div>
                             </div>
                         </div>
                     <div id = "key-statistics-container">
@@ -393,23 +393,23 @@ const Stockpage = () => {
                         <div id = "key-statistics-lower-container">
                             <div className = "key-statistic-container">
                                 <div className = "key-statistic">Market Cap</div>
-                                <div className = "key-statistic-value">{stockData && stockData.marketCap}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.marketCap) ? stockData.marketCap : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "revenue">
                                 <div className = "key-statistic">Revenue</div>
-                                <div className = "key-statistic-value">{stockData && stockData.revenue}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.revenue) ? stockData.revenue : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "price-to-earnings">
                                 <div className = "key-statistic">Price-Earnings Ratio</div>
-                                <div className = "key-statistic-value">{stockData && stockData.peRatio}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.peRatio) ? stockData.peRatio : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "dividend-yield">
                                 <div className = "key-statistic">Dividend Yield</div>
-                                <div className = "key-statistic-value">{stockData && stockData.dividendYield}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.dividendYield) ? stockData.dividendYield : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "eps">
                                 <div className = "key-statistic">Earnings Per Share</div>
-                                <div className = "key-statistic-value">{stockData && stockData.eps}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.eps) ? stockData.eps : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "high-today">
                                 <div className = "key-statistic">High Today</div>
@@ -425,11 +425,11 @@ const Stockpage = () => {
                             </div>
                             <div className = "key-statistic-container" id = "high">
                                 <div className = "key-statistic">52 Week High</div>
-                                <div className = "key-statistic-value">{stockData && stockData['52WeekHigh']}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekHigh']) ? stockData['52WeekHigh'] : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "low">
                                 <div className = "key-statistic">52 Week Low</div>
-                                <div className = "key-statistic-value">{stockData && stockData['52WeekLow']}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekLow']) ? stockData['52WeekLow'] : "-"}</div>
                             </div>
                         </div>
                     </div>
@@ -468,8 +468,8 @@ const Stockpage = () => {
                 <div id = "stockpage-right-inner-container">
                 <div id = "stock-purchase-container" style = {investType === "shares" ? {} : {height:"365px"}}>
                     <div id = "stock-purchase-titles">
-                        <div id = "stock-buy-title" style = {buySell === "buy" ? {borderBottom:"1px solid rgb(255, 80, 0)"} : {}} onClick = {()=>setBuySell('buy')}>Buy {stockData && stockData.symbol}</div>
-                        <div id = "stock-sell-title" style = {buySell === "sell" ? {borderBottom:"1px solid rgb(255, 80, 0)"} : {}} onClick = {()=>setBuySell('sell')}>Sell {stockData && stockData.symbol}</div>
+                        <div id = {performance ? "stock-buy-title-good" : "stock-buy-title-bad"} style = {buySell === "buy" ? {borderBottom:"30px"} : {}} onClick = {()=>setBuySell('buy')}>Buy {(stockData && stockData.symbol) ? stockData.symbol.toUpperCase(): ""}</div>
+                        <div id = {performance ? "stock-sell-title-good" : "stock-sell-title-bad"} style = {buySell === "sell" ? {borderBottomWidth:"1px"} : {borderBottomWidth:"0px"}} onClick = {()=>setBuySell('sell')}>Sell {(stockData && stockData.symbol) ? stockData.symbol.toUpperCase(): ""}</div>
                     </div>
                     <div id = "stock-purchase-middle">
                         <div id ="stock-purchase-inner">
@@ -486,7 +486,7 @@ const Stockpage = () => {
                             </div>
                                 {investType === "shares" ? (
                                     <div id = "market-price-container">
-                                        <div id ="market-price-label">Market Price</div>
+                                        <div id = {performance ? "market-price-label-good" : "market-price-label-bad"}>Market Price</div>
                                         <div id ="market-price-value">{(stockData && stockData.price) ? `$${stockData.price}`: "-"}</div>
                                     </div>
                                 ) : null}
@@ -500,14 +500,14 @@ const Stockpage = () => {
                                 )}
                             </div>
                         </div>
-                        <button id = "review-order-button" onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
+                        <button id = {performance ? "review-order-button-good":"review-order-button-bad"} onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
-                    <div id = "stock-purchase-lower">
+                    <div id = {performance ? "stock-purchase-lower-good" : "stock-purchase-lower-bad"}>
                         {(buySell === "buy" && user) ? `$${user.buying_power.toFixed(2)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${currentShares} share available`: `${currentShares} shares available`}` }`}
                     </div>
                 </div>
                 <div id = "add-to-list-container">
-                    <button onClick = {()=>addToList(stockData.symbol)}id = "add-to-list-button"><AiOutlinePlus/> Add to Lists</button>
+                    <button onClick = {()=>addToList(stockData.symbol)}id = {performance ? "add-to-list-button-good" : "add-to-list-button-bad"}><AiOutlinePlus/> Add to Lists</button>
                 </div>
                 </div>
             </div>

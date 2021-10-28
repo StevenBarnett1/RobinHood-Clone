@@ -8,6 +8,7 @@
     width:730px;
     margin:auto;
     margin-right:47px;
+    margin-top:70px;
 }
 
 #stockpage-upper-container{
@@ -22,14 +23,18 @@
     justify-content: space-between;
 }
 
-.stockpage-graph-timeframe-button{
+.stockpage-graph-timeframe-button-good, .stockpage-graph-timeframe-button-bad{
     border:none;
     background-color: transparent;
     cursor: pointer;
 }
 
-.stockpage-graph-timeframe-button:hover{
-    color:rgb(0, 200, 5);
+.stockpage-graph-timeframe-button-good:hover{
+    color:var(--good-stock)
+}
+
+.stockpage-graph-timeframe-button-bad:hover{
+    color:var(--bad-stock)
 }
 
 
@@ -61,13 +66,15 @@
 
 #about-lower-container{
     display:flex;
-    justify-content: space-between;
+    justify-content: left;
     font-size:13px;
+    margin-bottom:45px;
 }
 
 .about-individual-container{
     display:flex;
     flex-direction: column;
+    margin-right:120px;
 }
 
 #about-description{
@@ -89,6 +96,7 @@
     height:415px;
     border:1px solid var(--border-color);
     border-radius:5px;
+    background-color: var(--watchlist-background-color);
     /* transition: height 0.1s linear */
 }
 
@@ -259,28 +267,55 @@ margin-right:79px !important;
 #stock-purchase-inner{
     font-size:13px;
 }
-#stock-buy-title{
-    padding-left: 28px;
+#stock-buy-title-good{
+    padding-left: 20px;
     padding-bottom: 15px;
     padding-top: 15px;
     padding-right:32px;
     font-weight:bold;
+    border-bottom-color: var(--good);
 }
 
-#stock-buy-title:hover{
-    color:rgb(255, 80, 0)
+#stock-buy-title-bad{
+    padding-left: 20px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-right:32px;
+    font-weight:bold;
+    border-bottom-color: var(--bad);
 }
 
-#stock-sell-title:hover{
-    color:rgb(255, 80, 0)
+#stock-buy-title-good:hover{
+    color:var(--good-stock)
+}
+#stock-buy-title-bad:hover{
+    color:var(--bad-stock)
 }
 
-#stock-sell-title{
+#stock-sell-title-bad:hover{
+    color:var(--bad-stock)
+}
+
+#stock-sell-title-good:hover{
+    color:var(--good-stock)
+}
+
+#stock-sell-title-good{
     padding-right: 28px;
     padding-bottom: 15px;
     padding-top: 15px;
     font-weight:bold;
     padding-left:32px;
+    border-bottom-color: var(--good);
+}
+
+#stock-sell-title-bad{
+    padding-right: 28px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    font-weight:bold;
+    padding-left:32px;
+    border-bottom-color:var(--bad-stock)
 }
 
 #invest-in-container{
@@ -301,6 +336,10 @@ margin-right:79px !important;
     width:137px;
     height:37px;
     cursor:pointer;
+    background-color: var(--watchlist-background-color);
+    color:var(--color);
+    border-radius:5px;
+    padding-left:8px;
 }
 #amount-container{
     display:flex;
@@ -318,7 +357,13 @@ margin-right:79px !important;
 #amount-value{
     margin-right:25px;
     width:82px;
-    height:30px;
+    height:36px;
+    background-color: var(--input-watchlist-background-color);
+    border:none;
+    border-radius: 5px;
+    text-align: right;
+    padding-right:10px;
+    box-sizing: border-box;
 }
 
 #market-price-container{
@@ -330,8 +375,14 @@ margin-right:79px !important;
     font-weight:bold;
 }
 
-#market-price-label{
+#market-price-label-good{
     margin-left:25px;
+    color:var(--good-stock);
+}
+
+#market-price-label-bad{
+    margin-left:25px;
+    color:var(--bad-stock);
 }
 #market-price-value{
     margin-right:25px;
@@ -353,10 +404,10 @@ margin-right:79px !important;
     font-weight:bold
 }
 
-#review-order-button{
+#review-order-button-good{
     height:50px;
     width:226px;
-    background-color: rgb(255, 80, 0);
+    background-color: var(--good-stock);
     display:flex;
     justify-content: center;
     align-items: center;
@@ -368,23 +419,67 @@ margin-right:79px !important;
     cursor:pointer;
 }
 
-#stock-purchase-lower{
+#review-order-button-bad{
+    height:50px;
+    width:226px;
+    background-color: var(--bad-stock);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin:auto;
+    color:var(--opposite-color);
+    border:none;
+    border-radius: 5px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#review-order-button-bad:hover{
+    background-color: var(--bad-stock-dark-hover);
+}
+
+#review-order-button-good:hover{
+    background-color: var(--good-stock-dark-hover);
+}
+
+#stock-purchase-lower-good{
     margin-top:35px;
     padding-top:15px;
     border-top:1px solid var(--border-color);
-    color: rgb(255, 80, 0);
+    color: var(--good-stock);
     font-size:13px;
     text-align: center;
 }
 
-#add-to-list-container > button {
+#stock-purchase-lower-bad{
+    margin-top:35px;
+    padding-top:15px;
+    border-top:1px solid var(--border-color);
+    color: var(--bad-stock);
+    font-size:13px;
+    text-align: center;
+}
+
+#add-to-list-button-good {
     height:48px;
     width:228px;
     font-weight:bold;
     border-radius:5px;
-    border: 1px solid rgb(255, 80, 0);
+    border: 1px solid var(--good-stock);
     background-color: inherit;
-    color: rgb(255, 80, 0);
+    color: var(--good-stock);
+    margin-top:30px;
+    cursor:pointer;
+}
+
+#add-to-list-button-bad {
+    height:48px;
+    width:228px;
+    font-weight:bold;
+    border-radius:5px;
+    border: 1px solid var(--bad-stock);
+    background-color: inherit;
+    color: var(--bad-stock);
     margin-top:30px;
     cursor:pointer;
 }
@@ -396,8 +491,12 @@ margin-right:79px !important;
 
 
 
-#add-to-list-container > button:hover{
-    background-color: rgb(253, 151, 104);
+#add-to-list-button-bad:hover{
+    background-color: var(--bad-stock-light-hover);
+}
+
+#add-to-list-button-good:hover{
+    background-color: var(--good-stock-light-hover);
 }
 
 #stockpage-right-inner-container{

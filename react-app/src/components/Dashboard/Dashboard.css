@@ -48,14 +48,15 @@
     width:1050px;
     display:flex;
     margin:auto;
+
 }
 
 #watchlist-outer-container{
     display:flex;
     flex-direction: column;
-    height:800px;
+    height:880px;
     position:sticky;
-    top:120px;
+    top:85px;
     width:275px;
     border:1px solid var(--border-color);
     box-shadow: 0 0 10px 2px rgb(230, 229, 229);
@@ -100,6 +101,7 @@
     width:730px;
     margin:auto;
     margin-right:47px;
+    margin-top:70px;
 }
 
 #dashboard-upper-container{
@@ -233,15 +235,19 @@ margin-right:10px;
     padding-bottom:10px;
 }
 
-.dashboard-graph-timeframe-button{
+.dashboard-graph-timeframe-button-good,.dashboard-graph-timeframe-button-bad{
     border:none;
     background-color: transparent;
     cursor: pointer;
     font-weight:bold;
 }
 
-.dashboard-graph-timeframe-button:hover{
-    color:rgb(0, 200, 5);
+.dashboard-graph-timeframe-button-good:hover{
+    color:var(--good-stock);
+}
+
+.dashboard-graph-timeframe-button-bad:hover{
+    color:var(--bad-stock);
 }
 
 .news-icon-navlink{

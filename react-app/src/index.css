@@ -1,10 +1,19 @@
 #dark{
     --background-color:black;
     --watchlist-background-color:rgb(30, 33, 36);
-    --input-background-color:rgb(48, 54, 58);
+    --input-background-color:rgb(32, 32, 32);
+    --input-watchlist-background-color:rgb(48, 48, 48);
     --color:white;
+    --good-stock:rgb(0, 200, 5);
+    --good-stock-light-hover:rgb(216, 245, 216);
+    --good-stock-dark-hover:rgb(1, 175, 7);
+    --bad-stock:rgb(255, 80, 0);
+    --bad-stock-dark-hover:rgb(230, 75, 3);
+    --bad-stock-light-hover:rgb(252, 234, 225);
     --opposite-color:black;
-    --border-color: rgb(231, 230, 230);
+    --border-color: rgb(53, 53, 53);
+    --scatterplot-bad-dark:rgb(167, 53, 0);
+    --scatterplot-good-dark:rgb(0, 122, 4);
     background-color: var(--background-color);
     color: var(--color);
 }
@@ -14,7 +23,15 @@
     --input-background-color:rgb(245, 248, 250);
     --watchlist-background-color:white;
     --color:black;
+    --good-stock:rgb(0, 200, 5);
+    --good-stock-light-hover:rgb(216, 245, 216);
+    --good-stock-dark-hover:rgb(1, 175, 7);
+    --bad-stock:rgb(255, 80, 0);
+    --bad-stock-dark-hover:rgb(230, 75, 3);
+    --bad-stock-light-hover:rgb(252, 234, 225);
     --button-hover-background-color:rgb(239, 248, 248);
+    --scatterplot-bad-dark:rgb(167, 53, 0);
+    --scatterplot-good-dark:rgb(0, 122, 4);
     --opposite-color:white;
     --border-color: rgb(231, 230, 230);
 
