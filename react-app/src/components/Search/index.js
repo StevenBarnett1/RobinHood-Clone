@@ -91,7 +91,7 @@ const Search = () => {
         <div id = "search-container">
             <div id = "search-input-outer-container" style = {theme === "dark" ? {boxShadow:"none"} : {}}>
              <AiOutlineSearch id = "magnifying-glass"/>
-                <input id = "search-input" placeholder = "Search" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
+                <input autoComplete = "off" id = "search-input" placeholder = "Search" type = "text" value = {searchValue} onChange = {(e)=>setSearchValue(e.target.value)} onFocus={e=>changeFocus(true)} onBlur = {e=>changeFocus(false)}/>
             </div>
                 <div style = {(currentStocks && focus) ? {display:"block"} : {display:"none"}} id = "search-list">
                 {nonColoredStocks && nonColoredStocks.map(stock => {
