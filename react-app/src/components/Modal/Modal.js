@@ -3,7 +3,8 @@ import { Modal } from '../../context/Modal';
 import {useState} from "react"
 import {useDispatch,useSelector} from "react-redux"
 import {editWatchlistThunk, addWatchlistThunk, toggleModalView, addToWatchlist} from "../../store/session"
-
+import {ImCross} from "react-icons/im"
+import "./Modal.css"
 function FormModal(props) {
   const dispatch = useDispatch()
   const [WatchlistInputValue,setWatchlistInputValue] = useState("")
@@ -35,9 +36,13 @@ function FormModal(props) {
 
   if (modalView && modalType === "edit-watchlist"){
     userForm = (
-    <form onSubmit = {handleEditSubmit}>
-      <input value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input"></input>
-      <input value = "Submit" type = "submit"></input>
+    <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit}>
+      <div id = "edit-watchlist-form-upper">
+        <div id = "edit-watchlist-title">Edit List</div>
+        <div id = "exit-edit-watchlist"> <ImCross/> </div>
+      </div>
+      <input id = "edit-watchlist-input" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input"></input>
+      <input id = "save-edit-watchlist" value = "Save" type = "submit"></input>
       </form>
       )
   } else if (modalView && modalType === "add-to-watchlist"){

@@ -27,15 +27,20 @@
     border:none;
     background-color: transparent;
     cursor: pointer;
-    color: var(--color)
+    color: var(--color);
+    padding-bottom:7px;
 }
 
-.stockpage-graph-timeframe-button-good:hover{
-    color:var(--good-stock)
+.dashboard-graph-timeframe-button-good:hover{
+    color:var(--good-stock);
+    border-bottom:1px solid var(--good-stock);
+    padding-bottom:6px;
 }
 
-.stockpage-graph-timeframe-button-bad:hover{
-    color:var(--bad-stock)
+.dashboard-graph-timeframe-button-bad:hover{
+    color:var(--bad-stock);
+    border-bottom:1px solid var(--bad-stock);
+    padding-bottom:6px;
 }
 
 

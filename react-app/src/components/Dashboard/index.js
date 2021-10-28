@@ -474,7 +474,7 @@ const handleOpenDots = (e,watchlist) => {
                                         <div>Buying Power</div>
                                         <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                                     </div>
-                                    <button id = "buying-power-deposit-button" onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
+                                    <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
                                     <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
 
                                 </div>
@@ -550,8 +550,8 @@ const handleOpenDots = (e,watchlist) => {
                     <form id = "add-watchlist-form" onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
                         <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
                         <div id = "watchlist-add-buttons-container">
-                            <div onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
-                            <input type="submit" value = "Create List"/>
+                            <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
+                            <input id = {performance ? "watchlist-add-submit-good" : "watchlist-add-submit-bad"} type="submit" value = "Create List"/>
                         </div>
                     </form>
                     {user && user.watchlists.map(watchlist=>{

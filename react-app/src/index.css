@@ -14,7 +14,7 @@
     --border-color: rgb(53, 53, 53);
     --scatterplot-bad-dark:rgb(167, 53, 0);
     --scatterplot-good-dark:rgb(0, 122, 4);
-    --box-shadow-color:rgb(0, 0, 0);
+    --box-shadow-color:rgb(27, 27, 27);
     --buying-power-background-color:rgb(30, 33, 36);
     background-color: var(--background-color);
     color: var(--color);
@@ -37,7 +37,7 @@
     --scatterplot-good-dark:rgb(0, 122, 4);
     --opposite-color:white;
     --border-color: rgb(231, 230, 230);
-    --box-shadow-color: rgb(201, 200, 200);
+    --box-shadow-color: rgb(241, 240, 240);
     --buying-power-background-color:white;
 
 }

@@ -5,11 +5,11 @@
 }
 
 
-#buying-power-deposit-button{
+#buying-power-deposit-button-good{
     display:flex;
     font-size:18px;
     font-weight:700;
-    background-color: rgb(0, 200, 5);
+    background-color: var(--good-stock);
     width:320px;
     height:48px;
     border:none;
@@ -22,8 +22,30 @@
     color:var(--opposite-color);
 }
 
-#buying-power-deposit-button:hover{
-    background-color: rgb(1, 175, 7);
+#buying-power-deposit-button-bad{
+    display:flex;
+    font-size:18px;
+    font-weight:700;
+    background-color: var(--bad-stock);
+    width:320px;
+    height:48px;
+    border:none;
+    border-radius:5px;
+    align-items: center;
+    justify-content: center;
+    cursor:pointer;
+    margin-bottom:35px;
+    margin-top:25px;
+    color:var(--opposite-color);
+}
+
+
+#buying-power-deposit-button-good:hover{
+    background-color: var(--good-stock-dark-hover);
+}
+
+#buying-power-deposit-button-bad:hover{
+    background-color: var(--bad-stock-dark-hover);
 }
 
 #dashboard-buying-power-value-visible{
@@ -169,6 +191,7 @@
     padding-left:15px;
     padding-right:15px;
     cursor:pointer;
+    border-radius:5px;
 }
 
 #dashboard-buying-power-container-bottom-invisible > div {
@@ -180,7 +203,6 @@
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-
     visibility: visible;
     opacity: 1;
     transition: opacity 1s ease-in;
@@ -190,7 +212,6 @@
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s 2s, opacity 0.1s linear;
@@ -251,15 +272,20 @@ margin-right:10px;
     background-color: transparent;
     cursor: pointer;
     font-weight:bold;
-    color: var(--color)
+    color: var(--color);
+    padding-bottom:7px;
 }
 
 .dashboard-graph-timeframe-button-good:hover{
     color:var(--good-stock);
+    border-bottom:1px solid var(--good-stock);
+    padding-bottom:6px;
 }
 
 .dashboard-graph-timeframe-button-bad:hover{
     color:var(--bad-stock);
+    border-bottom:1px solid var(--bad-stock);
+    padding-bottom:6px;
 }
 
 .news-icon-navlink{
@@ -398,6 +424,7 @@ margin-right:10px;
     background-color: transparent;
     cursor:pointer;
     margin-right:10px;
+    color: var(--color);
 }
 
 #watchlist-plus-button:hover{
@@ -429,7 +456,7 @@ margin-right:10px;
     right:20px;
     height:110px;
     width:150px;
-    border:1px solid var(--border-color);
+    /* border:1px solid var(--border-color); */
     justify-content: space-around;
     align-items: center;
     background-color: var(--watchlist-background-color);
@@ -485,7 +512,7 @@ margin-right:10px;
     width:94%;
     padding:0;
     height:36px;
-    background-color: var(--input-background-color);
+    background-color: var(--input-watchlist-background-color);
     margin:auto;
     border-radius: 5px;
     border:1px solid var(--border-color);
@@ -503,32 +530,62 @@ margin-right:10px;
     margin-bottom:10px;
 }
 
-#watchlist-add-buttons-container > div {
+#watchlist-add-cancel-good {
     width:96px;
     height:36px;
-    border:1px solid rgb(0, 200, 5);
+    border:1px solid var(--good-stock);
     display:flex;
     align-items: center;
     justify-content: center;
-    color:rgb(0, 200, 5);
+    color:var(--good-stock);
     cursor:pointer;
     border-radius: 5px;
 }
 
-#watchlist-add-buttons-container > input{
+#watchlist-add-cancel-bad {
+    width:96px;
+    height:36px;
+    border:1px solid var(--bad-stock);
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    color:var(--bad-stock);
+    cursor:pointer;
+    border-radius: 5px;
+}
+
+#watchlist-add-submit-good{
     width:112px;
     height:38px;
     border:none;
-    background-color: rgb(0, 200, 5);
+    background-color: var(--good-stock);
     cursor:pointer;
     border-radius:5px;
 
 }
 
-#watchlist-add-buttons-container > input:hover{
-    background-color:rgb(1, 175, 7);
+#watchlist-add-submit-bad{
+    width:112px;
+    height:38px;
+    border:none;
+    background-color: var(--bad-stock);
+    cursor:pointer;
+    border-radius:5px;
+
 }
 
-#watchlist-add-buttons-container > div:hover{
-    background-color: rgb(202, 248, 202);
+#watchlist-add-submit-good:hover{
+    background-color:var(--good-stock-dark-hover);
+}
+
+#watchlist-add-submit-bad:hover{
+    background-color:var(--bad-stock-dark-hover);
+}
+
+#watchlist-add-cancel-good:hover{
+    background-color: var(--good-stock-light-hover);
+}
+
+#watchlist-add-cancel-bad:hover{
+    background-color: var(--bad-stock-light-hover);
 }

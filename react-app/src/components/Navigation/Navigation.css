@@ -71,9 +71,9 @@
 }
 
 #robinhood-logo{
-    cursor:pointer;
     position:absolute;
-    top:-35px;
-    left:0;
+    top:-30px;
+    cursor:pointer;
+    color:red;
 
 }
