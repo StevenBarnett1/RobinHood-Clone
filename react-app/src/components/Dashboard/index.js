@@ -459,7 +459,7 @@ const handleOpenDots = (e,watchlist) => {
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
                     </div>
-                    <div id = "dashboard-buying-power-container" style = {buyingPower ? {boxShadow: "0px 0px 15px 3px rgb(238, 237, 237)",height:"300px"} : {height:"66px"}} >
+                    <div id = {buyingPower ? "dashboard-buying-power-container-closed" : "dashboard-buying-power-container" } >
                         <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
                             <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
@@ -488,7 +488,7 @@ const handleOpenDots = (e,watchlist) => {
                     <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
                     <div id = "daily-gainers-container">
                         <div id = "daily-gainers-icons" className= "movers-icons">
-                        {moversData && moversData.gainersData.map(data => {
+                        {/* {moversData && moversData.gainersData.map(data => {
                             return (
                                 <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
                                     <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
@@ -498,14 +498,14 @@ const handleOpenDots = (e,watchlist) => {
                                     </div>
                                 </NavLink>
                             )
-                            })}
+                            })} */}
                         </div>
                     </div>
                     <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
                     <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
                     <div id = "daily-losers-container">
                         <div id = "daily-losers-icons" className= "movers-icons">
-                            {moversData && moversData.losersData.map(data => {
+                            {/* {moversData && moversData.losersData.map(data => {
                                 return (
                                 <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
                                     <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
@@ -516,7 +516,7 @@ const handleOpenDots = (e,watchlist) => {
 
                                 </NavLink>
                                 )
-                            })}
+                            })} */}
 
                         </div>
                     </div>
@@ -564,7 +564,7 @@ const handleOpenDots = (e,watchlist) => {
                                         <div className = "watchlist-arrow"> {openLists.includes(watchlist.id) ? (<IoIosArrowUp/>) : (<IoIosArrowDown/>)}</div>
 
                                     </div>
-                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex", zIndex:100,backgroundColor:"white"} :{display:"none"}}>
+                                    <div className = "watchlist-dots-dropdown" style = { dotsOpen === watchlist.id ? {position:"absolute", display:"flex", zIndex:100} :{display:"none"}}>
                                             <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
                                             <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>

@@ -14,13 +14,16 @@
     --border-color: rgb(53, 53, 53);
     --scatterplot-bad-dark:rgb(167, 53, 0);
     --scatterplot-good-dark:rgb(0, 122, 4);
+    --box-shadow-color:rgb(0, 0, 0);
+    --buying-power-background-color:rgb(30, 33, 36);
     background-color: var(--background-color);
     color: var(--color);
 }
 
 #light{
     --background-color:white;
-    --input-background-color:rgb(245, 248, 250);
+    --input-background-color:rgb(206, 206, 206);
+    --input-watchlist-background-color:rgb(247, 247, 247);
     --watchlist-background-color:white;
     --color:black;
     --good-stock:rgb(0, 200, 5);
@@ -34,6 +37,8 @@
     --scatterplot-good-dark:rgb(0, 122, 4);
     --opposite-color:white;
     --border-color: rgb(231, 230, 230);
+    --box-shadow-color: rgb(201, 200, 200);
+    --buying-power-background-color:white;
 
 }
 

@@ -27,6 +27,7 @@
     border:none;
     background-color: transparent;
     cursor: pointer;
+    color: var(--color)
 }
 
 .stockpage-graph-timeframe-button-good:hover{

@@ -98,8 +98,10 @@ const Search = () => {
                     return (
                         <div key = {stock.id} className = "search-item" >
                             <div onMouseDown = {()=>navigateTo(`/stocks/${stock.symbol}`)} className = "search-item-navlink" >
-                                <span className="stock-search-symbol colored">{stock.coloredSymbol && stock.coloredSymbol.toUpperCase()}</span>
-                                <span className="stock-search-symbol">{stock.nonColoredSymbol.toUpperCase()}</span>
+                                <div className = "stock-search-symbol-container">
+                                    <span className="stock-search-symbol colored">{stock.coloredSymbol && stock.coloredSymbol.toUpperCase()}</span>
+                                    <span className="stock-search-symbol">{stock.nonColoredSymbol.toUpperCase()}</span>
+                                </div>
                                 <span className="stock-search-name colored">{stock.coloredName && stock.coloredName[0].toUpperCase() + stock.coloredName.slice(1)}</span>
                                 <span className="stock-search-name">{stock.coloredName ? stock.nonColoredName : stock.nonColoredName[0].toUpperCase() + stock.nonColoredName.slice(1)}</span>
                             </div>

@@ -59,8 +59,9 @@
     top:85px;
     width:275px;
     border:1px solid var(--border-color);
-    box-shadow: 0 0 10px 2px rgb(230, 229, 229);
+    box-shadow: 0 0 10px 2px var(--box-shadow-color);
     border-radius:5px;
+    background-color: var(--watchlist-background-color);
 }
 #watchlist-outer-title{
     border-bottom:1px solid var(--border-color);
@@ -121,6 +122,16 @@
     transition: height 0.2s linear;
     border-radius:5px;
     margin-top:10px;
+    height:66px;
+}
+
+#dashboard-buying-power-container-closed{
+    transition: height 0.2s linear;
+    border-radius:5px;
+    margin-top:10px;
+    background-color: var(--buying-power-background-color);
+   box-shadow: 0px 0px 15px 3px var(--box-shadow-color);
+   height:300px
 }
 
 #dashboard-buying-power-container-right{
@@ -240,6 +251,7 @@ margin-right:10px;
     background-color: transparent;
     cursor: pointer;
     font-weight:bold;
+    color: var(--color)
 }
 
 .dashboard-graph-timeframe-button-good:hover{
@@ -420,6 +432,8 @@ margin-right:10px;
     border:1px solid var(--border-color);
     justify-content: space-around;
     align-items: center;
+    background-color: var(--watchlist-background-color);
+    box-shadow: 0px 0px 10px 3px var(--box-shadow-color);
 }
 
 .watchlist-edit:hover,.watchlist-delete:hover{

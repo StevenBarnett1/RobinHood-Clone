@@ -14,7 +14,9 @@
 }
 
 .navbar-inner-container{
-    width:100%;
+    position:relative;
+    width:82%;
+    margin:auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -71,7 +73,7 @@
 #robinhood-logo{
     cursor:pointer;
     position:absolute;
-    top:-20px;
+    top:-35px;
     left:0;
 
 }
