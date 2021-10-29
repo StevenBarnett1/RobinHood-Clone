@@ -297,26 +297,36 @@ const Stockpage = () => {
     useEffect(()=>{
 
         if(graphData){
-
-            if(graphData[graphData.length-1].price > graphData[0].price){
-                setPerformance(true)
-                setRenderLineChart((
-                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
-                  <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
-                  <XAxis tick = {false} tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
-                  <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
-                  <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
-                </LineChart>))
+            if(graphData[graphData.length-1]){
+                if(graphData[graphData.length-1].price > graphData[0].price){
+                    setPerformance(true)
+                    setRenderLineChart((
+                        <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
+                      <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(0, 200, 5)" />
+                      <XAxis tick = {false} tickSize = {1.5} interval={0} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                      <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                      <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                    </LineChart>))
+                } else {
+                    setPerformance(false)
+                    setRenderLineChart((
+                        <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
+                      <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
+                      <XAxis  tick = {false} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
+                      <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
+                      <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
+                    </LineChart>))
+                }
             } else {
-                setPerformance(false)
                 setRenderLineChart((
-                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300} data={graphData}>
+                    <LineChart onMouseMove = {e=> chartHoverFunction(e)} onMouseLeave = {e=>stockReset(e)} width={700} height={300}>
                   <Line dot = {false} type="monotone" dataKey="price" stroke="rgb(255, 80, 0)" />
                   <XAxis  tick = {false} axisLine = {false} dataKey="dateTime" angle={0} textAnchor="end" />
                   <YAxis tick = {false} axisLine = {false} tickLine = {false} domain={[yMin-1,yMax+1]} allowDecimals={false}/>
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             }
+
         }
 
     },[graphData])
