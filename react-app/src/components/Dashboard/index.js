@@ -71,6 +71,8 @@ const Dashboard = () => {
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
+
+    useEffect(()=>{setErrors([])},[watchlistInputValue])
     useEffect(()=>{
         if(watchlistStockData){
           console.log("WATCHLIST STOCK DATA",Object.keys(watchlistStockData))
@@ -131,6 +133,7 @@ const Dashboard = () => {
           setHoldingPrices(newPrices)
 
             for(let symbol of Object.keys(holdingStockData)){
+                if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1]){
                 if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1].price > holdingStockData[symbol].data[0].price){
                     holdingStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
@@ -157,7 +160,7 @@ const Dashboard = () => {
                     )
                 }
 
-            }
+            }}
         }
     },[holdingStockData])
 
@@ -479,7 +482,10 @@ const addWatchlist = (e) => {
     if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
     if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
     if(filteredList.length)errors.push("A watchlist with that name already exists")
-    if(!errors.length)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    if(!errors.length){
+        toggleWatchlistInput(false)
+        dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    }
     else setErrors(errors)
 }
 
@@ -665,7 +671,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                 <div className = "watchlist-stock-graph">{(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData && holdingStockData[stock.symbol].graph : "-"}</div>
                                 <div className = "watchlist-stock-price-container">
                                 <div className = "watchlist-stock-price">${(holdingPrices[stock.symbol]) ? holdingPrices[stock.symbol].toFixed(2) : "-"}</div>
-                                <div className = "watchlist-stock-change" style = {holdingChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{holdingChanges[stock.symbol] && holdingChanges[stock.symbol].toFixed(2)}%</div>
+                                <div className = "watchlist-stock-change" style = {holdingChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{(holdingChanges[stock.symbol] && !isNaN(Number(holdingChanges[stock.symbol]))) ? `${holdingChanges[stock.symbol].toFixed(2)}%` : "" }</div>
                                 </div>
                             </div>
                             </NavLink>

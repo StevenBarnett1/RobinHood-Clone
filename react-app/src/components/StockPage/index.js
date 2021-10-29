@@ -66,11 +66,17 @@ const Stockpage = () => {
     const [currentShares,setCurrentShares] = useState("")
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
+    const [test,setTest] = useState("")
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
+    useEffect(()=>{
+        setErrors([])
+        // let numbers = [0,1,2,3,4,5,6,7,8,9]
+        // if(isNaN(Number(investValue))set
+    },[investValue])
     useEffect(()=>{
         document.title = `${params.symbol}`
         console.log("FORCING RERENDER?")
@@ -283,6 +289,33 @@ const Stockpage = () => {
 
     const getAbbreviatedNumber = (num) => {
         console.log("ABBREVIATED NUMBER: ",num)
+        if(num >= 1000000000000000000000000000000000000000){
+            return "Unk."
+        }
+        if (num >= 1000000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000000).toFixed(3)}U`
+        }
+        if (num >= 1000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000).toFixed(3)}D`
+        }
+        if (num >= 1000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000).toFixed(3)}N`
+        }
+        if (num >= 1000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000).toFixed(3)}O`
+        }
+        if (num >= 1000000000000000000000000){
+            return `${(num / 1000000000000000000000000).toFixed(3)}S`
+        }
+        if (num >= 1000000000000000000000){
+            return `${(num / 1000000000000000000000).toFixed(3)}S`
+        }
+        if (num >= 1000000000000000000){
+            return `${(num / 1000000000000000000).toFixed(3)}P`
+        }
+        if (num >= 1000000000000000){
+            return `${(num / 1000000000000000).toFixed(3)}Q`
+        }
         if (num >= 1000000000000){
             return `${(num / 1000000000000).toFixed(3)}T`
         }
@@ -291,7 +324,7 @@ const Stockpage = () => {
         }
         else if(num >= 1000000){
             return `${(num / 1000000).toFixed(3)}M`
-        }
+        } else return num
     }
 
     useEffect(()=>{
@@ -331,11 +364,20 @@ const Stockpage = () => {
     console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
         let errors = []
-        console.log("INVEST VALUE: ",investValue)
         if(!investValue && type === "buy"){
             setErrors(["You must enter an amount to purchase"])
             return
         }
+        if(isNaN(Number(investValue))){
+            errors.push("Please enter a number")
+            console.log("ERRRRRRRRRRORS : ",errors)
+            setErrors(errors)
+            return
+        }
+        if(investValue >= 1000000000000000000000000000000000000000){
+            setErrors(['You must enter a smaller number'])
+        }
+        console.log("INVEST VALUE: ",investValue)
         if(!investValue && type === "sell"){
             setErrors(["You must enter an amount to sell"])
             return
@@ -397,7 +439,7 @@ const Stockpage = () => {
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
                 <div id = "stockpage-upper-container">
-                    <div id = "stockpage-stock-value"><h1>$<Odometer value={stockValueDynamic ? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
+                    <div id = "stockpage-stock-value"><h1>$<Odometer value={(!isNaN(Number(stockValueDynamic)))? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
                     <div id = "stockpage-graph-container">
                         <div id = "stockpage-graph">
@@ -521,7 +563,7 @@ const Stockpage = () => {
                     </div>
                     <div id = "stock-purchase-middle">
                     {errors.map((error, ind) => (
-                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+                <div className = "errors" style = {{color:"red",position:"absolute",top:"44px",left:"82px"}}key={ind}>{error}</div>
               ))}
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
@@ -545,9 +587,9 @@ const Stockpage = () => {
                             <div id = "est-quantity-container">
                                 <div id = "est-quantity-label">{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
-                                    <div id = "est-quantity-value">{(stockData && stockData.price) ? `$${(stockData.price * investValue)}` : "-"}</div>
+                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? `$${getAbbreviatedNumber(Number((stockData.price * investValue).toFixed(2)))}` : "-"}</div>
                                 ) : (
-                                    <div id = "est-quantity-value">{stockData && investValue / stockData.price }</div>
+                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? getAbbreviatedNumber(Number((investValue / stockData.price).toFixed(2))) : "-"}</div>
                                 )}
                             </div>
                         </div>

@@ -222,17 +222,20 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     stock.estimated = estimated
     stock.actual = actual
 
-    for(let peer of peerData){
+    if(peerData instanceof Array){
+      for(let peer of peerData){
 
-      const newObj = {}
-      const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
+        const newObj = {}
+        const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
 
-      const peerPriceData = await peerPriceResponse.json()
-      console.log("PEER PRICE DATA: ",peerPriceData)
-      newObj.symbol = peer
-      newObj.price = peerPriceData.c
-      if((peer.toUpperCase() !== symbol.toUpperCase()) && newObj.price)stock.peers.push(newObj)
+        const peerPriceData = await peerPriceResponse.json()
+        console.log("PEER PRICE DATA: ",peerPriceData)
+        newObj.symbol = peer
+        newObj.price = peerPriceData.c
+        if((peer.toUpperCase() !== symbol.toUpperCase()) && newObj.price)stock.peers.push(newObj)
+      }
     }
+
     if(candleData.c){
       for(let i = 0; i< candleData.c.length;i++){
         const newObj = {}
