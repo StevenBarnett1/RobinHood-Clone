@@ -450,7 +450,10 @@ const handleOpenDots = (e,watchlist) => {
     },[graphData])
 
 
-
+    if(moversData){
+        console.log("LOSERS DATA: ",moversData.losersData)
+        console.log("WINNERS DATA: ",moversData.gainersData)
+    }
 
     return (
         <div id = "dashboard-outer-container">
@@ -497,40 +500,44 @@ const handleOpenDots = (e,watchlist) => {
                 </div>
 
                 <div id = "dashboard-lower-container">
-                    <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
-                    <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
-                    <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-icons" className= "movers-icons">
-                        {moversData && moversData.gainersData.map(data => {
-                            return (
-                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
-                                    <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container movers-numbers">
-                                        <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
-                                        <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
-                                    </div>
-                                </NavLink>
-                            )
-                            })}
+                    <div id = "gainers-container" style = {(moversData && moversData.gainersData.length) ? {} : {display:"none"}}>
+                        <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
+                        <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
+                        <div id = "daily-gainers-container">
+                            <div id = "daily-gainers-icons" className= "movers-icons">
+                            {moversData && moversData.gainersData.map(data => {
+                                return (
+                                    <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
+                                        <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
+                                        <div className = "daily-numbers-container movers-numbers">
+                                            <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                            <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
+                                        </div>
+                                    </NavLink>
+                                )
+                                })}
+                            </div>
                         </div>
                     </div>
-                    <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
-                    <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
-                    <div id = "daily-losers-container">
-                        <div id = "daily-losers-icons" className= "movers-icons">
-                            {moversData && moversData.losersData.map(data => {
-                                return (
-                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
-                                    <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container movers-numbers">
-                                        <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
-                                        <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
-                                    </div>
+                    <div id = "losers-container" style = {(moversData && moversData.losersData.length) ? {} : {display:"none"}}>
+                        <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
+                        <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
+                        <div id = "daily-losers-container">
+                            <div id = "daily-losers-icons" className= "movers-icons">
+                                {moversData && moversData.losersData.map(data => {
+                                    return (
+                                    <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
+                                        <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
+                                        <div className = "daily-numbers-container movers-numbers">
+                                            <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                            <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
+                                        </div>
 
-                                </NavLink>
-                                )
-                            })}
+                                    </NavLink>
+                                    )
+                                })}
 
+                            </div>
                         </div>
                     </div>
                     <div id = "news-container">
@@ -602,7 +609,7 @@ const handleOpenDots = (e,watchlist) => {
                                 </div>
                             </div>
                         )})}
-                <FormModal/>
+                <FormModal performance = {performance}/>
                 </div>
 
         </div>

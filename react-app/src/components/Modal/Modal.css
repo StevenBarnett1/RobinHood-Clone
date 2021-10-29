@@ -27,12 +27,14 @@
 
 #edit-watchlist-input{
     width:330px;
-    height:40px;
+    height:35px;
     margin:auto;
     box-sizing: border-box;
+    border-radius:5px;
+    border:none;
 }
 
-#save-edit-watchlist{
+#save-edit-watchlist-good{
     width:380px;
     height:50px;
     border-radius:5px;
@@ -40,7 +42,30 @@
     cursor:pointer;
     margin:auto;
     font-weight:bold;
+    background-color: rgb(0, 200, 5);
+
 }
+
+#save-edit-watchlist-bad{
+    width:380px;
+    height:50px;
+    border-radius:5px;
+    border:none;
+    cursor:pointer;
+    margin:auto;
+    font-weight:bold;
+    background-color: rgb(255, 80, 0);
+
+}
+
+#save-edit-watchlist-good:hover{
+    background-color:rgb(1, 175, 7);
+}
+
+#save-edit-watchlist:bad:hover{
+    background-color: rgb(230, 75, 3);
+}
+
 
 #add-to-watchlist-upper{
     display:flex;

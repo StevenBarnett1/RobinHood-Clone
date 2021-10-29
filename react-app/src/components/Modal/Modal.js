@@ -66,13 +66,13 @@ function FormModal(props) {
   }
   if (modalView && modalType === "edit-watchlist"){
     userForm = (
-    <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit}>
+    <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit} style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
       <div id = "edit-watchlist-form-upper">
         <div id = "edit-watchlist-title">Edit List</div>
         <div id = "exit-edit-watchlist" onClick = {()=>dispatch(toggleModalView(false))}> <ImCross/> </div>
       </div>
-      <input id = "edit-watchlist-input" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input"></input>
-      <input id = "save-edit-watchlist" value = "Save" type = "submit"></input>
+      <input id = "edit-watchlist-input" placeholder = "New Name" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input" style = {theme ==="light" ? {backgroundColor:"rgb(247, 247, 247)"} : {color:"white",backgroundColor:"rgb(48, 48, 48)"}}></input>
+      <input id = {props.performance ? "save-edit-watchlist-good" : "save-edit-watchlist-bad"} value = "Save" type = "submit" style = {theme === "light" ? {color:"black"} : {color:"white"}}></input>
       </form>
       )
   } else if (modalView && modalType === "add-to-watchlist"){
