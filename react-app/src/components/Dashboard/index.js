@@ -404,6 +404,7 @@ const addWatchlist = (e) => {
 
 const deleteListHandler = (watchlist) => {
     setDotsOpen(false)
+    console.log("WATCHLISTTTTTTTTTT: ",watchlist)
     dispatch(deleteWatchlistThunk(watchlist.id))
 }
 
@@ -615,7 +616,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                                 <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
                                                     <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
-                                                    <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
+                                                    <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol]) ? (watchlistStockData[stock.symbol].change < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}):{}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
                                             </NavLink>

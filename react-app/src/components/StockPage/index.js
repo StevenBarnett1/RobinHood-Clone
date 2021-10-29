@@ -89,7 +89,7 @@ const Stockpage = () => {
             if(interval === "5"){
                 setDailyHigh(stockData.max)
                 setDailyLow(stockData.min)
-                setOpenPrice(stockData.data[0].price)
+                if(stockData.data[0])setOpenPrice(stockData.data[0].price)
             }
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
         }
