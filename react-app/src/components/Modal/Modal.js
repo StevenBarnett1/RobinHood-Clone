@@ -75,8 +75,17 @@ function FormModal(props) {
   }
 
   const handleAddToWatchlist = () => {
+    let actualList = []
     if(checkedBoxes.length){
-      dispatch(addToWatchlist(checkedBoxes,props.symbol))
+
+      for(let watchlist of user.watchlists){
+        let found = false
+        for(let stock of watchlist.stocks){
+          if(stock.symbol.toUpperCase() === props.symbol.toUpperCase())found = true
+        }
+        if(!found && checkedBoxes.includes(watchlist.id))actualList.push(watchlist.id)
+      }
+      if(actualList.length)dispatch(addToWatchlist(actualList,props.symbol))
       dispatch(toggleModalView(false))
       setCheckedBoxes([])
     }
@@ -106,7 +115,7 @@ function FormModal(props) {
     userForm = (
       <div id = "add-to-watchlist-outer" style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
           <div id = "add-to-watchlist-upper">
-              <div id = "add-to-watchlist-title">Add {props.symbol.toUpperCase()} to Your Lists</div>
+              <div id = "add-to-watchlist-title">Add {props.symbol && props.symbol.toUpperCase()} to Your Lists</div>
               <div id = "exit-add-to-watchlist" onClick = {()=>handleExitAddToWatchlist()}> <ImCross/> </div>
             </div>
             <div id ='add-to-watchlist-inner'>

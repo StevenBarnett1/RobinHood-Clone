@@ -2,8 +2,8 @@ from .db import db
 
 
 watchlist_stocks = db.Table("watchlist_stocks",
-    db.Column("stock_id", db.Integer, db.ForeignKey("stocks.id")),
-    db.Column("watchlist_id",db.Integer, db.ForeignKey("watchlists.id"))
+    db.Column("stock_id", db.Integer, db.ForeignKey("stocks.id"), nullable = False),
+    db.Column("watchlist_id",db.Integer, db.ForeignKey("watchlists.id"), nullable = False)
 )
 
 
