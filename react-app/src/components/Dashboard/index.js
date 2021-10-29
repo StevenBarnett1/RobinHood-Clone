@@ -102,6 +102,7 @@ const Dashboard = () => {
 
 
     useEffect(()=>{
+        document.title = "RobinHood"
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{

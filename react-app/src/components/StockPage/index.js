@@ -72,6 +72,7 @@ const Stockpage = () => {
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
+        document.title = `${params.symbol}`
         console.log("FORCING RERENDER?")
         forceRerender(!render)
     },[params])
