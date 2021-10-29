@@ -326,9 +326,7 @@ const Stockpage = () => {
                   <Tooltip position={{ y: -16 }} cursor = {true} content = {<CustomTooltip/>}/>
                 </LineChart>))
             }
-
         }
-
     },[graphData])
     console.log("ERRORS: ",errors)
     const submitOrder = (type) => {

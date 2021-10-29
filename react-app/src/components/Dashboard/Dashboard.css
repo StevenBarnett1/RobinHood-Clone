@@ -105,6 +105,7 @@
     display:flex;
     justify-content: space-between;
     flex-direction: column;
+    overflow-y:scroll;
 
 }
 .watchlist-title{
@@ -246,6 +247,10 @@
 
 }
 
+.watchlist-stocks{
+    overflow-y:scroll;
+}
+
 .watchlist-stock-price{
     font-size:13px;
 }
@@ -275,6 +280,7 @@ width:55px;
 .watchlist-stock-navlink{
     text-decoration: none;
     color:inherit;
+    overflow-y:scroll;
 }
 
 .watchlist-stock-container:hover{

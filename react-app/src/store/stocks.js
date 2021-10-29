@@ -1,6 +1,7 @@
 const SET_STOCKS = "stocks/SET_STOCKS"
 const SET_STOCK_GRAPH_DATA = "stocks/SET_GRAPH_DATA"
 const SET_WATCHLIST_GRAPH_DATA = "stocks/SET_WATCHLIST_GRAPH_DATA"
+const SET_HOLDING_GRAPH_DATA = "stocks/SET_HOLDING_GRAPH_DATA"
 
 export const getStocks = () => async dispatch =>{
     const response = await fetch("/api/stocks")
@@ -33,6 +34,13 @@ const setWatchlistGraphData = data => {
   }
 }
 
+const setHoldingGraphData = data => {
+  return {
+    type:SET_HOLDING_GRAPH_DATA,
+    payload:data
+  }
+}
+
 const setStockGraphData = data => {
   return {
     type:SET_STOCK_GRAPH_DATA,
@@ -40,7 +48,7 @@ const setStockGraphData = data => {
   }
 }
 
-export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
+export const getHoldingGraphData = (stocks,tokens) => async dispatch => {
   let start = new Date()
   let end = new Date()
   if(start.getDay() === 6){
@@ -73,6 +81,56 @@ export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
     let num = stock.price - candleData.c[0]
     stock.change = (num / candleData.c[0])*100
     if(candleData.c){
+      for(let i = 0; i< candleData.c.length;i++){
+        const newObj = {}
+        if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
+        if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
+        newObj.unixTime = candleData.t[i]
+        newObj.dateTime = new Date(newObj.unixTime * 1000)
+        newObj.price = candleData.c[i]
+        stock.data.push(newObj)
+      }
+    }
+
+  }
+  dispatch(setHoldingGraphData(stocks))
+}
+
+
+export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
+  let start = new Date()
+  let end = new Date()
+  if(start.getDay() === 6){
+      start.setDate(start.getDate()-1)
+      end.setDate(end.getDate()-1)
+      end.setHours(23,0,0,0)
+
+  }
+  if(start.getDay() === 0){
+      start.setDate(start.getDate()-2)
+      end.setDate(end.getDate()-2)
+      end.setHours(23,0,0,0)
+  }
+  start.setHours(0,0,0,0)
+  let startUnix = Math.floor(Number(start.getTime() / 1000))
+  let endUnix = Math.floor(Number(end.getTime() / 1000))
+  for(let stock of stocks){
+    stock.max = 0
+    stock.min = Infinity
+    stock.data = []
+  }
+  for(let stock of stocks){
+
+    const candleResponse = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${stock.symbol}&resolution=15&from=${startUnix}&to=${endUnix}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
+    const priceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stock.symbol}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
+
+    const candleData = await candleResponse.json()
+    const priceData = await priceResponse.json()
+    stock.price = priceData.c
+
+    if(candleData.c){
+      let num = stock.price - candleData.c[0]
+    stock.change = (num / candleData.c[0])*100
       for(let i = 0; i< candleData.c.length;i++){
         const newObj = {}
         if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
@@ -197,6 +255,12 @@ export default function stocksReducer(state = initialState, action) {
             newState.watchlistStockData[stock.symbol] = stock
           }
           return newState
+          case SET_HOLDING_GRAPH_DATA:
+            newState.holdingStockData = {}
+            for(let stock of action.payload){
+              newState.holdingStockData[stock.symbol] = stock
+            }
+            return newState
       default:
         return newState;
     }

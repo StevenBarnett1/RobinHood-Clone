@@ -9,7 +9,7 @@ import {
   import {FaPlus} from "react-icons/fa"
   import {CgInfinity} from "react-icons/cg"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
-import { getWatchlistGraphData } from "../../store/stocks";
+import { getWatchlistGraphData,getHoldingGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
@@ -61,6 +61,7 @@ const Dashboard = () => {
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
     const [changes,setChanges] = useState({})
+    const [holdingChanges,setHoldingChanges] = useState({})
     const theme = useSelector(state=>state.session.theme)
 
     const user = useSelector(state=>state.session.user)
@@ -68,6 +69,7 @@ const Dashboard = () => {
 
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
+    const holdingStockData = useSelector(state => state.stocks.holdingStockData)
     useEffect(()=>{
         if(watchlistStockData){
           console.log("WATCHLIST STOCK DATA",Object.keys(watchlistStockData))
@@ -110,14 +112,65 @@ const Dashboard = () => {
 
 
     useEffect(()=>{
+        if(holdingStockData){
+          console.log("WATCHLIST STOCK DATA",Object.keys(holdingStockData))
+          let newObj = {}
+          for(let symbol of Object.keys(holdingStockData)){
+            newObj[symbol] = holdingStockData[symbol].change
+          }
+          setHoldingChanges(newObj)
+
+            for(let symbol of Object.keys(holdingStockData)){
+                if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1].price > holdingStockData[symbol].data[0].price){
+                    holdingStockData[symbol].graph=(
+                        // <ResponsiveContainer className = "responsive-container">
+                            <LineChart width = {90} height = {45} data={holdingStockData[symbol].data}>
+                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
+                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[holdingStockData[symbol].min,holdingStockData[symbol].max]} allowDecimals={false}/>
+                                {/* <Tooltip/> */}
+                            </LineChart>
+                        //  </ResponsiveContainer>
+
+                    )
+                } else {
+                    holdingStockData[symbol].graph=(
+                        // <ResponsiveContainer className = "responsive-container">
+                            <LineChart width = {90} height = {45} data={holdingStockData[symbol].data}>
+                                <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
+                                <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[holdingStockData[symbol].min,holdingStockData[symbol].max]} allowDecimals={false}/>
+                                {/* <Tooltip/> */}
+                            </LineChart>
+                        //  </ResponsiveContainer>
+
+                    )
+                }
+
+            }
+        }
+    },[holdingStockData])
+
+    if(portfolioData){
+        if(portfolioData[0]){
+            let data = portfolioData.map(data=> data.dateTime)
+        console.log(data)
+        }
+
+    }
+
+
+    useEffect(()=>{
         document.title = "RobinHood"
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
-
-                    total += (Number(data.c) * Number(holding.shares))
+                    if(data.c){
+                        total += (Number(data.c) * Number(holding.shares))
                     setPortfolioValue(portfolioValue+total)
+                    }
+
                 });
             })
             finnhubClient.marketNews("general", {}, (error, data, response) => {
@@ -157,6 +210,7 @@ const Dashboard = () => {
 
               }
               dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys))
+              dispatch(getHoldingGraphData(user.holdings,apiKeys))
 
               let start = new Date()
               let end = new Date()
@@ -476,6 +530,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
     }
 
     console.log("CHANGES: ",changes)
+    console.log("PORTFOLIO DATA: ",portfolioData)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -584,21 +639,21 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
             </div>
             <div id = "watchlist-outer-container">
-                    {/* <div id = "stocks-list-outer-title">Your Stocks</div>
-                    {user && user.holdings.map(holding => {
+                    <div id = "stocks-list-outer-title">Your Stocks</div>
+                    {user && user.holdings.map(stock => {
                         return (
-                            <NavLink key = {holding.id} className = "holding-stock-navlink" to = {`/stocks/${holding.symbol}`}>
-                            <div className = "holding-stock-container">
-                                <div className = "holding-stock-symbol">{stock.symbol}</div>
-                                <div className = "holding-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
-                                <div className = "holding-stock-price-container">
-                                    <div className = "holding-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
-                                    <div className = "holding-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol]) ? (watchlistStockData[stock.symbol].change < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}):{}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
+                            <NavLink key = {stock.symbol} className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
+                            <div className = "watchlist-stock-container">
+                                <div className = "watchlist-stock-symbol">{stock.symbol}</div>
+                                <div className = "watchlist-stock-graph">{(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData && holdingStockData[stock.symbol].graph : "-"}</div>
+                                <div className = "watchlist-stock-price-container">
+                                    <div className = "watchlist-stock-price">${(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData[stock.symbol].price : "-"}</div>
+                                    <div className = "watchlist-stock-change" style = {(holdingStockData && holdingStockData[stock.symbol]) ? (holdingStockData[stock.symbol].change < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}):{}}>{holdingStockData && holdingStockData[stock.symbol].change.toFixed(2)}%</div>
                                 </div>
                             </div>
                             </NavLink>
                         )
-                    })} */}
+                    })}
                     <div id = "watchlist-outer-title">
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
@@ -638,7 +693,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
+                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price.toFixed(2) : "-"}</div>
                                                     <div className = "watchlist-stock-change" style = {changes[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{changes[stock.symbol] && changes[stock.symbol].toFixed(2)}%</div>
                                                 </div>
                                             </div>
