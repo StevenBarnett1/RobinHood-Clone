@@ -14,6 +14,7 @@ function FormModal(props) {
   const [createWatchlistInputValue,setCreateWatchlistInputValue] = useState("")
   const [checkedBoxes,setCheckedBoxes] = useState([])
   const [errors,setErrors] = useState([])
+  const [watchlistsAlreadyContainingStock,setWatchlistsAlreadyContainingStock] = useState([])
   const user = useSelector(state=>state.session.user)
 
   const modalType= useSelector((state)=>state.session.modalType)
@@ -22,6 +23,18 @@ function FormModal(props) {
   const theme = useSelector(state=> state.session.theme)
   let userForm
   console.log("PROPS: ",props,)
+
+  useEffect(()=>{
+    if(props.symbol && user){
+      let newList = user.watchlists.map(watchlist=>{
+        if(watchlist.stocks.filter(stock => stock.symbol === props.symbol).length){
+          return watchlist.id
+        } else return null
+      })
+      newList = newList.filter(item => item !== null)
+      setWatchlistsAlreadyContainingStock(newList)
+    }
+  },[props])
 
   const handleEditSubmit = (e) => {
     e.preventDefault()
@@ -145,6 +158,7 @@ function FormModal(props) {
             <div className = "watchlist-data-container">
               <div className ="watchlist-list-name">{watchlist.name}</div>
               <div className = "watchlist-stock-length" style = {theme === "dark" ? {color:"white"}: {}}>{watchlist.stocks.length} items</div>
+              {watchlistsAlreadyContainingStock.includes(watchlist.id) ? (<div style = {{color:"red",fontSize:"13px"}}>Already contains {props.symbol}</div>) : null}
             </div>
             </div>)
         })}
