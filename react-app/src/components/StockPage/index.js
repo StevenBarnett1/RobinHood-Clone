@@ -10,8 +10,7 @@ import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import {AiOutlinePlus} from "react-icons/ai"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
-import holdingsReducer, { addHolding, sellHolding } from "../../store/holdings";
-import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
+import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo, addHolding, sellHolding} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
   } from 'recharts';
@@ -66,6 +65,7 @@ const Stockpage = () => {
     const [readMore,toggleReadMore] = useState(false)
     const [currentShares,setCurrentShares] = useState("")
     const [performance,setPerformance] = useState(true)
+    const [errors,setErrors] = useState([])
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
@@ -169,7 +169,9 @@ const Stockpage = () => {
               setUnixEnd(endUnix)
 
     },[params])
-
+    useEffect(()=>{
+        setErrors([])
+    },[buySell])
     useEffect(()=>{
         if(unixEnd && interval) {
 
@@ -318,28 +320,42 @@ const Stockpage = () => {
         }
 
     },[graphData])
-
+    console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
+        let errors = []
+        console.log("INVEST VALUE: ",investValue)
+        if(!investValue && type === "buy"){
+            setErrors(["You must enter an amount to purchase"])
+            return
+        }
+        if(!investValue && type === "sell"){
+            setErrors(["You must enter an amount to sell"])
+            return
+        }
         if(investValue && investType === "shares" && type === "buy"){
-            if(investValue*stockData.price > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,investValue,user.id))
-            dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
-            //dispatch to decrement users buying power, add number of shares to holdings
+            if(investValue*stockData.price > user.buying_power)errors.push("Not enough funds")
+            if(!errors.length){
+                dispatch(addHolding(stockData.symbol,investValue,user.id))
+                dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
+            } else setErrors(errors)
         } else if (investValue && investType === "dollars" && type === "buy"){
-            if(investValue > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
-            dispatch(addBuyingPower(user.id,-investValue))
+            if(investValue > user.buying_power)errors.push("Not enough funds")
+            if(!errors.length){
+                dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
+                dispatch(addBuyingPower(user.id,-investValue))
+            } else setErrors(errors)
+
         } else if (investValue && investType === "shares" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
                 dispatch(sellHolding(stockData.symbol,investValue,user.id))
                 dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
-            }
+            } else setErrors(["Not enough shares"])
 
         } else if (investValue && investType === "dollars" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
                 dispatch(sellHolding(stockData.symbol,investValue/stockData.price,user.id))
                 dispatch(addBuyingPower(user.id,investValue))
-            }
+            } else setErrors(["Not enough shares"])
 
         }
     }
@@ -492,6 +508,9 @@ const Stockpage = () => {
                         <div id = {performance ? "stock-sell-title-good" : "stock-sell-title-bad"} style = {buySell === "sell" ? {borderBottomWidth:"1px"} : {borderBottomWidth:"0px"}} onClick = {()=>setBuySell('sell')}>Sell {(stockData && stockData.symbol) ? stockData.symbol.toUpperCase(): ""}</div>
                     </div>
                     <div id = "stock-purchase-middle">
+                    {errors.map((error, ind) => (
+                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+              ))}
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div id = "invest-in-label">{buySell === "buy" ? "Invest In" : "Sell"}</div>
