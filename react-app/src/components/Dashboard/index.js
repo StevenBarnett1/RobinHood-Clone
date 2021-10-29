@@ -59,7 +59,8 @@ const Dashboard = () => {
     const [watchlistInput,toggleWatchlistInput] = useState(false)
     const [renderLineChart,setRenderLineChart] = useState("")
     const [performance,setPerformance] = useState(true)
-
+    const [errors,setErrors] = useState([])
+    const theme = useSelector(state=>state.session.theme)
 
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
@@ -73,10 +74,10 @@ const Dashboard = () => {
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
@@ -85,10 +86,10 @@ const Dashboard = () => {
                 } else {
                     watchlistStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {78} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min-1,watchlistStockData[symbol].max+1]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
@@ -102,6 +103,7 @@ const Dashboard = () => {
 
 
     useEffect(()=>{
+        document.title = "RobinHood"
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{
@@ -328,10 +330,6 @@ const Dashboard = () => {
     }
 
 
-    const deposit = (value) => {
-        setDepositClick(value)
-        if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
-    }
 
     const CustomTooltip = ({ active, payload }) => {
     // if (!active || !tooltip)    return null
@@ -344,8 +342,16 @@ const Dashboard = () => {
             let minutes = payload[0].payload.dateTime.getMinutes()
             if(minutes === 0)minutes = "00"
             if(minutes === 5)minutes = "05"
+            console.log("IN TOO:LTIP: ",hours)
             let zone
-            if(hours >= 12) zone = "PM"
+            if(hours >= 12) {
+                zone = "PM"
+                if(hours > 12){
+                    console.log("HOURS BEFORE: ",hours)
+                    hours = hours % 12
+                    console.log("HOURS AFTER: ",hours)
+                }
+            }
             else zone = "AM"
 
             setPortfolioValueDynamic(payload[0].payload.price)
@@ -372,6 +378,11 @@ const chartHoverFunction = (e) => {
     }
 }
 
+const deposit = (value) => {
+    setDepositClick(value)
+    if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
+}
+
 const handleDotsClick = () => {
     dispatch(toggleModalView(true))
     dispatch(addModal("watchlist-dots"))
@@ -381,14 +392,23 @@ const portfolioReset = (e) => {
 }
 
 const addWatchlist = (e) => {
-    if(watchlistInputValue)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    e.preventDefault()
+    let errors = []
+    let filteredList = user.watchlists.filter(watchlist=>watchlist.name===watchlistInputValue)
+    if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
+    if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
+    if(filteredList.length)errors.push("A watchlist with that name already exists")
+    if(!errors.length)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    else setErrors(errors)
 }
 
 const deleteListHandler = (watchlist) => {
+    setDotsOpen(false)
     dispatch(deleteWatchlistThunk(watchlist.id))
 }
 
 const editListHandler = (watchlist) => {
+    setDotsOpen(false)
     dispatch(addModal("edit-watchlist"))
     dispatch(addModalInfo(watchlist))
     dispatch(toggleModalView(true))
@@ -404,7 +424,8 @@ const handleOpenDots = (e,watchlist) => {
     }
     else setDotsOpen(watchlist.id)
 }
-
+console.log(user)
+console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
     useEffect(()=>{
         if(graphData.length && graphData[0] !== "no_data"){
@@ -441,7 +462,10 @@ const handleOpenDots = (e,watchlist) => {
     },[graphData])
 
 
-
+    if(moversData){
+        console.log("LOSERS DATA: ",moversData.losersData)
+        console.log("WINNERS DATA: ",moversData.gainersData)
+    }
 
     return (
         <div id = "dashboard-outer-container">
@@ -476,49 +500,56 @@ const handleOpenDots = (e,watchlist) => {
                                         <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                                     </div>
                                     <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-                                    <input type = "text" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+
 
                                 </div>
-                                <div id = "dashboard-buying-power-container-right">Buying Power represents the total value of assets you can purchase.</div>
+                                <div id = "dashboard-buying-power-container-right">
+                                    <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
+                                    <input type = "text" placeholder = "Deposit Amount" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
+                                </div>
                         </div>
                     </div>
                 </div>
 
                 <div id = "dashboard-lower-container">
-                    <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
-                    <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
-                    <div id = "daily-gainers-container">
-                        <div id = "daily-gainers-icons" className= "movers-icons">
-                        {moversData && moversData.gainersData.map(data => {
-                            return (
-                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
-                                    <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container movers-numbers">
-                                        <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
-                                        <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
-                                    </div>
-                                </NavLink>
-                            )
-                            })}
+                    <div id = "gainers-container" style = {(moversData && moversData.gainersData.length) ? {} : {display:"none"}}>
+                        <div id = "daily-gainers-title" className = "dashboard-movers-titles">Daily Gainers</div>
+                        <div id = "daily-gainers-subtitle" className = "movers-subtitle">Stocks with the biggest gains today.</div>
+                        <div id = "daily-gainers-container">
+                            <div id = "daily-gainers-icons" className= "movers-icons">
+                            {moversData && moversData.gainersData.map(data => {
+                                return (
+                                    <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-gainers-individual movers-individual">
+                                        <div className = "daily-gainers-icons-title movers-title">{data.companyName}</div>
+                                        <div className = "daily-numbers-container movers-numbers">
+                                            <div className = "daily-gainers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                            <div className = "daily-gainers-icons-change movers-change">+{data.changesPercentage}%</div>
+                                        </div>
+                                    </NavLink>
+                                )
+                                })}
+                            </div>
                         </div>
                     </div>
-                    <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
-                    <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
-                    <div id = "daily-losers-container">
-                        <div id = "daily-losers-icons" className= "movers-icons">
-                            {moversData && moversData.losersData.map(data => {
-                                return (
-                                <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
-                                    <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
-                                    <div className = "daily-numbers-container movers-numbers">
-                                        <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
-                                        <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
-                                    </div>
+                    <div id = "losers-container" style = {(moversData && moversData.losersData.length) ? {} : {display:"none"}}>
+                        <div id = "daily-losers-title" className = "dashboard-movers-titles">Daily Losers</div>
+                        <div id = "daily-losers-subtitle" className = "movers-subtitle">Stocks with the biggest losses today.</div>
+                        <div id = "daily-losers-container">
+                            <div id = "daily-losers-icons" className= "movers-icons">
+                                {moversData && moversData.losersData.map(data => {
+                                    return (
+                                    <NavLink to = {`/stocks/${data.ticker}`} key = {data.ticker} className = "daily-losers-individual movers-individual">
+                                        <div className = "daily-losers-icons-title movers-title">{data.companyName}</div>
+                                        <div className = "daily-numbers-container movers-numbers">
+                                            <div className = "daily-losers-icons-value movers-value">${Number(data.price).toFixed(2)}</div>
+                                            <div className = "daily-losers-icons-change movers-change">{data.changesPercentage}%</div>
+                                        </div>
 
-                                </NavLink>
-                                )
-                            })}
+                                    </NavLink>
+                                    )
+                                })}
 
+                            </div>
                         </div>
                     </div>
                     <div id = "news-container">
@@ -548,8 +579,11 @@ const handleOpenDots = (e,watchlist) => {
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
                     </div>
-                    <form id = "add-watchlist-form" onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
-                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                    {errors.map((error, ind) => (
+                <div style = {{color:"red"}}key={ind}>{error}</div>
+              ))}
+                    <form id = "add-watchlist-form" onSubmit = {(e)=>addWatchlist(e)} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)} style = {theme === "dark" ? {color:"white"}:{}}/>
                         <div id = "watchlist-add-buttons-container">
                             <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
                             <input id = {performance ? "watchlist-add-submit-good" : "watchlist-add-submit-bad"} type="submit" value = "Create List"/>
@@ -575,20 +609,22 @@ const handleOpenDots = (e,watchlist) => {
                                 <div className = "watchlist-stocks">
                                     {watchlist.stocks.map(stock=>{
                                         return (
+                                            <NavLink className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
                                             <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
-                                                <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
+                                                <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">${watchlistStockData && watchlistStockData[stock.symbol].price}</div>
+                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
                                                     <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>
+                                            </NavLink>
                                         )
                                     })}
                                 </div>
                             </div>
                         )})}
-                <FormModal/>
+                <FormModal performance = {performance}/>
                 </div>
 
         </div>

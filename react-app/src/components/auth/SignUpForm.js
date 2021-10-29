@@ -17,10 +17,26 @@ const SignUpForm = () => {
 
   const onSignUp = async (e) => {
     e.preventDefault();
-      const data = await dispatch(signUp(firstName, lastName, email, password));
-      if (data) {
-        setErrors(data)
-      }
+    let errors = []
+    if(firstName.length>=254){
+      errors.push("First name must be less than 256 characters")
+    }
+    if(lastName.length >=254){
+      errors.push("Last name must be less than 256 characters")
+    }
+    if(email.length >= 254) {
+      errors.push("Email must be less than 256 characters")
+    }
+    if(password.length >=254){
+      errors.push("Password must be less than 256 characters")
+    }
+    if(!errors.length){
+      await dispatch(signUp(firstName, lastName, email, password));
+    } else {
+      setErrors(errors)
+    }
+
+
   };
 
   const updateFirstName = (e) => {
@@ -60,7 +76,7 @@ const SignUpForm = () => {
           <form id = "signup-form" onSubmit={onSignUp}>
             <div>
               {errors.map((error, ind) => (
-                <div key={ind}>{error}</div>
+                <div style = {{color:"red"}}key={ind}>{error}</div>
               ))}
             </div>
             <div id = "name-inputs">
@@ -83,7 +99,7 @@ const SignUpForm = () => {
               </div>
 
               <input
-                type='text'
+                type='email'
                 name='email'
                 onChange={updateEmail}
                 value={email}
@@ -96,7 +112,7 @@ const SignUpForm = () => {
                 name='password'
                 onChange={updatePassword}
                 value={password}
-                placeholder = "Password(min. 10 characters)"
+                placeholder = "Password"
                 required
               ></input>
 

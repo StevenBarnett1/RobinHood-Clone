@@ -72,15 +72,18 @@ export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
     stock.price = priceData.c
     let num = stock.price - candleData.c[0]
     stock.change = (num / candleData.c[0])*100
-    for(let i = 0; i< candleData.c.length;i++){
-      const newObj = {}
-      if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
-      if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
-      newObj.unixTime = candleData.t[i]
-      newObj.dateTime = new Date(newObj.unixTime * 1000)
-      newObj.price = candleData.c[i]
-      stock.data.push(newObj)
+    if(candleData.c){
+      for(let i = 0; i< candleData.c.length;i++){
+        const newObj = {}
+        if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
+        if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
+        newObj.unixTime = candleData.t[i]
+        newObj.dateTime = new Date(newObj.unixTime * 1000)
+        newObj.price = candleData.c[i]
+        stock.data.push(newObj)
+      }
     }
+
   }
   dispatch(setWatchlistGraphData(stocks))
 }
@@ -134,18 +137,21 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     let estimated = []
     let actual = []
 
-    for(let i = stock.earnings.length-1; i>=0; i--){
-      const mapper = {
-        3:"Q3 FY20",
-        2:"Q4 FY20",
-        1:"Q1 FY21",
-        0:"Q2 FY21"
+    if(stock.earnings){
+      for(let i = stock.earnings.length-1; i>=0; i--){
+        const mapper = {
+          3:"Q3 FY20",
+          2:"Q4 FY20",
+          1:"Q1 FY21",
+          0:"Q2 FY21"
+        }
+        const newEst = {'data':stock.earnings[i].estimate,'period':mapper[i]}
+        const newAct = {'data':stock.earnings[i].actual,'period':mapper[i]}
+        estimated.push(newEst)
+        actual.push(newAct)
       }
-      const newEst = {'data':stock.earnings[i].estimate,'period':mapper[i]}
-      const newAct = {'data':stock.earnings[i].actual,'period':mapper[i]}
-      estimated.push(newEst)
-      actual.push(newAct)
     }
+
     stock.estimated = estimated
     stock.actual = actual
 
@@ -158,18 +164,20 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
       console.log("PEER PRICE DATA: ",peerPriceData)
       newObj.symbol = peer
       newObj.price = peerPriceData.c
-      if(peer.toUpperCase() !== symbol.toUpperCase() && newObj.price)stock.peers.push(newObj)
+      if((peer.toUpperCase() !== symbol.toUpperCase()) && newObj.price)stock.peers.push(newObj)
+    }
+    if(candleData.c){
+      for(let i = 0; i< candleData.c.length;i++){
+        const newObj = {}
+        if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
+        if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
+        newObj.unixTime = candleData.t[i]
+        newObj.dateTime = new Date(newObj.unixTime * 1000)
+        newObj.price = candleData.c[i]
+        stock.data.push(newObj)
+      }
     }
 
-    for(let i = 0; i< candleData.c.length;i++){
-      const newObj = {}
-      if(candleData.c[i] > stock.max)stock.max = candleData.c[i]
-      if(candleData.c[i] < stock.min)stock.min = candleData.c[i]
-      newObj.unixTime = candleData.t[i]
-      newObj.dateTime = new Date(newObj.unixTime * 1000)
-      newObj.price = candleData.c[i]
-      stock.data.push(newObj)
-    }
     console.log("STOCK DATA IN THUNK: ",stock)
   dispatch(setStockGraphData(stock))
 }

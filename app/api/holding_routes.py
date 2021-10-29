@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
-from app.models import Stock, Holding, db
+from app.models import Stock, Holding, db, User
 from app.forms import HoldingForm
 
 holding_routes = Blueprint("holdings",__name__)
@@ -11,6 +11,7 @@ def post_holding():
     form = HoldingForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     print(f"\n\n\n\n SYMBOL HERE {request.json['symbol']}\n\n\n\n")
+    user_id = request.json['user_id']
     symbol = request.json['symbol']
     if(form.validate_on_submit and symbol is not None):
         stock = Stock.query.filter_by(symbol=symbol).first()
@@ -27,7 +28,12 @@ def post_holding():
         else:
             db.session.add(holding)
             db.session.commit()
-    return {}
+        user = User.query.get(holding.user_id)
+        return user.to_dict()
+    else:
+        user = User.query.get(user_id)
+        return user.to_dict()
+
 
 
 @holding_routes.route("",methods=["PUT"])
@@ -36,6 +42,7 @@ def sell_holding():
     form['csrf_token'].data = request.cookies['csrf_token']
     print(f"\n\n\n\n SYMBOL HERE {request.json['symbol']}\n\n\n\n")
     symbol = request.json['symbol']
+    user_id = request.json['user_id']
     if(form.validate_on_submit and symbol is not None):
         stock = Stock.query.filter_by(symbol=symbol).first()
         holding = Holding(
@@ -48,4 +55,5 @@ def sell_holding():
             print(f"FOUND THE HOLDING \n\n\n\n\n {found_holding.to_dict()} \n\n\n\n\n\n")
             found_holding.shares = found_holding.shares - holding.shares
             db.session.commit()
-    return {}
+    user = User.query.get(user_id)
+    return user.to_dict()

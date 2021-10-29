@@ -6,6 +6,7 @@ const ADD_MODAL_TYPE = "session/ADD_MODAL_TYPE"
 const MODAL_VIEW = "session/MODAL_VIEW"
 const MODAL_REQUIRED = "session/MODAL_REQUIRED"
 const MODAL_INFO = "session/MODAL_INFO"
+const SET_HOLDINGS = "session/SET_HOLDINGS"
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -184,19 +185,71 @@ export const editWatchlistThunk = (id,userId,name) => async dispatch => {
   dispatch(setUser(data))
 }
 
-export const addToWatchlist = (id,symbol) => async dispatch => {
-  const response = await fetch(`/api/watchlists/${id}`,{
-    method:"POST",
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body:JSON.stringify({symbol})
-  })
+export const addToWatchlist = (ids,symbol) => async dispatch => {
+  let response
+  for(let id of ids){
+    console.log("ID HERE: ",id)
+    response = await fetch(`/api/watchlists/${id}`,{
+      method:"POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({symbol})
+    })
+  }
+
   const data = await response.json()
   dispatch(setUser(data))
 }
 
 const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
+
+export const addHolding = (symbol,shares,userId) => async dispatch =>{
+    const response = await fetch("/api/holdings",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({symbol:symbol.toUpperCase(),user_id:userId,shares})
+    })
+
+    const data = await response.json()
+    dispatch(setUser(data))
+}
+
+export const sellHolding = (symbol,shares,userId) => async dispatch => {
+    const response = await fetch("/api/holdings",{
+      method:"PUT",
+      headers:{
+          "Content-Type":"application/json"
+      },
+      body:JSON.stringify({symbol:symbol.toUpperCase(),user_id:userId,shares})
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
+}
+
+// export const setHoldings = (holdings) => {
+//     return {
+//         type:SET_HOLDINGS,
+//         payload:holdings
+//     }
+// }
+// const initialState = {}
+
+// export default function holdingsReducer(state = initialState, action) {
+//     let newState = {...state}
+//     switch (action.type) {
+//       case SET_HOLDINGS:
+//           newState = action.payload
+//           return newState
+//       default:
+//         return newState;
+//     }
+//   }
+
+
+
 
 export default function reducer(state = initialState, action) {
   const newState = {...state}

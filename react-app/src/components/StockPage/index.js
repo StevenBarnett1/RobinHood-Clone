@@ -10,8 +10,7 @@ import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import {AiOutlinePlus} from "react-icons/ai"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
-import holdingsReducer, { addHolding, sellHolding } from "../../store/holdings";
-import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
+import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo, addHolding, sellHolding} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
   } from 'recharts';
@@ -66,12 +65,14 @@ const Stockpage = () => {
     const [readMore,toggleReadMore] = useState(false)
     const [currentShares,setCurrentShares] = useState("")
     const [performance,setPerformance] = useState(true)
+    const [errors,setErrors] = useState([])
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
+        document.title = `${params.symbol}`
         console.log("FORCING RERENDER?")
         forceRerender(!render)
     },[params])
@@ -93,7 +94,6 @@ const Stockpage = () => {
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
         }
     },[stockData])
-
     const CustomTooltip = ({ active, payload }) => {
         // if (!active || !tooltip)    return null
         if(payload && payload[0]){
@@ -106,7 +106,14 @@ const Stockpage = () => {
                 if(minutes === 0)minutes = "00"
                 if(minutes === 5)minutes = "05"
                 let zone
-                if(hours >= 12) zone = "PM"
+                if(hours >= 12){
+                    zone = "PM"
+                    if(hours > 12){
+                        console.log("HOURS BEFORE: ",hours)
+                        hours = hours % 12
+                        console.log("HOURS AFTER: ",hours)
+                    }
+                }
                 else zone = "AM"
 
                 setStockValueDynamic(payload[0].payload.price)
@@ -162,7 +169,9 @@ const Stockpage = () => {
               setUnixEnd(endUnix)
 
     },[params])
-
+    useEffect(()=>{
+        setErrors([])
+    },[buySell])
     useEffect(()=>{
         if(unixEnd && interval) {
 
@@ -272,6 +281,19 @@ const Stockpage = () => {
         setTimeInterval(time)
     }
 
+    const getAbbreviatedNumber = (num) => {
+        console.log("ABBREVIATED NUMBER: ",num)
+        if (num >= 1000000000000){
+            return `${(num / 1000000000000).toFixed(3)}T`
+        }
+        else if (num >= 1000000000){
+            return `${(num / 1000000000).toFixed(3)}B`
+        }
+        else if(num >= 1000000){
+            return `${(num / 1000000).toFixed(3)}M`
+        }
+    }
+
     useEffect(()=>{
 
         if(graphData){
@@ -298,28 +320,46 @@ const Stockpage = () => {
         }
 
     },[graphData])
-
+    console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
+        let errors = []
+        console.log("INVEST VALUE: ",investValue)
+        if(!investValue && type === "buy"){
+            setErrors(["You must enter an amount to purchase"])
+            return
+        }
+        if(!investValue && type === "sell"){
+            setErrors(["You must enter an amount to sell"])
+            return
+        }
         if(investValue && investType === "shares" && type === "buy"){
-            if(investValue*stockData.price > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,investValue,user.id))
-            dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
-            //dispatch to decrement users buying power, add number of shares to holdings
+            if(investValue*stockData.price > user.buying_power)errors.push("Not enough funds")
+            if(!errors.length){
+                dispatch(addHolding(stockData.symbol,investValue,user.id))
+                dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
+                setInvestValue(0)
+            } else setErrors(errors)
         } else if (investValue && investType === "dollars" && type === "buy"){
-            if(investValue > user.buying_power)return
-            dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
-            dispatch(addBuyingPower(user.id,-investValue))
+            if(investValue > user.buying_power)errors.push("Not enough funds")
+            if(!errors.length){
+                dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
+                dispatch(addBuyingPower(user.id,-investValue))
+                setInvestValue(0)
+            } else setErrors(errors)
+
         } else if (investValue && investType === "shares" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
                 dispatch(sellHolding(stockData.symbol,investValue,user.id))
                 dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
-            }
+                setInvestValue(0)
+            } else setErrors(["Not enough shares"])
 
         } else if (investValue && investType === "dollars" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
                 dispatch(sellHolding(stockData.symbol,investValue/stockData.price,user.id))
                 dispatch(addBuyingPower(user.id,investValue))
-            }
+                setInvestValue(0)
+            } else setErrors(["Not enough shares"])
 
         }
     }
@@ -344,6 +384,7 @@ const Stockpage = () => {
             dispatch(addModal("add-to-watchlist"))
         }
         console.log("STOCK DATA: ",stockData)
+        console.log("PERFORMANCE IN STOCK PAGE: ",performance)
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
@@ -393,11 +434,11 @@ const Stockpage = () => {
                         <div id = "key-statistics-lower-container">
                             <div className = "key-statistic-container">
                                 <div className = "key-statistic">Market Cap</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.marketCap) ? stockData.marketCap : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.marketCap) ? `$${getAbbreviatedNumber(stockData.marketCap)}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "revenue">
                                 <div className = "key-statistic">Revenue</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.revenue) ? stockData.revenue : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.revenue) ? `$${getAbbreviatedNumber(stockData.revenue)}`: "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "price-to-earnings">
                                 <div className = "key-statistic">Price-Earnings Ratio</div>
@@ -409,27 +450,27 @@ const Stockpage = () => {
                             </div>
                             <div className = "key-statistic-container" id = "eps">
                                 <div className = "key-statistic">Earnings Per Share</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.eps) ? stockData.eps : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.eps) ? `$${stockData.eps}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "high-today">
                                 <div className = "key-statistic">High Today</div>
-                                <div className = "key-statistic-value">{dailyHigh}</div>
+                                <div className = "key-statistic-value">{dailyHigh ? `$${dailyHigh}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "low-today">
                                 <div className = "key-statistic">Low Today</div>
-                                <div className = "key-statistic-value">{dailyLow}</div>
+                                <div className = "key-statistic-value">{dailyLow ? `$${dailyLow}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "open-today">
                                 <div className = "key-statistic">Open Price</div>
-                                <div className = "key-statistic-value">{openPrice}</div>
+                                <div className = "key-statistic-value">{openPrice ? `$${openPrice}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "high">
                                 <div className = "key-statistic">52 Week High</div>
-                                <div className = "key-statistic-value">{(stockData && stockData['52WeekHigh']) ? stockData['52WeekHigh'] : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekHigh']) ? `$${stockData['52WeekHigh']}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "low">
                                 <div className = "key-statistic">52 Week Low</div>
-                                <div className = "key-statistic-value">{(stockData && stockData['52WeekLow']) ? stockData['52WeekLow'] : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekLow']) ? `$${stockData['52WeekLow']}` : "-"}</div>
                             </div>
                         </div>
                     </div>
@@ -471,6 +512,9 @@ const Stockpage = () => {
                         <div id = {performance ? "stock-sell-title-good" : "stock-sell-title-bad"} style = {buySell === "sell" ? {borderBottomWidth:"1px"} : {borderBottomWidth:"0px"}} onClick = {()=>setBuySell('sell')}>Sell {(stockData && stockData.symbol) ? stockData.symbol.toUpperCase(): ""}</div>
                     </div>
                     <div id = "stock-purchase-middle">
+                    {errors.map((error, ind) => (
+                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+              ))}
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div id = "invest-in-label">{buySell === "buy" ? "Invest In" : "Sell"}</div>
@@ -510,7 +554,7 @@ const Stockpage = () => {
                 </div>
                 </div>
             </div>
-            <FormModal symbol={stockData && stockData.symbol}/>
+            <FormModal symbol={stockData && stockData.symbol} performance = {performance}/>
         </div>
     )
 }

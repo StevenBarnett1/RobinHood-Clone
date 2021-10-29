@@ -209,3 +209,15 @@
 
     object-fit: contain;
 }
+
+#footer{
+    height:75px;
+    background-color: rgb(199, 198, 198);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#footer > *{
+    margin-right:100px;
+}
