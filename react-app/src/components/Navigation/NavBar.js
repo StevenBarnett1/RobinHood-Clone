@@ -13,6 +13,9 @@ import { setTheme } from '../../store/session';
 const NavBar = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.session.user)
+  const theme = useSelector(state=>state.session.theme)
+
+  if(theme === "dark" && !user)dispatch(setTheme())
 
   const changeTheme = () => {
     dispatch(setTheme())

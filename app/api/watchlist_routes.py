@@ -61,3 +61,18 @@ def add_to_watchlist(id):
     db.session.commit()
     user = User.query.get(watchlist.user_id)
     return user.to_dict()
+
+
+
+@watchlist_routes.route("/<int:id>/stocks/<string:symbol>",methods=["DELETE"])
+@login_required
+def delete_from_watchlist(id,symbol):
+    user_id = request.json['user_id']
+    watchlist = Watchlist.query.get(id)
+    for i in range (len(watchlist.watchlist_stocks)):
+        if(watchlist.watchlist_stocks[i].symbol == symbol):
+            index = i
+    watchlist.watchlist_stocks.pop(index)
+    db.session.commit()
+    user = User.query.get(user_id)
+    return user.to_dict()

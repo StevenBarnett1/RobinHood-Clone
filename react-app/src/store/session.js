@@ -238,7 +238,18 @@ export const sellHolding = (symbol,shares,userId) => async dispatch => {
 // const initialState = {}
 
 
+export const deleteWatchlistStock = (id,symbol,user_id) => async dispatch => {
+  const response = await fetch(`/api/watchlists/${id}/stocks/${symbol}`,{
+    method:"DELETE",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({user_id})
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
 
+}
 
 
 

@@ -77,9 +77,18 @@ export const getHoldingGraphData = (stocks,tokens) => async dispatch => {
 
     const candleData = await candleResponse.json()
     const priceData = await priceResponse.json()
-    stock.price = priceData.c
-    let num = stock.price - candleData.c[0]
-    stock.change = (num / candleData.c[0])*100
+    if(priceData){
+      stock.price = priceData.c
+    }
+    if(candleData){
+      if(candleData.c){
+        if(candleData.c[0]){
+          let num = stock.price - candleData.c[0]
+          stock.change = (num / candleData.c[0])*100
+        }
+      }
+    }
+
     if(candleData.c){
       for(let i = 0; i< candleData.c.length;i++){
         const newObj = {}
