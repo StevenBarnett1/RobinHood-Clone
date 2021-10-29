@@ -278,6 +278,19 @@ const Stockpage = () => {
         setTimeInterval(time)
     }
 
+    const getAbbreviatedNumber = (num) => {
+        console.log("ABBREVIATED NUMBER: ",num)
+        if (num >= 1000000000000){
+            return `${(num / 1000000000000).toFixed(3)}T`
+        }
+        else if (num >= 1000000000){
+            return `${(num / 1000000000).toFixed(3)}B`
+        }
+        else if(num >= 1000000){
+            return `${(num / 1000000).toFixed(3)}M`
+        }
+    }
+
     useEffect(()=>{
 
         if(graphData){
@@ -400,11 +413,11 @@ const Stockpage = () => {
                         <div id = "key-statistics-lower-container">
                             <div className = "key-statistic-container">
                                 <div className = "key-statistic">Market Cap</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.marketCap) ? stockData.marketCap : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.marketCap) ? `$${getAbbreviatedNumber(stockData.marketCap)}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "revenue">
                                 <div className = "key-statistic">Revenue</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.revenue) ? stockData.revenue : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.revenue) ? `$${getAbbreviatedNumber(stockData.revenue)}`: "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "price-to-earnings">
                                 <div className = "key-statistic">Price-Earnings Ratio</div>
@@ -416,27 +429,27 @@ const Stockpage = () => {
                             </div>
                             <div className = "key-statistic-container" id = "eps">
                                 <div className = "key-statistic">Earnings Per Share</div>
-                                <div className = "key-statistic-value">{(stockData && stockData.eps) ? stockData.eps : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData.eps) ? `$${stockData.eps}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "high-today">
                                 <div className = "key-statistic">High Today</div>
-                                <div className = "key-statistic-value">{dailyHigh}</div>
+                                <div className = "key-statistic-value">{dailyHigh ? `$${dailyHigh}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "low-today">
                                 <div className = "key-statistic">Low Today</div>
-                                <div className = "key-statistic-value">{dailyLow}</div>
+                                <div className = "key-statistic-value">{dailyLow ? `$${dailyLow}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "open-today">
                                 <div className = "key-statistic">Open Price</div>
-                                <div className = "key-statistic-value">{openPrice}</div>
+                                <div className = "key-statistic-value">{openPrice ? `$${openPrice}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "high">
                                 <div className = "key-statistic">52 Week High</div>
-                                <div className = "key-statistic-value">{(stockData && stockData['52WeekHigh']) ? stockData['52WeekHigh'] : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekHigh']) ? `$${stockData['52WeekHigh']}` : "-"}</div>
                             </div>
                             <div className = "key-statistic-container" id = "low">
                                 <div className = "key-statistic">52 Week Low</div>
-                                <div className = "key-statistic-value">{(stockData && stockData['52WeekLow']) ? stockData['52WeekLow'] : "-"}</div>
+                                <div className = "key-statistic-value">{(stockData && stockData['52WeekLow']) ? `$${stockData['52WeekLow']}` : "-"}</div>
                             </div>
                         </div>
                     </div>

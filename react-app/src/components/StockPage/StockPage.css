@@ -162,6 +162,8 @@
 .key-statistic-container{
     display:flex;
     flex-direction: column;
+    width:150px;
+    margin-bottom:25px;
 }
 
 #key-statistics-lower-container{
@@ -169,33 +171,8 @@
     flex-wrap: wrap;
 }
 
-#key-statistics-lower-container > div{
-margin-bottom:25px;
-margin-right:73px;
-}
-
 #key-statistics-lower-container{
     font-size:13px;
-}
-
-#key-statistics-lower-container:nth-child(5){
-margin-right:0
-}
-
-#eps{
-    margin-right:45px !important;
-}
-
-#high-today{
-    margin-right:100px !important;
-}
-
-#low-today{
-    margin-right:137px !important;
-}
-
-#high{
-margin-right:79px !important;
 }
 
 .peer-container{
@@ -209,10 +186,6 @@ margin-right:79px !important;
 
 #stock-disclosure-navlink{
     text-decoration: none;
-}
-
-#price-to-earnings{
-
 }
 
 #earnings-title{

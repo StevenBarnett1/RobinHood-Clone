@@ -20,6 +20,10 @@ const LoginForm = () => {
     }
   };
 
+  const handleDemo = (e) => {
+    e.preventDefault()
+    dispatch(login("demo@aa.io","password"))
+  }
   const updateEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -71,10 +75,11 @@ const LoginForm = () => {
           />
         </div>
         <div id = "login-button-container">
-          <button type='submit'>Sign In</button>
-          <div>
-            Not on Robbinghood?
-            <NavLink to = "/sign-up"> Create an account</NavLink>
+          <button id = "login-submit" type='submit'>Sign In</button>
+          <button onClick = {(e)=>handleDemo(e)}type="demo-submit">Demo User</button>
+          <div id = "login-redirect-container">
+            <div>Not on Robbinghood?</div>
+            <div><NavLink to = "/sign-up"> Create an account</NavLink></div>
           </div>
         </div>
       </form>

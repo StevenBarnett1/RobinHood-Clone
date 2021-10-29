@@ -98,7 +98,16 @@ overflow-y: hidden;
     margin-left:15px;
 }
 
-#login-button-container > div > a {
+#login-submit{
+    margin-right:10px;
+}
+
+#login-redirect-container{
+    display:flex;
+    flex-direction:column;
+}
+
+#login-button-container > div > div > a {
     color:rgb(0, 200, 5);
     text-decoration: none;
     font-weight: 700;

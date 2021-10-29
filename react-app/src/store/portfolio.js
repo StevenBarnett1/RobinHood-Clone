@@ -28,11 +28,10 @@ export const setMoversData = (losersData,gainersData) => {
 
 
 export const getMoversData = (apiKeys) => async dispatch => {
-  // const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
-  const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=738b215d43b9f00852b64cd8ea4feeb9`)
+  const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   const losersData = await losersResponse.json()
 
-  const gainersResponse = await fetch(`https://financialmodelingprep.com/api/v3/gainers?apikey=738b215d43b9f00852b64cd8ea4feeb9`)
+  const gainersResponse = await fetch(`https://financialmodelingprep.com/api/v3/gainers?apikey=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   const gainersData = await gainersResponse.json()
   dispatch(setMoversData(losersData,gainersData))
 }
