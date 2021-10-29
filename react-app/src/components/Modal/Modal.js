@@ -28,7 +28,6 @@ function FormModal(props) {
     let filteredList = user.watchlists.filter(watchlist=>watchlist.name===WatchlistInputValue)
     let errors = []
       if(!WatchlistInputValue)errors.push("Watchlist name cannot be empty")
-      if(filteredList.length && filteredList[0].name !== modalInfo.name)errors.push("A watchlist already exists with that name")
       if(WatchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
       console.log("ERRRRRRRRRRRORS: ",errors)
       if(!errors.length && filteredList[0]){

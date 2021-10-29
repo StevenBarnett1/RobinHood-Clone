@@ -59,7 +59,8 @@ const Dashboard = () => {
     const [watchlistInput,toggleWatchlistInput] = useState(false)
     const [renderLineChart,setRenderLineChart] = useState("")
     const [performance,setPerformance] = useState(true)
-
+    const [errors,setErrors] = useState([])
+    const theme = useSelector(state=>state.session.theme)
 
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
@@ -391,14 +392,23 @@ const portfolioReset = (e) => {
 }
 
 const addWatchlist = (e) => {
-    if(watchlistInputValue)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    e.preventDefault()
+    let errors = []
+    let filteredList = user.watchlists.filter(watchlist=>watchlist.name===watchlistInputValue)
+    if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
+    if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
+    if(filteredList.length)errors.push("A watchlist with that name already exists")
+    if(!errors.length)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    else setErrors(errors)
 }
 
 const deleteListHandler = (watchlist) => {
+    setDotsOpen(false)
     dispatch(deleteWatchlistThunk(watchlist.id))
 }
 
 const editListHandler = (watchlist) => {
+    setDotsOpen(false)
     dispatch(addModal("edit-watchlist"))
     dispatch(addModalInfo(watchlist))
     dispatch(toggleModalView(true))
@@ -569,8 +579,11 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
                     </div>
-                    <form id = "add-watchlist-form" onSubmit = {()=>addWatchlist()} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
-                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)}/>
+                    {errors.map((error, ind) => (
+                <div style = {{color:"red"}}key={ind}>{error}</div>
+              ))}
+                    <form id = "add-watchlist-form" onSubmit = {(e)=>addWatchlist(e)} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                        <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)} style = {theme === "dark" ? {color:"white"}:{}}/>
                         <div id = "watchlist-add-buttons-container">
                             <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
                             <input id = {performance ? "watchlist-add-submit-good" : "watchlist-add-submit-bad"} type="submit" value = "Create List"/>

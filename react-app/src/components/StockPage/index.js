@@ -337,24 +337,28 @@ const Stockpage = () => {
             if(!errors.length){
                 dispatch(addHolding(stockData.symbol,investValue,user.id))
                 dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
+                setInvestValue(0)
             } else setErrors(errors)
         } else if (investValue && investType === "dollars" && type === "buy"){
             if(investValue > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
                 dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
                 dispatch(addBuyingPower(user.id,-investValue))
+                setInvestValue(0)
             } else setErrors(errors)
 
         } else if (investValue && investType === "shares" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
                 dispatch(sellHolding(stockData.symbol,investValue,user.id))
                 dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
+                setInvestValue(0)
             } else setErrors(["Not enough shares"])
 
         } else if (investValue && investType === "dollars" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
                 dispatch(sellHolding(stockData.symbol,investValue/stockData.price,user.id))
                 dispatch(addBuyingPower(user.id,investValue))
+                setInvestValue(0)
             } else setErrors(["Not enough shares"])
 
         }
