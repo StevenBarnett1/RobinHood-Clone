@@ -632,3 +632,11 @@ width:55px;
 #watchlist-add-cancel-bad:hover{
     background-color: var(--bad-stock-light-hover);
 }
+
+#stocks-list-outer-title{
+    font-weight:bold;
+    margin-top:15px;
+    padding-bottom:15px;
+    padding-left:15px;
+    border-bottom:1px solid var(--border-color);
+}

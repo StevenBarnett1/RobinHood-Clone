@@ -60,24 +60,27 @@ const Dashboard = () => {
     const [renderLineChart,setRenderLineChart] = useState("")
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
-    const [changes,setChanges] = useState({})
+    const [watchlistChanges,setWatchlistChanges] = useState({})
+    const [watchlistPrices,setWatchlistPrices] = useState({})
     const [holdingChanges,setHoldingChanges] = useState({})
+    const [holdingPrices,setHoldingPrices] = useState({})
     const theme = useSelector(state=>state.session.theme)
-
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
-
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
     useEffect(()=>{
         if(watchlistStockData){
           console.log("WATCHLIST STOCK DATA",Object.keys(watchlistStockData))
-          let newObj = {}
+          let newChanges = {}
+          let newPrices = {}
           for(let symbol of Object.keys(watchlistStockData)){
-            newObj[symbol] = watchlistStockData[symbol].change
+            newChanges[symbol] = watchlistStockData[symbol].change
+            newPrices[symbol] = watchlistStockData[symbol].price
           }
-          setChanges(newObj)
+          setWatchlistChanges(newChanges)
+          setWatchlistPrices(newPrices)
 
             for(let symbol of Object.keys(watchlistStockData)){
                 if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
@@ -114,11 +117,14 @@ const Dashboard = () => {
     useEffect(()=>{
         if(holdingStockData){
           console.log("WATCHLIST STOCK DATA",Object.keys(holdingStockData))
-          let newObj = {}
+          let newChanges = {}
+          let newPrices = {}
           for(let symbol of Object.keys(holdingStockData)){
-            newObj[symbol] = holdingStockData[symbol].change
+            newChanges[symbol] = holdingStockData[symbol].change
+            newPrices[symbol] = holdingStockData[symbol].price
           }
-          setHoldingChanges(newObj)
+          setHoldingChanges(newChanges)
+          setHoldingPrices(newPrices)
 
             for(let symbol of Object.keys(holdingStockData)){
                 if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1].price > holdingStockData[symbol].data[0].price){
@@ -529,7 +535,6 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
         console.log("WINNERS DATA: ",moversData.gainersData)
     }
 
-    console.log("CHANGES: ",changes)
     console.log("PORTFOLIO DATA: ",portfolioData)
     return (
         <div id = "dashboard-outer-container">
@@ -647,8 +652,8 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                 <div className = "watchlist-stock-graph">{(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData && holdingStockData[stock.symbol].graph : "-"}</div>
                                 <div className = "watchlist-stock-price-container">
-                                    <div className = "watchlist-stock-price">${(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData[stock.symbol].price : "-"}</div>
-                                    <div className = "watchlist-stock-change" style = {(holdingStockData && holdingStockData[stock.symbol]) ? (holdingStockData[stock.symbol].change < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}):{}}>{holdingStockData && holdingStockData[stock.symbol].change.toFixed(2)}%</div>
+                                <div className = "watchlist-stock-price">${(holdingPrices[stock.symbol]) ? holdingPrices[stock.symbol].toFixed(2) : "-"}</div>
+                                <div className = "watchlist-stock-change" style = {holdingChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{holdingChanges[stock.symbol] && holdingChanges[stock.symbol].toFixed(2)}%</div>
                                 </div>
                             </div>
                             </NavLink>
@@ -693,8 +698,8 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price.toFixed(2) : "-"}</div>
-                                                    <div className = "watchlist-stock-change" style = {changes[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{changes[stock.symbol] && changes[stock.symbol].toFixed(2)}%</div>
+                                                    <div className = "watchlist-stock-price">${watchlistPrices[stock.symbol] ? watchlistPrices[stock.symbol].toFixed(2) : "-"}</div>
+                                                    <div className = "watchlist-stock-change" style = {watchlistChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistChanges[stock.symbol] && watchlistChanges[stock.symbol].toFixed(2)}%</div>
                                                 </div>
                                             </div>
                                             </NavLink>

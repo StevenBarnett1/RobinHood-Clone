@@ -54,6 +54,7 @@ def sell_holding():
         if(found_holding is not None):
             print(f"FOUND THE HOLDING \n\n\n\n\n {found_holding.to_dict()} \n\n\n\n\n\n")
             found_holding.shares = found_holding.shares - holding.shares
+            if(found_holding.shares == 0): db.session.delete(found_holding)
             db.session.commit()
     user = User.query.get(user_id)
     return user.to_dict()
