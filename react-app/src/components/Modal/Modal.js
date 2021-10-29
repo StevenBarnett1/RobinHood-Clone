@@ -64,6 +64,12 @@ function FormModal(props) {
     }
 
   }
+
+  const handleExitAddToWatchlist = () => {
+    dispatch(toggleModalView(false))
+    setAddWatchlist(false)
+  }
+
   if (modalView && modalType === "edit-watchlist"){
     userForm = (
     <form id = "edit-watchlist-form" onSubmit = {handleEditSubmit} style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
@@ -80,17 +86,17 @@ function FormModal(props) {
       <div id = "add-to-watchlist-outer" style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
           <div id = "add-to-watchlist-upper">
               <div id = "add-to-watchlist-title">Add {props.symbol.toUpperCase()} to Your Lists</div>
-              <div id = "exit-add-to-watchlist" onClick = {()=>dispatch(toggleModalView(false))}> <ImCross/> </div>
+              <div id = "exit-add-to-watchlist" onClick = {()=>handleExitAddToWatchlist()}> <ImCross/> </div>
             </div>
             <div id ='add-to-watchlist-inner'>
         {addWatchlist ? (
-          <div id = "create-watchlist-outer-container">
-            <input type = "text" value = {createWatchlistInputValue} onChange = {(e)=>setCreateWatchlistInputValue(e.target.value)}></input>
-            <div id = "create-watchlist-buttons-container">
-              <button onClick = {()=>setAddWatchlist(false)}>Cancel</button>
-              <button onClick = {()=>handleCreateSubmit()}>Submit</button>
-            </div>
 
+            <div id = "create-watchlist-input-container">
+            <input placeholder = "List Name" id = "create-watchlist-inside-add-input" type = "text" value = {createWatchlistInputValue} onChange = {(e)=>setCreateWatchlistInputValue(e.target.value)} style = {theme === "light" ? {backgroundColor:"rgb(247, 247, 247)"} : {color:"white",backgroundColor:"rgb(48, 48, 48)"}}></input>
+            <div id = "create-watchlist-add-buttons-container">
+              <button id = {props.performance ? "add-create-watchlist-cancel-button-good" : "add-create-watchlist-cancel-button-bad"} onClick = {()=>setAddWatchlist(false)} style = {theme === "light" ? {color:"black"} : {color:"white"}}>Cancel</button>
+              <button id = {props.performance ? "add-create-watchlist-submit-button-good" : "add-create-watchlist-submit-button-bad"} onClick = {()=>handleCreateSubmit()} style = {theme === "light" ? {color:"black"} : {color:"white"}}>Submit</button>
+            </div>
           </div>
         ) : (
           <div className = {theme === "light" ? "add-to-watchlist-individual-light" : "add-to-watchlist-individual-dark"} id = "modal-create-watchlist" onClick = {()=>setAddWatchlist(true)}>
@@ -118,12 +124,16 @@ function FormModal(props) {
     )
   }
 
+  const handleOnModalClose = () => {
+    dispatch(toggleModalView(false))
+    setAddWatchlist(false)
+  }
 
 
   return (
     <>
       {modalView && (
-        <Modal onClose={() => dispatch(toggleModalView(false))}>
+        <Modal onClose={() => handleOnModalClose()}>
           {userForm}
         </Modal>
       )}

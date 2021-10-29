@@ -206,3 +206,74 @@
 #add-to-watchlist-save-bad:hover{
     background-color: rgb(230, 75, 3);
 }
+
+#create-watchlist-inside-add-input{
+    height:48px;
+    width:304px;
+    border-radius:5px;
+    margin:auto;
+    margin-bottom:10px;
+    border:none;
+}
+
+#create-watchlist-input-container{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:15px;
+}
+
+#create-watchlist-add-buttons-container{
+    display:flex;
+    justify-content: center;
+
+}
+
+#add-create-watchlist-cancel-button-good{
+    width:97px;
+    height:36px;
+    margin-right:20px;
+    border:none;
+    cursor:pointer;
+    background-color: rgb(0, 200, 5);
+}
+
+#add-create-watchlist-cancel-button-bad{
+    width:97px;
+    height:36px;
+    margin-right:20px;
+    border:none;
+    cursor:pointer;
+    background-color: rgb(255, 80, 0);
+}
+
+#add-create-watchlist-submit-button-good{
+    width:113px;
+    height:36px;
+    border:none;
+    cursor:pointer;
+    background-color: rgb(0, 200, 5);
+}
+
+#add-create-watchlist-submit-button-bad{
+    width:113px;
+    height:36px;
+    border:none;
+    cursor:pointer;
+    background-color: rgb(255, 80, 0);
+}
+
+#add-create-watchlist-submit-button-bad:hover{
+    background-color: rgb(230, 75, 3);
+}
+
+#add-create-watchlist-submit-button-good:hover{
+    background-color: rgb(1, 175, 7);
+}
+
+#add-create-watchlist-cancel-button-bad:hover{
+    background-color: rgb(230, 75, 3);
+}
+
+#add-create-watchlist-cancel-button-good:hover{
+    background-color: rgb(1, 175, 7);
+}

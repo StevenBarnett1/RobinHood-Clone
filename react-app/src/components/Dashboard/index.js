@@ -413,7 +413,8 @@ const handleOpenDots = (e,watchlist) => {
     }
     else setDotsOpen(watchlist.id)
 }
-
+console.log(user)
+console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
     useEffect(()=>{
         if(graphData.length && graphData[0] !== "no_data"){
@@ -597,9 +598,9 @@ const handleOpenDots = (e,watchlist) => {
                                             <NavLink className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
                                             <div key = {stock.id} className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
-                                                <div className = "watchlist-stock-graph">{watchlistStockData && watchlistStockData[stock.symbol].graph}</div>
+                                                <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">${watchlistStockData && watchlistStockData[stock.symbol].price}</div>
+                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
                                                     <div className = "watchlist-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol].change < 0) ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
                                                 </div>
                                             </div>

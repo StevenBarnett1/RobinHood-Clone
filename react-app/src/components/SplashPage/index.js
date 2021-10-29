@@ -1,6 +1,7 @@
 import "./Splash.css"
 import { NavLink } from "react-router-dom"
-
+import {SiGithub} from "react-icons/si"
+import {AiFillLinkedin} from "react-icons/ai"
 const SplashPage = () => {
     return (
         <div id = "splash-outer-container">
@@ -88,6 +89,11 @@ const SplashPage = () => {
                     <img src = "https://robinhood.com/us/en/_next/static/images/2x__50ed5a2a8854d545e03d193192de26de.png"></img>
                 </div>
             </div>
+        </div>
+        <div id = "footer">
+            <NavLink style = {{marginLeft:"200px"}}to = {{pathname:"https://github.com/StevenBarnett1"}} target="_blank"><SiGithub fill = {"black"} style = {{fontSize:"45px"}}/></NavLink>
+            <div style = {{fontSize:"33px",fontWeight:"bold"}}>Steven Barnett</div>
+            <NavLink to = {{pathname:"https://www.linkedin.com/in/steven-r-barnett/"}} target="_blank"><AiFillLinkedin fill = {"black"} style = {{fontSize:"45px"}}/></NavLink>
         </div>
         </div>
     )

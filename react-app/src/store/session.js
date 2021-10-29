@@ -184,14 +184,19 @@ export const editWatchlistThunk = (id,userId,name) => async dispatch => {
   dispatch(setUser(data))
 }
 
-export const addToWatchlist = (id,symbol) => async dispatch => {
-  const response = await fetch(`/api/watchlists/${id}`,{
-    method:"POST",
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body:JSON.stringify({symbol})
-  })
+export const addToWatchlist = (ids,symbol) => async dispatch => {
+  let response
+  for(let id of ids){
+    console.log("ID HERE: ",id)
+    response = await fetch(`/api/watchlists/${id}`,{
+      method:"POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({symbol})
+    })
+  }
+
   const data = await response.json()
   dispatch(setUser(data))
 }
