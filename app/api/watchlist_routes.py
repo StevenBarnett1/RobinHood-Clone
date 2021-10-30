@@ -29,11 +29,15 @@ def add_watchlist():
 @login_required
 def delete_watchlist(id):
     watchlist = Watchlist.query.get(id)
-    user = User.query.get(watchlist.user_id)
-    print(f"\n\n\n\n\n {user} \n\n\n\n\n {watchlist} \n\n\n\n\n")
+    # db.session.delete(watchlist)
+    # db.session.commit()
+    watchlist.watchlist_stocks = []
     db.session.delete(watchlist)
     db.session.commit()
+
     user = User.query.get(watchlist.user_id)
+    print("\n\n\n\n\n\n\n\n\n\n BEFORE TO DICT \n\n\n\n\n\n ")
+    print(f"\n\n\n\n\n\n\n\n\n {user.to_dict()} \n\n\n\n\n\n\n")
     return user.to_dict()
 
 
