@@ -256,7 +256,7 @@ const Dashboard = () => {
               setUnixEnd(endUnix)
 
         }
-    },[user])
+    },[])
 
     useEffect(()=>{
         if(portfolioData){

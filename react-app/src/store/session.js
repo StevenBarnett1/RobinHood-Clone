@@ -163,14 +163,18 @@ export const addWatchlistThunk = (name,userId) => async dispatch => {
 }
 
 export const deleteWatchlistThunk = (id) => async dispatch => {
-  const response = await fetch(`/api/watchlists/${id}`,{
+  console.log("WATCHLIST HEREEEE: ",id)
+  const response = await fetch(`/api/watchlists/${Number(id)}`,{
     method:"DELETE",
     headers: {
       'Content-Type': 'application/json'
     },
   })
-  const data = await response.json()
-  dispatch(setUser(data))
+  if(response){
+    const data = await response.json()
+    if(data)dispatch(setUser(data))
+  }
+
 }
 
 export const editWatchlistThunk = (id,userId,name) => async dispatch => {
@@ -197,9 +201,11 @@ export const addToWatchlist = (ids,symbol) => async dispatch => {
       body:JSON.stringify({symbol})
     })
   }
+  if(response){
+    const data = await response.json()
+    dispatch(setUser(data))
+  }
 
-  const data = await response.json()
-  dispatch(setUser(data))
 }
 
 const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
