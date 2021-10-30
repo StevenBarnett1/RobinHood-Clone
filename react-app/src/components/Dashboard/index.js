@@ -1,7 +1,7 @@
 import {useSelector,useDispatch} from "react-redux"
 import { useState, useEffect } from "react"
 import "./Dashboard.css"
-import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo} from "../../store/session";
+import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo, deleteWatchlistStock} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie
   } from 'recharts';
@@ -9,13 +9,14 @@ import {
   import {FaPlus} from "react-icons/fa"
   import {CgInfinity} from "react-icons/cg"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
-import { getWatchlistGraphData } from "../../store/stocks";
+import { getWatchlistGraphData,getHoldingGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
 import {BiDotsHorizontal} from "react-icons/bi"
 import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
+import {MdDeleteOutline} from "react-icons/md"
 const finnhub = require('finnhub');
 const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
@@ -60,43 +61,98 @@ const Dashboard = () => {
     const [renderLineChart,setRenderLineChart] = useState("")
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
-    const [changes,setChanges] = useState({})
+    const [watchlistChanges,setWatchlistChanges] = useState({})
+    const [watchlistPrices,setWatchlistPrices] = useState({})
+    const [holdingChanges,setHoldingChanges] = useState({})
+    const [holdingPrices,setHoldingPrices] = useState({})
     const theme = useSelector(state=>state.session.theme)
-
     const user = useSelector(state=>state.session.user)
     const portfolioData = useSelector(state=>state.portfolio.portfolioData)
-
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
+    const holdingStockData = useSelector(state => state.stocks.holdingStockData)
+
+    useEffect(()=>{setErrors([])},[watchlistInputValue])
     useEffect(()=>{
         if(watchlistStockData){
           console.log("WATCHLIST STOCK DATA",Object.keys(watchlistStockData))
-          let newObj = {}
+          let newChanges = {}
+          let newPrices = {}
           for(let symbol of Object.keys(watchlistStockData)){
-            newObj[symbol] = watchlistStockData[symbol].change
+            newChanges[symbol] = watchlistStockData[symbol].change
+            newPrices[symbol] = watchlistStockData[symbol].price
           }
-          setChanges(newObj)
+          setWatchlistChanges(newChanges)
+          setWatchlistPrices(newPrices)
 
             for(let symbol of Object.keys(watchlistStockData)){
-                if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
-                    watchlistStockData[symbol].graph=(
+                if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1]){
+                    if(watchlistStockData[symbol].data[watchlistStockData[symbol].data.length-1].price > watchlistStockData[symbol].data[0].price){
+                        watchlistStockData[symbol].graph=(
+                            // <ResponsiveContainer className = "responsive-container">
+                                <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
+                                    <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
+                                    <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                    <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
+                                    {/* <Tooltip/> */}
+                                </LineChart>
+                            //  </ResponsiveContainer>
+
+                        )
+                    } else {
+                        watchlistStockData[symbol].graph=(
+                            // <ResponsiveContainer className = "responsive-container">
+                                <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
+                                    <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
+                                    <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
+                                    <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
+                                    {/* <Tooltip/> */}
+                                </LineChart>
+                            //  </ResponsiveContainer>
+
+                        )
+                    }
+                }
+
+
+            }
+        }
+    },[watchlistStockData])
+
+
+    useEffect(()=>{
+        if(holdingStockData){
+          console.log("WATCHLIST STOCK DATA",Object.keys(holdingStockData))
+          let newChanges = {}
+          let newPrices = {}
+          for(let symbol of Object.keys(holdingStockData)){
+            newChanges[symbol] = holdingStockData[symbol].change
+            newPrices[symbol] = holdingStockData[symbol].price
+          }
+          setHoldingChanges(newChanges)
+          setHoldingPrices(newPrices)
+
+            for(let symbol of Object.keys(holdingStockData)){
+                if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1]){
+                if(holdingStockData[symbol].data[holdingStockData[symbol].data.length-1].price > holdingStockData[symbol].data[0].price){
+                    holdingStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={holdingStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(0, 200, 5)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[holdingStockData[symbol].min,holdingStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
 
                     )
                 } else {
-                    watchlistStockData[symbol].graph=(
+                    holdingStockData[symbol].graph=(
                         // <ResponsiveContainer className = "responsive-container">
-                            <LineChart width = {90} height = {45} data={watchlistStockData[symbol].data}>
+                            <LineChart width = {90} height = {45} data={holdingStockData[symbol].data}>
                                 <Line dot = {false} type="monotone" dataKey="price" stroke = "rgb(255, 80, 0)"/>
                                 <XAxis dataKey="dateTime" angle={0} textAnchor="end" tick={{ fontSize: 13 }} />
-                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[watchlistStockData[symbol].min,watchlistStockData[symbol].max]} allowDecimals={false}/>
+                                <YAxis tick = {false} axisLine={false} tickline = {false} width = {10} domain={[holdingStockData[symbol].min,holdingStockData[symbol].max]} allowDecimals={false}/>
                                 {/* <Tooltip/> */}
                             </LineChart>
                         //  </ResponsiveContainer>
@@ -104,9 +160,17 @@ const Dashboard = () => {
                     )
                 }
 
-            }
+            }}
         }
-    },[watchlistStockData])
+    },[holdingStockData])
+
+    if(portfolioData){
+        if(portfolioData[0]){
+            let data = portfolioData.map(data=> data.dateTime)
+        console.log(data)
+        }
+
+    }
 
 
     useEffect(()=>{
@@ -115,14 +179,20 @@ const Dashboard = () => {
             let total = 0
             user.holdings.forEach(holding=>{
                 finnhubClient.quote(holding.symbol, (error, data, response) => {
+                    if(data){
+                        if(data.c){
+                            total += (Number(data.c) * Number(holding.shares))
+                        setPortfolioValue(portfolioValue+total)
+                        }
+                    }
 
-                    total += (Number(data.c) * Number(holding.shares))
-                    setPortfolioValue(portfolioValue+total)
+
                 });
             })
             finnhubClient.marketNews("general", {}, (error, data, response) => {
                 const currentTime = new Date().getTime()/1000
-                data.sort((a,b)=>a.datetime > b.datetime)
+                if(data){
+                    data.sort((a,b)=>a.datetime > b.datetime)
                 console.log("DATA: ",data)
                 data.forEach(article => {
                     let seconds = currentTime - article.datetime
@@ -145,6 +215,8 @@ const Dashboard = () => {
                     }
                 })
                 setNews(data)
+                }
+
               });
               let allWatchListStocks = []
               let allWatchListStockSymbols = []
@@ -157,6 +229,7 @@ const Dashboard = () => {
 
               }
               dispatch(getWatchlistGraphData(allWatchListStocks,apiKeys))
+              dispatch(getHoldingGraphData(user.holdings,apiKeys))
 
               let start = new Date()
               let end = new Date()
@@ -194,6 +267,10 @@ const Dashboard = () => {
     },[portfolioData])
 
 
+    const handleWatchlistStockDelete = (stock,watchlist) => {
+        console.log("HANDLER: ",watchlist,stock)
+        dispatch(deleteWatchlistStock(watchlist.id,stock.symbol,user.id))
+    }
 
     const toggleOpenLists = (watchlist) => {
         let newList = []
@@ -405,7 +482,10 @@ const addWatchlist = (e) => {
     if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
     if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
     if(filteredList.length)errors.push("A watchlist with that name already exists")
-    if(!errors.length)dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    if(!errors.length){
+        toggleWatchlistInput(false)
+        dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+    }
     else setErrors(errors)
 }
 
@@ -475,7 +555,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
         console.log("WINNERS DATA: ",moversData.gainersData)
     }
 
-    console.log("CHANGES: ",changes)
+    console.log("PORTFOLIO DATA: ",portfolioData)
     return (
         <div id = "dashboard-outer-container">
             <div id = "dashboard-left-container">
@@ -509,8 +589,6 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                         <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
                                     </div>
                                     <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
-
-
                                 </div>
                                 <div id = "dashboard-buying-power-container-right">
                                     <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
@@ -584,21 +662,21 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
             </div>
             <div id = "watchlist-outer-container">
-                    {/* <div id = "stocks-list-outer-title">Your Stocks</div>
-                    {user && user.holdings.map(holding => {
+                    <div id = "stocks-list-outer-title">Your Stocks</div>
+                    {user && user.holdings.map(stock => {
                         return (
-                            <NavLink key = {holding.id} className = "holding-stock-navlink" to = {`/stocks/${holding.symbol}`}>
-                            <div className = "holding-stock-container">
-                                <div className = "holding-stock-symbol">{stock.symbol}</div>
-                                <div className = "holding-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
-                                <div className = "holding-stock-price-container">
-                                    <div className = "holding-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
-                                    <div className = "holding-stock-change" style = {(watchlistStockData && watchlistStockData[stock.symbol]) ? (watchlistStockData[stock.symbol].change < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}):{}}>{watchlistStockData && watchlistStockData[stock.symbol].change.toFixed(2)}%</div>
+                            <NavLink key = {stock.symbol} className = "holding-stock-navlink" to = {`/stocks/${stock.symbol}`}>
+                            <div className = "watchlist-stock-outer-container">
+                                <div className = "watchlist-stock-symbol" style = {{marginLeft:"25px"}}>{stock.symbol}</div>
+                                <div className = "watchlist-stock-graph">{(holdingStockData && holdingStockData[stock.symbol]) ? holdingStockData && holdingStockData[stock.symbol].graph : "-"}</div>
+                                <div className = "watchlist-stock-price-container">
+                                <div className = "watchlist-stock-price">${(holdingPrices[stock.symbol]) ? holdingPrices[stock.symbol].toFixed(2) : "-"}</div>
+                                <div className = "watchlist-stock-change" style = {holdingChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{(holdingChanges[stock.symbol] && !isNaN(Number(holdingChanges[stock.symbol]))) ? `${holdingChanges[stock.symbol].toFixed(2)}%` : "" }</div>
                                 </div>
                             </div>
                             </NavLink>
                         )
-                    })} */}
+                    })}
                     <div id = "watchlist-outer-title">
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
@@ -630,22 +708,24 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
 
                                     </div>
-                                <div className = "watchlist-stocks">
                                     {watchlist.stocks.map(stock=>{
                                         return (
-                                            <NavLink key = {stock.id} className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
-                                            <div  className = "watchlist-stock-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
+                                            <div key = {stock.symbol} className = "watchlist-stock-outer-container" style = {openLists.includes(watchlist.id) ? {display:"flex"} : {display:"none"}}>
+                                            <div className = "watchlist-stock-delete">{<MdDeleteOutline onClick = {()=>handleWatchlistStockDelete(stock,watchlist)}/>}</div>
+                                            <div className = "watchlist-stock-inner-container">
+                                            <NavLink  className = "watchlist-stock-navlink" to = {`/stocks/${stock.symbol}`}>
                                                 <div className = "watchlist-stock-symbol">{stock.symbol}</div>
                                                 <div className = "watchlist-stock-graph">{(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData && watchlistStockData[stock.symbol].graph : "-"}</div>
                                                 <div className = "watchlist-stock-price-container">
-                                                    <div className = "watchlist-stock-price">${(watchlistStockData && watchlistStockData[stock.symbol]) ? watchlistStockData[stock.symbol].price : "-"}</div>
-                                                    <div className = "watchlist-stock-change" style = {changes[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{changes[stock.symbol] && changes[stock.symbol].toFixed(2)}%</div>
+                                                    <div className = "watchlist-stock-price">${watchlistPrices[stock.symbol] ? watchlistPrices[stock.symbol].toFixed(2) : "-"}</div>
+                                                    <div className = "watchlist-stock-change" style = {watchlistChanges[stock.symbol] < 0 ? {color:"rgb(255, 80, 0)"}:{color:"rgb(0, 200, 5)"}}>{watchlistChanges[stock.symbol] && watchlistChanges[stock.symbol].toFixed(2)}%</div>
                                                 </div>
-                                            </div>
                                             </NavLink>
+                                            </div>
+                                            </div>
                                         )
                                     })}
-                                </div>
+
                             </div>
                         )})}
                 <FormModal performance = {performance}/>

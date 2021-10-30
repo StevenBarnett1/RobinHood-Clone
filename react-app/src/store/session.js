@@ -237,17 +237,19 @@ export const sellHolding = (symbol,shares,userId) => async dispatch => {
 // }
 // const initialState = {}
 
-// export default function holdingsReducer(state = initialState, action) {
-//     let newState = {...state}
-//     switch (action.type) {
-//       case SET_HOLDINGS:
-//           newState = action.payload
-//           return newState
-//       default:
-//         return newState;
-//     }
-//   }
 
+export const deleteWatchlistStock = (id,symbol,user_id) => async dispatch => {
+  const response = await fetch(`/api/watchlists/${id}/stocks/${symbol}`,{
+    method:"DELETE",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({user_id})
+  })
+  const data = await response.json()
+  dispatch(setUser(data))
+
+}
 
 
 

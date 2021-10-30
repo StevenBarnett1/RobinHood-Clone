@@ -58,34 +58,55 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,tokens) =
     const data = await response.json()
     console.log("FINNHUB PRICE DATA: ",data.dp)
 
-    for(let j = 0; j<data.c.length;j++){
-      const newObject = {}
+    if(data.c){
+      for(let j = 0; j<data.c.length;j++){
+        const newObject = {}
 
-      if(i === 0){
-        newObject.unixTime = data.t[j]
-        newObject.dateTime = new Date(data.t[j] * 1000)
-        newObject.price = holdings[i].shares*data.c[j]
-        if(resolution === "D"){
-          newObject.dateTime.setDate(newObject.dateTime.getDate()+1)
-        }
+        if(i === 0){
+          newObject.unixTime = data.t[j]
+          newObject.dateTime = new Date(data.t[j] * 1000)
+          newObject.price = holdings[i].shares*data.c[j]
+          if(resolution === "D"){
+            newObject.dateTime.setDate(newObject.dateTime.getDate()+1)
+          }
 
 
-        if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D" || resolution === "M"){
-          prices.push(newObject)
-        }
+          if((newObject.dateTime.getHours() > 6 && newObject.dateTime.getHours() < 13) || (newObject.dateTime.getMinutes() === 30 && newObject.dateTime.getHours() === 6) || resolution === "D" || resolution === "M"){
+            prices.push(newObject)
+          }
 
-      } else {
-        for(let k = 0 ; k < prices.length;k++){
-          if(prices[k].unixTime === data.t[j]){
-            prices[k].price += holdings[i].shares*data.c[j]
+        } else {
+          for(let k = 0 ; k < prices.length;k++){
+            if(prices[k].unixTime === data.t[j]){
+              prices[k].price += holdings[i].shares*data.c[j]
+            }
           }
         }
-      }
 
+      }
     }
 
 
+
   }
+  // // while(prices[prices.length-1].dateTime.getHours() < 13){
+  // if(resolution === "5"){
+  //   if(prices.length){
+  //     if(prices[prices.length-1].dateTime.getHours() < 13){
+  //       let newObj = {}
+  //       let i = 0
+  //         while(i < 50){
+  //         let lastDate = prices[prices.length-1].unixTime
+  //         let newDate = lastDate + 300
+  //         newObj.unixTime = newDate
+  //         newObj.dateTime = new Date(newObj.unixTime * 1000)
+  //         i++
+  //         prices.push(newObj)
+  //       }
+  //       console.log("DATES HERE: ",prices.map(price => price.dateTime))
+  //     }
+  //   }
+  // }
   let newData = []
   for(let i =0; i<prices.length;i++){
 

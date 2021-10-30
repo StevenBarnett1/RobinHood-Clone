@@ -23,6 +23,11 @@
     justify-content: space-between;
 }
 
+/* #stock-purchase-middle{
+    position:relative;
+
+} */
+
 .stockpage-graph-timeframe-button-good, .stockpage-graph-timeframe-button-bad{
     border:none;
     background-color: transparent;
@@ -103,6 +108,7 @@
     border:1px solid var(--border-color);
     border-radius:5px;
     background-color: var(--watchlist-background-color);
+    position:relative;
     /* transition: height 0.1s linear */
 }
 

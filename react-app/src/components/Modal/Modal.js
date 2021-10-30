@@ -14,6 +14,7 @@ function FormModal(props) {
   const [createWatchlistInputValue,setCreateWatchlistInputValue] = useState("")
   const [checkedBoxes,setCheckedBoxes] = useState([])
   const [errors,setErrors] = useState([])
+  const [watchlistsAlreadyContainingStock,setWatchlistsAlreadyContainingStock] = useState([])
   const user = useSelector(state=>state.session.user)
 
   const modalType= useSelector((state)=>state.session.modalType)
@@ -22,6 +23,18 @@ function FormModal(props) {
   const theme = useSelector(state=> state.session.theme)
   let userForm
   console.log("PROPS: ",props,)
+
+  useEffect(()=>{
+    if(props.symbol && user){
+      let newList = user.watchlists.map(watchlist=>{
+        if(watchlist.stocks.filter(stock => stock.symbol === props.symbol).length){
+          return watchlist.id
+        } else return null
+      })
+      newList = newList.filter(item => item !== null)
+      setWatchlistsAlreadyContainingStock(newList)
+    }
+  },[props])
 
   const handleEditSubmit = (e) => {
     e.preventDefault()
@@ -42,15 +55,30 @@ function FormModal(props) {
 
   }
 
+  useEffect(()=>{setErrors([])},[createWatchlistInputValue])
+
   useEffect(()=>{
     if(modalInfo)setWatchlistInputValue(modalInfo.name)
   },[modalInfo])
 
   const handleCreateSubmit = ()=>{
-    if(createWatchlistInputValue){
+    if(!createWatchlistInputValue){
+      setErrors(['Field cannot be empty'])
+      return
+    }
+    if(createWatchlistInputValue.length > 254){
+      errors.push(["Watchlist name must be less than 256 characters"])
+      return
+    }
+    let filteredList = user.watchlists.filter(watchlist=>watchlist.name===createWatchlistInputValue)
+    if(filteredList.length){
+      setErrors(["Watchlist name already exists"])
+      return
+    }
+
       dispatch(addWatchlistThunk(createWatchlistInputValue,user.id))
       setAddWatchlist(false)
-    }
+
   }
 
   const changeCheckedBoxes = (watchlist) => {
@@ -85,7 +113,12 @@ function FormModal(props) {
         }
         if(!found && checkedBoxes.includes(watchlist.id))actualList.push(watchlist.id)
       }
-      if(actualList.length)dispatch(addToWatchlist(actualList,props.symbol))
+      if(actualList.length){
+        console.log("ACTUAL LIST: ",actualList)
+        console.log("PROPS SYMBOL",props.symbol)
+        dispatch(addToWatchlist(actualList,props.symbol))
+
+      }
       dispatch(toggleModalView(false))
       setCheckedBoxes([])
     }
@@ -114,18 +147,22 @@ function FormModal(props) {
   } else if (modalView && modalType === "add-to-watchlist"){
     userForm = (
       <div id = "add-to-watchlist-outer" style = {theme === "dark" ? {color:"white",backgroundColor:"rgb(30, 33, 36)"}: {}}>
+
           <div id = "add-to-watchlist-upper">
               <div id = "add-to-watchlist-title">Add {props.symbol && props.symbol.toUpperCase()} to Your Lists</div>
               <div id = "exit-add-to-watchlist" onClick = {()=>handleExitAddToWatchlist()}> <ImCross/> </div>
             </div>
             <div id ='add-to-watchlist-inner'>
+            {errors.map((error, ind) => (
+                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+              ))}
         {addWatchlist ? (
 
             <div id = "create-watchlist-input-container">
             <input placeholder = "List Name" id = "create-watchlist-inside-add-input" type = "text" value = {createWatchlistInputValue} onChange = {(e)=>setCreateWatchlistInputValue(e.target.value)} style = {theme === "light" ? {backgroundColor:"rgb(247, 247, 247)"} : {color:"white",backgroundColor:"rgb(48, 48, 48)"}}></input>
             <div id = "create-watchlist-add-buttons-container">
-              <button id = {props.performance ? "add-create-watchlist-cancel-button-good" : "add-create-watchlist-cancel-button-bad"} onClick = {()=>setAddWatchlist(false)} style = {theme === "light" ? {color:"black"} : {color:"white"}}>Cancel</button>
-              <button id = {props.performance ? "add-create-watchlist-submit-button-good" : "add-create-watchlist-submit-button-bad"} onClick = {()=>handleCreateSubmit()} style = {theme === "light" ? {color:"black"} : {color:"white"}}>Submit</button>
+              <button id = {props.performance ? "add-create-watchlist-cancel-button-good" : "add-create-watchlist-cancel-button-bad"} onClick = {()=>setAddWatchlist(false)} style = {theme === "light" ? {color:"white"} : {color:"black"}}>Cancel</button>
+              <button id = {props.performance ? "add-create-watchlist-submit-button-good" : "add-create-watchlist-submit-button-bad"} onClick = {()=>handleCreateSubmit()} style = {theme === "light" ? {color:"white"} : {color:"black"}}>Submit</button>
             </div>
           </div>
         ) : (
@@ -145,10 +182,12 @@ function FormModal(props) {
             <div className = "watchlist-data-container">
               <div className ="watchlist-list-name">{watchlist.name}</div>
               <div className = "watchlist-stock-length" style = {theme === "dark" ? {color:"white"}: {}}>{watchlist.stocks.length} items</div>
+              {watchlistsAlreadyContainingStock.includes(watchlist.id) ? (<div style = {{color:"red",fontSize:"13px"}}>Already contains {props.symbol}</div>) : null}
             </div>
             </div>)
         })}
-        <button onClick = {()=>handleAddToWatchlist()} id = {props.performance ? "add-to-watchlist-save-good" : "add-to-watchlist-save-bad"} style = {theme === "light" ? {color:"white"} : {color:"black"}}>Save Changes</button>
+        {!addWatchlist ? (<button onClick = {()=>handleAddToWatchlist()} id = {props.performance ? "add-to-watchlist-save-good" : "add-to-watchlist-save-bad"} style = {theme === "light" ? {color:"white"} : {color:"black"}}>Save Changes</button>) : null}
+
         </div>
       </div>
     )
