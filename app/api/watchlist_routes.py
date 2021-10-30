@@ -30,6 +30,7 @@ def add_watchlist():
 def delete_watchlist(id):
     watchlist = Watchlist.query.get(id)
     user = User.query.get(watchlist.user_id)
+    print(f"\n\n\n\n\n {user} \n\n\n\n\n {watchlist} \n\n\n\n\n")
     db.session.delete(watchlist)
     db.session.commit()
     user = User.query.get(watchlist.user_id)
@@ -57,7 +58,13 @@ def add_to_watchlist(id):
     symbol = request.json['symbol']
     watchlist = Watchlist.query.get(id)
     stock = Stock.query.filter_by(symbol=symbol).first()
+    if(stock is None):
+        stock = Stock(symbol=symbol,name=symbol)
+        db.session.add(stock)
+        db.session.commit()
+    print(f"\n\n\n\n\n\n {watchlist} \n\n\n\n ")
     watchlist.watchlist_stocks.append(stock)
+    print(f"\n\n\n\n\n\n {watchlist} \n\n\n\n {watchlist.watchlist_stocks} \n\n\n\n {stock} \n\n\n\n\n")
     db.session.commit()
     user = User.query.get(watchlist.user_id)
     return user.to_dict()

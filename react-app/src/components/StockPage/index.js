@@ -85,7 +85,8 @@ const Stockpage = () => {
     useEffect(()=>{
         if(stockData && stockData.symbol){
             console.log("STOCDNFGIBIERBNo: ",stockData)
-            setStockValue(stockData.price)
+            console.log("STOCK DATA BEFORE PRICE: ",stockData)
+            if(!isNaN(Number(stockData.price)))setStockValue(stockData.price)
             setGraphData(stockData.data)
             setYmin(stockData.min)
             setYmax(stockData.max)
@@ -435,11 +436,12 @@ const Stockpage = () => {
         }
         console.log("STOCK DATA: ",stockData)
         console.log("PERFORMANCE IN STOCK PAGE: ",performance)
+        console.log()
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
                 <div id = "stockpage-upper-container">
-                    <div id = "stockpage-stock-value"><h1>$<Odometer value={(!isNaN(Number(stockValueDynamic)))? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
+                    <div id = "stockpage-stock-value"><h1>$<Odometer value={(!isNaN(Number(stockValueDynamic)) && stockValueDynamic)? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
                     <div id = "stockpage-graph-container">
                         <div id = "stockpage-graph">
@@ -596,7 +598,7 @@ const Stockpage = () => {
                         <button id = {performance ? "review-order-button-good":"review-order-button-bad"} onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
                     <div id = {performance ? "stock-purchase-lower-good" : "stock-purchase-lower-bad"}>
-                        {(buySell === "buy" && user) ? `$${user.buying_power.toFixed(2)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${currentShares} share available`: `${currentShares} shares available`}` }`}
+                        {(buySell === "buy" && user) ? `$${user.buying_power.toFixed(2)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${currentShares.toFixed(2)} share available`: `${currentShares.toFixed(2)} shares available`}` }`}
                     </div>
                 </div>
                 <div id = "add-to-list-container">

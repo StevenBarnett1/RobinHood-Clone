@@ -15,6 +15,10 @@ def post_holding():
     symbol = request.json['symbol']
     if(form.validate_on_submit and symbol is not None):
         stock = Stock.query.filter_by(symbol=symbol).first()
+        if(stock is None):
+            stock = Stock(symbol=symbol,name=symbol)
+            db.session.add(stock)
+            db.session.commit()
         holding = Holding(
             stock_id = stock.id,
             user_id = form.data['user_id'],
