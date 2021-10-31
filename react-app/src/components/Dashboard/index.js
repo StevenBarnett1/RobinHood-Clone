@@ -480,8 +480,12 @@ const addWatchlist = (e) => {
     let errors = []
     let filteredList = user.watchlists.filter(watchlist=>watchlist.name===watchlistInputValue)
     if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
-    if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
-    if(filteredList.length)errors.push("A watchlist with that name already exists")
+    if(watchlistInputValue.length > 15)errors.push("Watchlist name more than 15 characters")
+    if(filteredList.length)errors.push("Watchlist name already exists")
+    if(user.watchlists.length >=10){
+        setErrors(["You cannot have more than 10 watchlists"])
+        return
+    }
     if(!errors.length){
         toggleWatchlistInput(false)
         dispatch(addWatchlistThunk(watchlistInputValue,user.id))
@@ -681,10 +685,11 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
                     </div>
-                    {errors.map((error, ind) => (
-                <div style = {{color:"red"}}key={ind}>{error}</div>
-              ))}
+
                     <form id = "add-watchlist-form" onSubmit = {(e)=>addWatchlist(e)} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                    {errors.map((error, ind) => (
+                        <div className = "errors" style = {{color:"red",position:"absolute",top:0,width:"100%"}}key={ind}>{error}</div>
+                    ))}
                         <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)} style = {theme === "dark" ? {color:"white"}:{}}/>
                         <div id = "watchlist-add-buttons-container">
                             <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>

@@ -74,8 +74,7 @@ const Stockpage = () => {
 
     useEffect(()=>{
         setErrors([])
-        // let numbers = [0,1,2,3,4,5,6,7,8,9]
-        // if(isNaN(Number(investValue))set
+        
     },[investValue])
     useEffect(()=>{
         document.title = `${params.symbol}`
@@ -386,28 +385,28 @@ const Stockpage = () => {
         if(investValue && investType === "shares" && type === "buy"){
             if(investValue*stockData.price > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
-                dispatch(addHolding(stockData.symbol,investValue,user.id))
+                dispatch(addHolding(stockData.symbol,Number(Number(investValue).toFixed(4)),user.id))
                 dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
                 setInvestValue(0)
             } else setErrors(errors)
         } else if (investValue && investType === "dollars" && type === "buy"){
             if(investValue > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
-                dispatch(addHolding(stockData.symbol,investValue/stockData.price,user.id))
+                dispatch(addHolding(stockData.symbol,Number(((Number(investValue/stockData.price)).toFixed(4))),user.id))
                 dispatch(addBuyingPower(user.id,-investValue))
                 setInvestValue(0)
             } else setErrors(errors)
 
         } else if (investValue && investType === "shares" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
-                dispatch(sellHolding(stockData.symbol,investValue,user.id))
+                dispatch(sellHolding(stockData.symbol,Number(Number(investValue).toFixed(4)),user.id))
                 dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
                 setInvestValue(0)
             } else setErrors(["Not enough shares"])
 
         } else if (investValue && investType === "dollars" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
-                dispatch(sellHolding(stockData.symbol,investValue/stockData.price,user.id))
+                dispatch(sellHolding(stockData.symbol,Number(((Number(investValue/stockData.price)).toFixed(4))),user.id))
                 dispatch(addBuyingPower(user.id,investValue))
                 setInvestValue(0)
             } else setErrors(["Not enough shares"])
@@ -565,13 +564,13 @@ const Stockpage = () => {
                     </div>
                     <div id = "stock-purchase-middle">
                     {errors.map((error, ind) => (
-                <div className = "errors" style = {{color:"red",position:"absolute",top:"44px",left:"82px"}}key={ind}>{error}</div>
+                <div className = "errors" style = {{color:"red",position:"absolute",top:"49px",width:"100%"}}key={ind}>{error}</div>
               ))}
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div id = "invest-in-label">{buySell === "buy" ? "Invest In" : "Sell"}</div>
-                                <select id = "invest-in-value" value = {investType} onChange = {e=>setInvestType(e.target.value)}>
-                                    <option value = "shares" selected>Shares</option>
+                                <select id = "invest-in-value" defaultValue = "shares" value = {investType} onChange = {e=>setInvestType(e.target.value)}>
+                                    <option value = "shares" >Shares</option>
                                     <option value = "dollars">Dollars</option>
                                 </select>
                             </div>

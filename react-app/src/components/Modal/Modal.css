@@ -28,6 +28,8 @@
 #edit-watchlist-input{
     width:330px;
     height:35px;
+    /* margin-right:auto;
+    margin-left:auto; */
     margin:auto;
     box-sizing: border-box;
     border-radius:5px;
@@ -90,6 +92,7 @@
 #add-to-watchlist-inner{
     display:flex;
     flex-direction:column;
+    overflow-y:scroll;
 
 }
 
@@ -97,6 +100,7 @@
     width:408px;
     height:100%;
     box-sizing: border-box;
+    overflow-y:scroll;
 }
 
 .add-to-watchlist-individual-dark{
@@ -114,6 +118,7 @@
     align-items: center;
     height:65px;
     cursor:pointer;
+    overflow-y:scroll;
 
 }
 

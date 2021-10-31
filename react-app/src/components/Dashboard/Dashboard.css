@@ -301,7 +301,7 @@ width:55px;
     flex-direction: row;
     align-items: center;
     width:100%;
-    /* height:100%; */
+    height:100%;
 }
 .watchlist-stock-delete{
     cursor:pointer;
@@ -576,7 +576,8 @@ width:55px;
 #add-watchlist-form{
     display:flex;
     flex-direction: column;
-    margin-top:15px;
+    padding-top:15px;
+    position: relative;
 }
 
 #add-watchlist-form > input {
