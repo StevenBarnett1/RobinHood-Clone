@@ -464,7 +464,8 @@ const chartHoverFunction = (e) => {
 
 const deposit = (value) => {
     setDepositClick(value)
-    if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
+    if(!value)dispatch(addBuyingPower(user.id,Number(Number(buyingPowerValue).toFixed(4))))
+    editBuyingPowerValue("")
 }
 
 const handleDotsClick = () => {
@@ -710,7 +711,6 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                             <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
                                             <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>
-
 
                                     </div>
                                     {watchlist.stocks.map(stock=>{

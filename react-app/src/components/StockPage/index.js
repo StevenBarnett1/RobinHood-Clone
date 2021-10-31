@@ -74,7 +74,6 @@ const Stockpage = () => {
 
     useEffect(()=>{
         setErrors([])
-        
     },[investValue])
     useEffect(()=>{
         document.title = `${params.symbol}`
@@ -140,6 +139,10 @@ const Stockpage = () => {
         return null
     }
 
+    useEffect(()=>{
+        setErrors([])
+        setInvestValue("")
+    },[investType,buySell])
     useEffect(()=>{
         if(user && stockData){
             let holding = user.holdings.filter(holding => holding.symbol === stockData.symbol)
@@ -324,7 +327,7 @@ const Stockpage = () => {
         }
         else if(num >= 1000000){
             return `${(num / 1000000).toFixed(3)}M`
-        } else return num
+        } else return Number(Number(num).toFixed(4))
     }
 
     useEffect(()=>{
@@ -364,50 +367,66 @@ const Stockpage = () => {
     console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
         let errors = []
-        if(!investValue && type === "buy"){
-            setErrors(["You must enter an amount to purchase"])
-            return
-        }
-        if(isNaN(Number(investValue))){
-            errors.push("Please enter a number")
+        if(isNaN(Number(investValue)) || investValue.toString().includes("-")){
+            errors.push("Letters are not allowed")
             console.log("ERRRRRRRRRRORS : ",errors)
             setErrors(errors)
             return
         }
+        if(!Number(investValue) && type === "buy"){
+            setErrors(["You must enter an amount to purchase"])
+            return
+        }
+        setErrors([])
+        let num = Number(investValue).toFixed(5)
+        if(num[num.length-1] !== "0"){
+            num = Number(num)
+            if(investType === "shares"){
+                setErrors(['Less than one ten-thousandth of a share'])
+            }
+            else if (investType === "dollars"){
+                setErrors(["Less than one one-hundredth of a penny"])
+            }
+
+            return
+        }
+
         if(investValue >= 1000000000000000000000000000000000000000){
             setErrors(['You must enter a smaller number'])
+            return
         }
-        console.log("INVEST VALUE: ",investValue)
-        if(!investValue && type === "sell"){
+        console.log("INVEST VALUE: ",investValue, type)
+        if(!Number(investValue) && type === "sell"){
             setErrors(["You must enter an amount to sell"])
             return
         }
         if(investValue && investType === "shares" && type === "buy"){
+            console.log("HEREEEEEEEEEEEEEE: ",Number(-Number(stockData.price*investValue).toFixed(4)))
             if(investValue*stockData.price > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
                 dispatch(addHolding(stockData.symbol,Number(Number(investValue).toFixed(4)),user.id))
-                dispatch(addBuyingPower(user.id,-(stockData.price*investValue)))
+                dispatch(addBuyingPower(user.id,Number(-Number(stockData.price*investValue).toFixed(4))))
                 setInvestValue(0)
             } else setErrors(errors)
         } else if (investValue && investType === "dollars" && type === "buy"){
             if(investValue > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
-                dispatch(addHolding(stockData.symbol,Number(((Number(investValue/stockData.price)).toFixed(4))),user.id))
-                dispatch(addBuyingPower(user.id,-investValue))
+                dispatch(addHolding(stockData.symbol,Number((Number(investValue/stockData.price).toFixed(4))),user.id))
+                dispatch(addBuyingPower(user.id,Number(-Number(investValue).toFixed(4))))
                 setInvestValue(0)
             } else setErrors(errors)
 
         } else if (investValue && investType === "shares" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= investValue){
                 dispatch(sellHolding(stockData.symbol,Number(Number(investValue).toFixed(4)),user.id))
-                dispatch(addBuyingPower(user.id,(stockData.price*investValue)))
+                dispatch(addBuyingPower(user.id,Number(Number(stockData.price*investValue).toFixed(4))))
                 setInvestValue(0)
             } else setErrors(["Not enough shares"])
 
         } else if (investValue && investType === "dollars" && type === "sell"){
             if(user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase()).length && user.holdings.filter(holding=>holding.symbol === stockData.symbol.toUpperCase())[0].shares >= (investValue/stockData.price)){
-                dispatch(sellHolding(stockData.symbol,Number(((Number(investValue/stockData.price)).toFixed(4))),user.id))
-                dispatch(addBuyingPower(user.id,investValue))
+                dispatch(sellHolding(stockData.symbol,Number((Number(investValue/stockData.price).toFixed(4))),user.id))
+                dispatch(addBuyingPower(user.id,Number(Number(investValue).toFixed(4))))
                 setInvestValue(0)
             } else setErrors(["Not enough shares"])
 
@@ -576,7 +595,7 @@ const Stockpage = () => {
                             </div>
                             <div id = "amount-container" style = {investType === "shares" ? {borderBottom:"none"} : {marginBottom:"15px", paddingBottom:"7px", borderBottom:"1px solid var(--border-color)"}}>
                                 <div id = "amount-label">{investType === "shares" ? 'Shares' : 'Amount'}</div>
-                                <input id = "amount-value" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
+                                <input id = "amount-value" autoFill = "off" autoComplete = "off" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
                                 {investType === "shares" ? (
                                     <div id = "market-price-container">
@@ -588,16 +607,16 @@ const Stockpage = () => {
                             <div id = "est-quantity-container">
                                 <div id = "est-quantity-label">{investType === "shares" ? 'Estimated Cost' : 'Est. Shares' }</div>
                                 {investType === "shares" ? (
-                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? `$${getAbbreviatedNumber(Number((stockData.price * investValue).toFixed(2)))}` : "-"}</div>
+                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? `$${getAbbreviatedNumber(Number((stockData.price * investValue).toFixed(4)))}` : "-"}</div>
                                 ) : (
-                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? getAbbreviatedNumber(Number((investValue / stockData.price).toFixed(2))) : "-"}</div>
+                                    <div id = "est-quantity-value">{((stockData && stockData.price) && !isNaN(Number(investValue))) ? getAbbreviatedNumber(Number((investValue / stockData.price).toFixed(4))) : "-"}</div>
                                 )}
                             </div>
                         </div>
                         <button id = {performance ? "review-order-button-good":"review-order-button-bad"} onClick = {()=>submitOrder(buySell)} >{buySell === "buy" ? "Purchase Stock" : "Sell Stock"}</button>
                     </div>
                     <div id = {performance ? "stock-purchase-lower-good" : "stock-purchase-lower-bad"}>
-                        {(buySell === "buy" && user) ? `$${user.buying_power.toFixed(2)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${currentShares.toFixed(2)} share available`: `${currentShares.toFixed(2)} shares available`}` }`}
+                        {(buySell === "buy" && user) ? `$${getAbbreviatedNumber(user.buying_power)} buying power available`: `${currentShares === 0 ? `You have no shares available to sell` : `${currentShares === 1 ? `${getAbbreviatedNumber(currentShares)} share available`: `${getAbbreviatedNumber(currentShares)} shares available`}` }`}
                     </div>
                 </div>
                 <div id = "add-to-list-container">
