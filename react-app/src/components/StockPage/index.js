@@ -378,6 +378,10 @@ const Stockpage = () => {
             return
         }
         setErrors([])
+        if(investValue >= 100000000000000000000){
+            setErrors(['You must enter a smaller number'])
+            return
+        }
         let num = Number(investValue).toFixed(5)
         if(num[num.length-1] !== "0"){
             num = Number(num)
@@ -391,10 +395,7 @@ const Stockpage = () => {
             return
         }
 
-        if(investValue >= 1000000000000000000000000000000000000000){
-            setErrors(['You must enter a smaller number'])
-            return
-        }
+
         console.log("INVEST VALUE: ",investValue, type)
         if(!Number(investValue) && type === "sell"){
             setErrors(["You must enter an amount to sell"])
@@ -557,6 +558,7 @@ const Stockpage = () => {
                     <div id = "related-stocks-container" style = {(stockData && stockData.peers) ? (stockData.peers.length ? {} : {display:"none"}) : {}}>
                         <h2 id = "related-stocks-title">People Also Own</h2>
                         <div id = "related-stocks-subtitle">This list is based on the portfolios of people on Robinhood who own {stockData && stockData.symbol}. It’s not an investment recommendation.</div>
+                        <div id = "related-stocks-inner-container">
                         <div id = "related-stocks-lower-container">
                             {(stockData && stockData.peers) ? stockData.peers.map(peer => (
 
@@ -567,6 +569,7 @@ const Stockpage = () => {
                                         </div>
                                     </NavLink>
                         )): null}
+                        </div>
                         </div>
 
                     </div>

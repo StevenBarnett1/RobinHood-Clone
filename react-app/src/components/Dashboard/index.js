@@ -72,6 +72,46 @@ const Dashboard = () => {
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
 
+    const getAbbreviatedNumber = (num) => {
+        console.log("ABBREVIATED NUMBER: ",num)
+        if(num >= 1000000000000000000000000000000000000000){
+            return "Unk."
+        }
+        if (num >= 1000000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000000).toFixed(2)}U`
+        }
+        if (num >= 1000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000).toFixed(2)}D`
+        }
+        if (num >= 1000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000).toFixed(2)}N`
+        }
+        if (num >= 1000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000).toFixed(2)}O`
+        }
+        if (num >= 1000000000000000000000000){
+            return `${(num / 1000000000000000000000000).toFixed(2)}S`
+        }
+        if (num >= 1000000000000000000000){
+            return `${(num / 1000000000000000000000).toFixed(2)}S`
+        }
+        if (num >= 1000000000000000000){
+            return `${(num / 1000000000000000000).toFixed(2)}P`
+        }
+        if (num >= 1000000000000000){
+            return `${(num / 1000000000000000).toFixed(2)}Q`
+        }
+        if (num >= 1000000000000){
+            return `${(num / 1000000000000).toFixed(2)}T`
+        }
+        else if (num >= 1000000000){
+            return `${(num / 1000000000).toFixed(2)}B`
+        }
+        else if(num >= 1000000){
+            return `${(num / 1000000).toFixed(2)}M`
+        } else return Number(Number(num).toFixed(2))
+    }
+
     useEffect(()=>{setErrors([])},[watchlistInputValue])
     useEffect(()=>{
         if(watchlistStockData){
@@ -456,6 +496,10 @@ const Dashboard = () => {
     return null
 }
 
+useEffect(()=>{
+    setErrors([])
+},[buyingPowerValue])
+
 const chartHoverFunction = (e) => {
     if(e.activePayload){
         setPortfolioValueDynamic(e.activePayload[0].payload.price);
@@ -463,8 +507,34 @@ const chartHoverFunction = (e) => {
 }
 
 const deposit = (value) => {
+    console.log("RJGNPRIGUNBERPIGUNRE: ",!value)
+    if(!value){
+        if(isNaN(Number(buyingPowerValue)) || buyingPowerValue.toString().includes("-")){
+            setErrors(["Letters are not allowed"])
+            return
+        }
+        if(!Number(buyingPowerValue)){
+            setErrors(["You must enter an amount to purchase"])
+            return
+        }
+        console.log("BEAR: ",Number(buyingPowerValue).toFixed(5))
+        let num = Number(buyingPowerValue).toFixed(5)
+        console.log(num[num.length-1])
+
+        if(buyingPowerValue>= 100000000000000000000){
+            setErrors(['You must enter a smaller number'])
+            return
+        }
+        if(num[num.length-1] !== "0"){
+            num = Number(num)
+            setErrors(["Less than one one-hundredth of a penny"])
+            return
+        }
+
+
+        dispatch(addBuyingPower(user.id,Number(Number(buyingPowerValue).toFixed(4))))
+    }
     setDepositClick(value)
-    if(!value)dispatch(addBuyingPower(user.id,Number(Number(buyingPowerValue).toFixed(4))))
     editBuyingPowerValue("")
 }
 
@@ -581,7 +651,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                     <div id = {buyingPower ? "dashboard-buying-power-container-closed" : "dashboard-buying-power-container" } >
                         <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
-                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? getAbbreviatedNumber(user.buying_power) : 0.00.toFixed(2)}</div>
                         </div>
                             <div id = {buyingPower ? "dashboard-buying-power-container-bottom-visible" : "dashboard-buying-power-container-bottom-invisible"}>
                                 <div id = "dashboard-buying-power-container-left">
@@ -591,12 +661,15 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                     </div>
                                     <div id = "buying-power-container">
                                         <div>Buying Power</div>
-                                        <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                                        <div>${(user && user.buying_power) ? getAbbreviatedNumber(user.buying_power) : 0.00.toFixed(2)}</div>
                                     </div>
                                     <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
                                 </div>
                                 <div id = "dashboard-buying-power-container-right">
                                     <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
+                                    {errors.map((error, ind) => (
+                        <div className = "errors" style = {{color:"red",position:"absolute",top:"115px",right:"25px",width:"100%"}}key={ind}>{error}</div>
+                    ))}
                                     <input type = "text" placeholder = "Deposit Amount" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
                                 </div>
                         </div>

@@ -68,11 +68,16 @@
 
 #related-stocks-lower-container{
     display:inline-flex;
-    overflow-x: scroll;
+    /* width:100%; */
 }
 
+#related-stocks-inner-container{
+    overflow-x:scroll;
+}
+
+
 #related-stocks-container{
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
 }
 
 #about-lower-container{

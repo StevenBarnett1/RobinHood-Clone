@@ -46,9 +46,9 @@ const LoginForm = () => {
           <div id = "login-title">Welcome to Robbinghood</div>
         <form id = "login-form" onSubmit={onLogin}>
         <div>
-          {errors.map((error, ind) => (
-            <div key={ind}>{error}</div>
-          ))}
+          {errors[0] && (
+            <div style = {{color:"red",position:"absolute",top:"-20px"}}>{errors[0].split(":")[1]}</div>
+          )}
         </div>
         <div>
           <label htmlFor='email'>Email</label>
