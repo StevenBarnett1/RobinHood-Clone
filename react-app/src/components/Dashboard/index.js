@@ -72,6 +72,46 @@ const Dashboard = () => {
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
 
+    const getAbbreviatedNumber = (num) => {
+        console.log("ABBREVIATED NUMBER: ",num)
+        if(num >= 1000000000000000000000000000000000000000){
+            return "Unk."
+        }
+        if (num >= 1000000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000000).toFixed(2)}U`
+        }
+        if (num >= 1000000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000000).toFixed(2)}D`
+        }
+        if (num >= 1000000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000000).toFixed(2)}N`
+        }
+        if (num >= 1000000000000000000000000000){
+            return `${(num / 1000000000000000000000000000).toFixed(2)}O`
+        }
+        if (num >= 1000000000000000000000000){
+            return `${(num / 1000000000000000000000000).toFixed(2)}S`
+        }
+        if (num >= 1000000000000000000000){
+            return `${(num / 1000000000000000000000).toFixed(2)}S`
+        }
+        if (num >= 1000000000000000000){
+            return `${(num / 1000000000000000000).toFixed(2)}P`
+        }
+        if (num >= 1000000000000000){
+            return `${(num / 1000000000000000).toFixed(2)}Q`
+        }
+        if (num >= 1000000000000){
+            return `${(num / 1000000000000).toFixed(2)}T`
+        }
+        else if (num >= 1000000000){
+            return `${(num / 1000000000).toFixed(2)}B`
+        }
+        else if(num >= 1000000){
+            return `${(num / 1000000).toFixed(2)}M`
+        } else return Number(Number(num).toFixed(2))
+    }
+
     useEffect(()=>{setErrors([])},[watchlistInputValue])
     useEffect(()=>{
         if(watchlistStockData){
@@ -456,6 +496,10 @@ const Dashboard = () => {
     return null
 }
 
+useEffect(()=>{
+    setErrors([])
+},[buyingPowerValue])
+
 const chartHoverFunction = (e) => {
     if(e.activePayload){
         setPortfolioValueDynamic(e.activePayload[0].payload.price);
@@ -463,8 +507,35 @@ const chartHoverFunction = (e) => {
 }
 
 const deposit = (value) => {
+    console.log("RJGNPRIGUNBERPIGUNRE: ",!value)
+    if(!value){
+        if(isNaN(Number(buyingPowerValue)) || buyingPowerValue.toString().includes("-")){
+            setErrors(["Letters are not allowed"])
+            return
+        }
+        if(!Number(buyingPowerValue)){
+            setErrors(["You must enter an amount to purchase"])
+            return
+        }
+        console.log("BEAR: ",Number(buyingPowerValue).toFixed(5))
+        let num = Number(buyingPowerValue).toFixed(5)
+        console.log(num[num.length-1])
+
+        if(buyingPowerValue>= 100000000000000000000){
+            setErrors(['You must enter a smaller number'])
+            return
+        }
+        if(num[num.length-1] !== "0"){
+            num = Number(num)
+            setErrors(["Less than one one-hundredth of a penny"])
+            return
+        }
+
+
+        dispatch(addBuyingPower(user.id,Number(Number(buyingPowerValue).toFixed(4))))
+    }
     setDepositClick(value)
-    if(!value)dispatch(addBuyingPower(user.id,Number(buyingPowerValue)))
+    editBuyingPowerValue("")
 }
 
 const handleDotsClick = () => {
@@ -480,8 +551,12 @@ const addWatchlist = (e) => {
     let errors = []
     let filteredList = user.watchlists.filter(watchlist=>watchlist.name===watchlistInputValue)
     if(!watchlistInputValue)errors.push("Watchlist name cannot be empty")
-    if(watchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
-    if(filteredList.length)errors.push("A watchlist with that name already exists")
+    if(watchlistInputValue.length > 15)errors.push("Watchlist name more than 15 characters")
+    if(filteredList.length)errors.push("Watchlist name already exists")
+    if(user.watchlists.length >=10){
+        setErrors(["You cannot have more than 10 watchlists"])
+        return
+    }
     if(!errors.length){
         toggleWatchlistInput(false)
         dispatch(addWatchlistThunk(watchlistInputValue,user.id))
@@ -576,7 +651,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                     <div id = {buyingPower ? "dashboard-buying-power-container-closed" : "dashboard-buying-power-container" } >
                         <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>
-                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                            <div id = {buyingPower ? "dashboard-buying-power-value-invisible" : "dashboard-buying-power-value-visible" }>${(user && user.buying_power) ? getAbbreviatedNumber(user.buying_power) : 0.00.toFixed(2)}</div>
                         </div>
                             <div id = {buyingPower ? "dashboard-buying-power-container-bottom-visible" : "dashboard-buying-power-container-bottom-invisible"}>
                                 <div id = "dashboard-buying-power-container-left">
@@ -586,12 +661,15 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                     </div>
                                     <div id = "buying-power-container">
                                         <div>Buying Power</div>
-                                        <div>${(user && user.buying_power) ? user.buying_power.toFixed(2) : 0.00.toFixed(2)}</div>
+                                        <div>${(user && user.buying_power) ? getAbbreviatedNumber(user.buying_power) : 0.00.toFixed(2)}</div>
                                     </div>
                                     <button id = {performance ? "buying-power-deposit-button-good" : "buying-power-deposit-button-bad"} onClick = {()=>deposit(!depositClick)} >{depositClick ? "Confirm" : `Deposit Funds`}</button>
                                 </div>
                                 <div id = "dashboard-buying-power-container-right">
                                     <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
+                                    {errors.map((error, ind) => (
+                        <div className = "errors" style = {{color:"red",position:"absolute",top:"115px",right:"25px",width:"100%"}}key={ind}>{error}</div>
+                    ))}
                                     <input type = "text" placeholder = "Deposit Amount" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
                                 </div>
                         </div>
@@ -681,10 +759,11 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                         <div id = "title-text">Lists</div>
                         <button id = "watchlist-plus-button" onClick = {()=>toggleWatchlistInput(!watchlistInput)}><FaPlus/></button>
                     </div>
-                    {errors.map((error, ind) => (
-                <div style = {{color:"red"}}key={ind}>{error}</div>
-              ))}
+
                     <form id = "add-watchlist-form" onSubmit = {(e)=>addWatchlist(e)} style = {watchlistInput ? {display:"block"} : {display:"none"}}>
+                    {errors.map((error, ind) => (
+                        <div className = "errors" style = {{color:"red",position:"absolute",top:0,width:"100%"}}key={ind}>{error}</div>
+                    ))}
                         <input placeholder = 'List Name' value = {watchlistInputValue} type="text" onChange = {(e)=>setWatchlistInputValue(e.target.value)} style = {theme === "dark" ? {color:"white"}:{}}/>
                         <div id = "watchlist-add-buttons-container">
                             <div id = {performance ? "watchlist-add-cancel-good" : "watchlist-add-cancel-bad"}onClick = {()=>toggleWatchlistInput(false)}>Cancel</div>
@@ -705,7 +784,6 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                             <div className = "watchlist-edit" onClick = {()=>editListHandler(watchlist)}><BsGear/> Edit List</div>
                                             <div className = "watchlist-delete" onClick = {()=>deleteListHandler(watchlist)}><BsFillXCircleFill/> Delete List</div>
                                     </div>
-
 
                                     </div>
                                     {watchlist.stocks.map(stock=>{

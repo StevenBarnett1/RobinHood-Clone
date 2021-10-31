@@ -38,6 +38,7 @@ overflow-y: hidden;
 
 #login-form {
     font-size:13px;
+    position:relative;
 
 }
 

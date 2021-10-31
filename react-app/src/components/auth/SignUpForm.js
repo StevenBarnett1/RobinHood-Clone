@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { Redirect } from 'react-router-dom';
 import { signUp } from '../../store/session';
@@ -19,25 +19,29 @@ const SignUpForm = () => {
     e.preventDefault();
     let errors = []
     if(firstName.length>=254){
-      errors.push("First name must be less than 256 characters")
+      setErrors(["First name must be less than 256 characters"])
+      return
     }
     if(lastName.length >=254){
-      errors.push("Last name must be less than 256 characters")
+      setErrors(["Last name must be less than 256 characters"])
+      return
     }
     if(email.length >= 254) {
-      errors.push("Email must be less than 256 characters")
+      setErrors(["Email must be less than 256 characters"])
+      return
     }
     if(password.length >=254){
-      errors.push("Password must be less than 256 characters")
+      setErrors(["Password must be less than 256 characters"])
+      return
     }
-    if(!errors.length){
-      await dispatch(signUp(firstName, lastName, email, password));
-    } else {
-      setErrors(errors)
-    }
+    await dispatch(signUp(firstName, lastName, email, password));
 
 
   };
+
+  useEffect(()=>{
+    setErrors([])
+  },[firstName,lastName,password,email])
 
   const updateFirstName = (e) => {
     setFirstName(e.target.value);
@@ -55,9 +59,6 @@ const SignUpForm = () => {
     setPassword(e.target.value);
   };
 
-  const updateRepeatPassword = (e) => {
-    setRepeatPassword(e.target.value);
-  };
 
   if (user) {
     return <Redirect to='/' />;
@@ -76,7 +77,7 @@ const SignUpForm = () => {
           <form id = "signup-form" onSubmit={onSignUp}>
             <div>
               {errors.map((error, ind) => (
-                <div style = {{color:"red"}}key={ind}>{error}</div>
+                <div style = {{fontSize: "13px", color:"red",position:"absolute",top:"323px"}}key={ind}>{error}</div>
               ))}
             </div>
             <div id = "name-inputs">
@@ -119,8 +120,8 @@ const SignUpForm = () => {
             <div id = "signup-button-container">
             <button type='submit'>Continue</button>
             <div id = "signup-button-links-container">
-              <div>Already started?</div>
-              <NavLink to = "/login">Log in to complete your application</NavLink>
+              <div>Already have an account?</div>
+              <NavLink to = "/login">Log in instead</NavLink>
             </div>
             </div>
 

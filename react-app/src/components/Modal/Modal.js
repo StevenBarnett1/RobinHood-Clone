@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '../../context/Modal';
 import {useState, useEffect} from "react"
 import {useDispatch,useSelector} from "react-redux"
-import {editWatchlistThunk, addWatchlistThunk, toggleModalView, addToWatchlist} from "../../store/session"
+import {editWatchlistThunk, addWatchlistThunk, toggleModalView, addToWatchlist, addModalInfo} from "../../store/session"
 import {ImCross} from "react-icons/im"
 import {AiOutlinePlus} from "react-icons/ai"
 import {GrCheckmark} from "react-icons/gr"
@@ -25,6 +25,11 @@ function FormModal(props) {
   console.log("PROPS: ",props,)
 
   useEffect(()=>{
+
+    setErrors([])
+
+  },[WatchlistInputValue,createWatchlistInputValue])
+  useEffect(()=>{
     if(props.symbol && user){
       let newList = user.watchlists.map(watchlist=>{
         if(watchlist.stocks.filter(stock => stock.symbol === props.symbol).length){
@@ -38,22 +43,29 @@ function FormModal(props) {
 
   const handleEditSubmit = (e) => {
     e.preventDefault()
-    let filteredList = user.watchlists.filter(watchlist=>watchlist.name===WatchlistInputValue)
+    let filteredList = user.watchlists.filter(watchlist=>watchlist.name===WatchlistInputValue && watchlist.name !== modalInfo.name)
     let errors = []
       if(!WatchlistInputValue)errors.push("Watchlist name cannot be empty")
-      if(WatchlistInputValue.length > 254)errors.push("Watchlist name must be less than 256 characters")
-      console.log("ERRRRRRRRRRRORS: ",errors)
-      if(!errors.length && filteredList[0]){
-        if(filteredList[0].name === modalInfo.name){
-          dispatch(toggleModalView(false))
-        }
-      } else if(!errors.length) {
+      if(WatchlistInputValue.length > 15)errors.push("Watchlist name must be less than 15 characters")
+      console.log("MADE IT HERE")
+      if(filteredList[0]){
+          errors.push(["Watchlist name already exists"])
+      }
+
+      if(!errors.length) {
         dispatch(editWatchlistThunk(modalInfo.id,user.id,WatchlistInputValue))
         dispatch(toggleModalView(false))
       }
       else setErrors(errors)
 
   }
+
+  useEffect(()=>{
+      if(!addWatchlist){
+        setCreateWatchlistInputValue("")
+      }
+
+  },[addWatchlist])
 
   useEffect(()=>{setErrors([])},[createWatchlistInputValue])
 
@@ -66,13 +78,17 @@ function FormModal(props) {
       setErrors(['Field cannot be empty'])
       return
     }
-    if(createWatchlistInputValue.length > 254){
-      errors.push(["Watchlist name must be less than 256 characters"])
+    if(createWatchlistInputValue.length > 15){
+      setErrors(["Watchlist name must be less than 15 characters"])
       return
     }
     let filteredList = user.watchlists.filter(watchlist=>watchlist.name===createWatchlistInputValue)
     if(filteredList.length){
       setErrors(["Watchlist name already exists"])
+      return
+    }
+    if(user.watchlists.length >= 10){
+      setErrors(["You cannot add more than 10 watchlists"])
       return
     }
 
@@ -109,7 +125,9 @@ function FormModal(props) {
       for(let watchlist of user.watchlists){
         let found = false
         for(let stock of watchlist.stocks){
-          if(stock.symbol.toUpperCase() === props.symbol.toUpperCase())found = true
+          if(stock.symbol && props.symbol){
+            if(stock.symbol.toUpperCase() === props.symbol.toUpperCase())found = true
+          }
         }
         if(!found && checkedBoxes.includes(watchlist.id))actualList.push(watchlist.id)
       }
@@ -138,9 +156,9 @@ function FormModal(props) {
         <div id = "exit-edit-watchlist" onClick = {()=>dispatch(toggleModalView(false))}> <ImCross/> </div>
       </div>
       {errors.map((error, ind) => (
-                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+                <div className = "errors" style = {{color:"red",position:"absolute",top:"40px",left:"5px",width:"100%"}}key={ind}>{error}</div>
               ))}
-      <input id = "edit-watchlist-input" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input" style = {theme ==="light" ? {backgroundColor:"rgb(247, 247, 247)"} : {color:"white",backgroundColor:"rgb(48, 48, 48)"}}></input>
+      <input id = "edit-watchlist-input" placeholder = "List Name" value = {WatchlistInputValue} onChange = {e=>setWatchlistInputValue(e.target.value)}type = "text" id = "edit-watchlist-input" style = {theme ==="light" ? {backgroundColor:"rgb(247, 247, 247)"} : {color:"white",backgroundColor:"rgb(48, 48, 48)"}}></input>
       <input id = {props.performance ? "save-edit-watchlist-good" : "save-edit-watchlist-bad"} value = "Save" type = "submit" style = {theme === "light" ? {color:"black"} : {color:"white"}}></input>
       </form>
       )
@@ -154,7 +172,7 @@ function FormModal(props) {
             </div>
             <div id ='add-to-watchlist-inner'>
             {errors.map((error, ind) => (
-                <div className = "errors" style = {{color:"red"}}key={ind}>{error}</div>
+                <div className = "errors" style = {{color:"red",position:"absolute",top:"40px",left:"5px",width:"100%"}}key={ind}>{error}</div>
               ))}
         {addWatchlist ? (
 
