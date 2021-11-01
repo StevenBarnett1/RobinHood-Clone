@@ -1,6 +1,14 @@
 #stockpage-outer-container{
     width:1050px;
+
     display:flex;
+    margin:auto;
+
+
+}
+
+#stockpage-outermost{
+    width:100%;
     margin:auto;
 }
 
