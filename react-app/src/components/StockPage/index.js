@@ -107,7 +107,12 @@ const Stockpage = () => {
                 if(stockData.data[0])setOpenPrice(stockData.data[0].price)
             }
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
-            setPageLoaded(params.symbol)
+            if(params){
+                if(stockData.symbol === params.symbol){
+                    setPageLoaded(params.symbol)
+                }
+            }
+
         }
     },[stockData])
     const CustomTooltip = ({ active, payload }) => {
@@ -481,7 +486,7 @@ const Stockpage = () => {
         }
         console.log("STOCK DATA: ",stockData)
         console.log("PERFORMANCE IN STOCK PAGE: ",performance)
-        console.log()
+        console.log("STOCK PAGE LOADED: ",pageLoaded)
         console.log("GRAPH DATA: ",graphData)
     if(pageLoaded !== params.symbol){
         return (<div id = "react-loading-container" style = {theme === "light" ? {backgroundColor:"white"} : {backgroundColor:"black"}}><div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div></div>
