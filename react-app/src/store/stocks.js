@@ -61,6 +61,19 @@ export const getHoldingGraphData = (stocks,tokens) => async dispatch => {
       start.setDate(start.getDate()-2)
       end.setDate(end.getDate()-2)
       end.setHours(23,0,0,0)
+  } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
+
+    if(start.getDate() === 1){
+      console.log("IN CORRECT")
+      start.setDate(start.getDate()-3)
+      end.setDate(end.getDate()-3)
+      end.setHours(23,0,0,0)
+    }
+    else {
+      start.setDate(start.getDate()-1)
+      end.setDate(end.getDate()-1)
+      end.setHours(23,0,0,0)
+    }
   }
   start.setHours(0,0,0,0)
   let startUnix = Math.floor(Number(start.getTime() / 1000))
@@ -119,6 +132,19 @@ export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
       start.setDate(start.getDate()-2)
       end.setDate(end.getDate()-2)
       end.setHours(23,0,0,0)
+  } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
+
+    if(start.getDate() === 1){
+      console.log("IN CORRECT")
+      start.setDate(start.getDate()-3)
+      end.setDate(end.getDate()-3)
+      end.setHours(23,0,0,0)
+    }
+    else {
+      start.setDate(start.getDate()-1)
+      end.setDate(end.getDate()-1)
+      end.setHours(23,0,0,0)
+    }
   }
   start.setHours(0,0,0,0)
   let startUnix = Math.floor(Number(start.getTime() / 1000))

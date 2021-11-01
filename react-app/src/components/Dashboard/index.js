@@ -295,9 +295,17 @@ const Dashboard = () => {
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
               } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
-                start.setDate(start.getDate()-1)
-                end.setDate(end.getDate()-1)
-                end.setHours(23,0,0,0)
+                if(start.getDate() === 1){
+                    console.log("IN CORRECT")
+                    start.setDate(start.getDate()-3)
+                    end.setDate(end.getDate()-3)
+                    end.setHours(23,0,0,0)
+                  }
+                  else {
+                    start.setDate(start.getDate()-1)
+                    end.setDate(end.getDate()-1)
+                    end.setHours(23,0,0,0)
+                  }
               }
               start.setHours(0,0,0,0)
 
@@ -305,6 +313,11 @@ const Dashboard = () => {
               let endUnix = Math.floor(Number(end.getTime() / 1000))
               setUnixStart(startUnix)
               setUnixEnd(endUnix)
+
+
+
+
+
 
         }
     },[])
@@ -647,9 +660,9 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
     }
 
     console.log("PORTFOLIO DATA: ",portfolioData)
-
+    console.log("PAGE LOADED ? :", pageLoaded)
     if(pageLoaded !== "Dashboard"){
-        return (<div id = "react-loading"><ReactLoading color = {"black"} height={100} width={700}/></div>
+        return (<div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div>
             );
     }
 
@@ -749,7 +762,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                         <div id = "news-icons-container">
                             {news && news.map(post => {
                                 return (
-                                    <div className = "news-icon-container">
+                                    <div key = {post.id} className = "news-icon-container">
                                     <NavLink to = {{pathname:post.url}} target="_blank" key = {post.id} className = "news-icon-navlink">
                                         <div className = "news-top-container">
                                             <div className = "news-icon-source">{post.source}</div>

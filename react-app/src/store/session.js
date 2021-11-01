@@ -207,11 +207,14 @@ export const addToWatchlist = (ids,symbol) => async dispatch => {
   }
 
 }
-
-const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
+let currentTheme
+if(localStorage.getItem("theme")){
+  currentTheme = localStorage.getItem("theme")
+} else currentTheme = "light"
+const initialState = { user: null,theme:currentTheme,modalView:null,modalType:null,modalInfo:null};
 
 export const addHolding = (symbol,shares,userId) => async dispatch =>{
-  if(!shares || !symbol || !userId)return 
+  if(!shares || !symbol || !userId)return
     const response = await fetch("/api/holdings",{
         method:"POST",
         headers:{
@@ -273,7 +276,11 @@ export default function reducer(state = initialState, action) {
         console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
         if(newState.theme === "light"){
           newState.theme = "dark"
-        } else newState.theme = "light"
+          localStorage.setItem('theme',"dark")
+        } else {
+          newState.theme = "light"
+          localStorage.setItem('theme',"light")
+        }
         console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
         return newState
       case ADD_MODAL_TYPE:{
