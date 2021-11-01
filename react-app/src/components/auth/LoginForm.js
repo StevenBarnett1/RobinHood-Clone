@@ -54,7 +54,6 @@ const LoginForm = () => {
           <label htmlFor='email'>Email</label>
           <input
             autoComplete="off"
-            autoFill = "off"
             name='email'
             type='text'
             placeholder='Email'
@@ -67,7 +66,6 @@ const LoginForm = () => {
           <label htmlFor='password'>Password</label>
           <input id = "test"
           autoComplete="off"
-          autoFill = "off"
             name='password'
             type='password'
             placeholder='Password'

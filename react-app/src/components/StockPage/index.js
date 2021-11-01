@@ -164,8 +164,10 @@ const Stockpage = () => {
     },[user,stockData])
 
     useEffect(()=>{
+        console.log("IN TIME USE EFFECT")
         let start = new Date()
               let end = new Date()
+              console.log("START: ",start,"END: ",end)
               if(start.getDay() === 6){
                   start.setDate(start.getDate()-1)
                   end.setDate(end.getDate()-1)
@@ -177,9 +179,18 @@ const Stockpage = () => {
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
               } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
-                start.setDate(start.getDate()-1)
-                end.setDate(end.getDate()-1)
-                end.setHours(23,0,0,0)
+                  console.log("THIS ONE")
+                  if(start.getDate() === 1){
+                    start.setDate(start.getDate()-3)
+                    end.setDate(end.getDate()-3)
+                    end.setHours(23,0,0,0)
+                  }
+                  else {
+                    start.setDate(start.getDate()-1)
+                    end.setDate(end.getDate()-1)
+                    end.setHours(23,0,0,0)
+                  }
+
               }
               start.setHours(0,0,0,0)
 
@@ -611,14 +622,14 @@ const Stockpage = () => {
                         <div id ="stock-purchase-inner">
                             <div id = "invest-in-container">
                                 <div id = "invest-in-label">{buySell === "buy" ? "Invest In" : "Sell"}</div>
-                                <select id = "invest-in-value" defaultValue = "shares" value = {investType} onChange = {e=>setInvestType(e.target.value)}>
+                                <select id = "invest-in-value" value = {investType} onChange = {e=>setInvestType(e.target.value)}>
                                     <option value = "shares" >Shares</option>
                                     <option value = "dollars">Dollars</option>
                                 </select>
                             </div>
                             <div id = "amount-container" style = {investType === "shares" ? {borderBottom:"none"} : {marginBottom:"15px", paddingBottom:"7px", borderBottom:"1px solid var(--border-color)"}}>
                                 <div id = "amount-label">{investType === "shares" ? 'Shares' : 'Amount'}</div>
-                                <input id = "amount-value" autoFill = "off" autoComplete = "off" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
+                                <input id = "amount-value" autoComplete = "off" value = {investValue} onChange = {e=>setInvestValue(e.target.value)} type = "text" placeholder = {investType === "shares" ? 0 :'$0.00'}></input>
                             </div>
                                 {investType === "shares" ? (
                                     <div id = "market-price-container">

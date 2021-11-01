@@ -19,6 +19,7 @@
     "recharts": "^2.1.5",
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
