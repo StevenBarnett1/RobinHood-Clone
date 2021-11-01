@@ -88,11 +88,14 @@ const Stockpage = () => {
             console.log("STOCK DATA BEFORE PRICE: ",stockData)
             if(!isNaN(Number(stockData.price)))setStockValue(stockData.price)
             if(stockData.data){
-                if(stockData.data.length > 3){
-                    setGraphData(stockData.data)
-                    setYmin(stockData.min)
-                    setYmax(stockData.max)
+                if(stockData.data[0]){
+                    if(stockData.data.length > 3){
+                        setGraphData(stockData.data)
+                        setYmin(stockData.min)
+                        setYmax(stockData.max)
+                    }
                 }
+
             }
 
 
