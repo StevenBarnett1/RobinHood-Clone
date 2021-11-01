@@ -7,6 +7,7 @@ const MODAL_VIEW = "session/MODAL_VIEW"
 const MODAL_REQUIRED = "session/MODAL_REQUIRED"
 const MODAL_INFO = "session/MODAL_INFO"
 const SET_HOLDINGS = "session/SET_HOLDINGS"
+const SET_ERROR = "session/SET_ERROR"
 
 const setUser = (user) => ({
   type: SET_USER,
@@ -149,6 +150,18 @@ export const signUp = (first_name, last_name, email, password) => async (dispatc
     return ['An error occurred. Please try again.']
   }
 }
+
+// export const checkForExistingUser = (email) => async dispatch =>{
+//   const response = await fetch(`/api/auth/check_existing`,{
+//     method:"POST",
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body:JSON.stringify({email})
+//   })
+//   const data = await response.json()
+//   dispatch(setUser(data))
+// }
 
 export const addWatchlistThunk = (name,userId) => async dispatch => {
   const response = await fetch(`/api/watchlists`,{
