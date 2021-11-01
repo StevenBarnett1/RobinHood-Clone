@@ -575,6 +575,7 @@ const addWatchlist = (e) => {
     if(!errors.length){
         toggleWatchlistInput(false)
         dispatch(addWatchlistThunk(watchlistInputValue,user.id))
+        setWatchlistInputValue("")
     }
     else setErrors(errors)
 }
