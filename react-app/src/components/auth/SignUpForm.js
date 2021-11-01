@@ -34,8 +34,10 @@ const SignUpForm = () => {
       setErrors(["Password must be less than 256 characters"])
       return
     }
-    await dispatch(signUp(firstName, lastName, email, password));
-
+    let data = await dispatch(signUp(firstName, lastName, email, password));
+    if(data){
+      setErrors([data])
+    }
 
   };
 

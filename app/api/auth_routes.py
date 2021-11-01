@@ -61,6 +61,9 @@ def sign_up():
     Creates a new user and logs them in
     """
     form = SignUpForm()
+    user = User.query.filter(User.email == form.data['email']).first()
+    if(user is not None):
+        return {'errors': "Email already exists"}, 401
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
         user = User(
@@ -75,6 +78,13 @@ def sign_up():
         return user.to_dict()
     return {'errors': validation_errors_to_error_messages(form.errors)}, 401
 
+
+# @auth_routes.route("/check_existing",methods=["GET"])
+# def check_existing():
+#     email = request.json['email'].first()
+#     user = User.query.filter_by(email=email).first()
+#     if(user is not None):
+#         return {"errors":True}
 
 @auth_routes.route('/unauthorized')
 def unauthorized():
