@@ -9,6 +9,7 @@ import {
   import {FaPlus} from "react-icons/fa"
   import {CgInfinity} from "react-icons/cg"
 import { getPortfolioData, getMoversData } from "../../store/portfolio";
+import ReactLoading from "react-loading"
 import { getWatchlistGraphData,getHoldingGraphData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
 import {IoIosArrowDown,IoIosArrowUp} from "react-icons/io"
@@ -18,11 +19,11 @@ import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
 import {MdDeleteOutline} from "react-icons/md"
 const finnhub = require('finnhub');
-const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
+const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g","c5vl882ad3ibtqnn9te0","c5vl8jaad3ibtqnn9tt0","c5vlb92ad3ibtqnn9uug"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random(apiKeys.length))]
 const finnhubClient = new finnhub.DefaultApi()
-const moverAPIKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","738b215d43b9f00852b64cd8ea4feeb9"]
+const moverAPIKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","738b215d43b9f00852b64cd8ea4feeb9",'3dac763828badc9259ab8183641048be',"c5700bbd889a9a10692570136dd649cb","b1109d24db8e39fc3bb93acf0ebb8ce8","93902979e35374e3150c471c62d09750","28731869e94e62f83ca251a5139ee8ca","170664b4221b88a7b017599fe3009dca","50189556b9b25cb35a625c5e7e07a8d4"]
 
 const months = {
     0:"JAN",
@@ -71,6 +72,8 @@ const Dashboard = () => {
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
+
+    const [pageLoaded,setPageLoaded] = useState("")
 
     const getAbbreviatedNumber = (num) => {
         console.log("ABBREVIATED NUMBER: ",num)
@@ -153,9 +156,16 @@ const Dashboard = () => {
                         )
                     }
                 }
-
-
             }
+            let foundAll = true
+            for(let symbol of Object.keys(watchlistStockData)){
+                if(watchlistStockData[symbol]){
+                    if(!watchlistStockData[symbol].graph){
+                        foundAll = false
+                    }
+                }}
+                if(foundAll)setPageLoaded("Dashboard")
+
         }
     },[watchlistStockData])
 
@@ -214,7 +224,7 @@ const Dashboard = () => {
 
 
     useEffect(()=>{
-        document.title = "RobinHood"
+        document.title = "Stevenhood"
         if(user){
             let total = 0
             user.holdings.forEach(holding=>{
@@ -509,8 +519,12 @@ const chartHoverFunction = (e) => {
 const deposit = (value) => {
     console.log("RJGNPRIGUNBERPIGUNRE: ",!value)
     if(!value){
-        if(isNaN(Number(buyingPowerValue)) || buyingPowerValue.toString().includes("-")){
+        if(isNaN(Number(buyingPowerValue))){
             setErrors(["Letters are not allowed"])
+            return
+        }
+        if(buyingPowerValue.toString()[0] === "-"){
+            setErrors(["Negative numbers are not allowed"])
             return
         }
         if(!Number(buyingPowerValue)){
@@ -631,13 +645,22 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
     }
 
     console.log("PORTFOLIO DATA: ",portfolioData)
+
+    if(pageLoaded !== "Dashboard"){
+        return (<div id = "react-loading"><ReactLoading color = {"black"} height={100} width={700}/></div>
+            );
+    }
+
     return (
         <div id = "dashboard-outer-container">
+
             <div id = "dashboard-left-container">
                 <div id = "dashboard-upper-container">
                     <div id = "dashboard-portfolio-value"><h1>$<Odometer value={portfolioValueDynamic ? Number(portfolioValueDynamic.toFixed(2)) : Number(portfolioValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
 
-                    <div id = "dashboard-graph-container">
+
+                        <div id = "dashboard-graph-container">
+
                         <div id = "dashboard-graph">{renderLineChart}</div>
                         <div id = "dashboard-graph-timeframes-container">
                         <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("5","1D")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1D</button></span>
@@ -648,6 +671,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
                     </div>
+
                     <div id = {buyingPower ? "dashboard-buying-power-container-closed" : "dashboard-buying-power-container" } >
                         <div id = {buyingPower ? "dashboard-buying-power-container-heading-open" : "dashboard-buying-power-container-heading-closed"} onClick={()=>toggleBuyingPower(!buyingPower)}>
                             <div id = "dashboard-buying-power-text">Buying Power</div>

@@ -27,7 +27,7 @@ const NavBar = () => {
           <div className = "navbar-inner-container">
           <div className = "navbar-left">
             <NavLink id = "navbar-title"className = "navbar-navlink" to='/' exact={true} activeClassName='active'>
-              Robinhood
+              Stevenhood
             </NavLink>
           </div>
           <div className = "navbar-right">
