@@ -211,6 +211,7 @@ export const addToWatchlist = (ids,symbol) => async dispatch => {
 const initialState = { user: null,theme:"light",modalView:null,modalType:null,modalInfo:null};
 
 export const addHolding = (symbol,shares,userId) => async dispatch =>{
+  if(!shares || !symbol || !userId)return 
     const response = await fetch("/api/holdings",{
         method:"POST",
         headers:{

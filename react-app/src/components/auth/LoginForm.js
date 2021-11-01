@@ -43,7 +43,7 @@ const LoginForm = () => {
       </div>
       <div id = "right-side">
         <div id = "right-side-inner">
-          <div id = "login-title">Welcome to Robbinghood</div>
+          <div id = "login-title">Welcome to Stevenhood</div>
         <form id = "login-form" onSubmit={onLogin}>
         <div>
           {errors[0] && (
@@ -54,6 +54,7 @@ const LoginForm = () => {
           <label htmlFor='email'>Email</label>
           <input
             autoComplete="off"
+            autoFill = "off"
             name='email'
             type='text'
             placeholder='Email'
@@ -66,6 +67,7 @@ const LoginForm = () => {
           <label htmlFor='password'>Password</label>
           <input id = "test"
           autoComplete="off"
+          autoFill = "off"
             name='password'
             type='password'
             placeholder='Password'
@@ -78,7 +80,7 @@ const LoginForm = () => {
           <button id = "login-submit" type='submit'>Sign In</button>
           <button onClick = {(e)=>handleDemo(e)}type="demo-submit">Demo User</button>
           <div id = "login-redirect-container">
-            <div>Not on Robbinghood?</div>
+            <div>Not on Stevenhood?</div>
             <div><NavLink to = "/sign-up"> Create an account</NavLink></div>
           </div>
         </div>

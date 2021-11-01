@@ -1,6 +1,6 @@
 import "./StockPage.css"
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams } from "react-router";
 import { getStockData } from "../../store/stocks";
 import 'odometer/themes/odometer-theme-minimal.css';
@@ -10,6 +10,7 @@ import {BsGear, BsFillXCircleFill} from "react-icons/bs"
 import {AiOutlinePlus} from "react-icons/ai"
 import FormModal from "../Modal/Modal";
 import {NavLink} from "react-router-dom"
+import ReactLoading from "react-loading"
 import { addBuyingPower, toggleModalView, addModal, addWatchlistThunk, editWatchlistThunk, deleteWatchlistThunk, addModalInfo, addHolding, sellHolding} from "../../store/session";
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Scatter, ScatterChart
@@ -18,9 +19,9 @@ import {
   import {FaPlus} from "react-icons/fa"
 
 const alphaAdvantageKeys = ["3UC4IVVYIGV8RHJB","JHJY5TEK1A5HV67T","8MGCDK87SBTQ7CB5","KH07O8BLSZ2XTJTH","7LI2MOXNZKBJSW21"]
-const financialModelingPrepKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","738b215d43b9f00852b64cd8ea4feeb9"]
+const financialModelingPrepKeys = ["f54821126586727a0b1f5c527bbfa065","ff567560f2ecaf815b36d6a3ce51a55f","80301e4cb2194f8bb4150f755f36511a",`ff589a311ba428d0075c8c9c152c15dc`,"1bf1b668a4216e5a16da2e7b765aa33a","738b215d43b9f00852b64cd8ea4feeb9",'3dac763828badc9259ab8183641048be',"c5700bbd889a9a10692570136dd649cb","b1109d24db8e39fc3bb93acf0ebb8ce8","93902979e35374e3150c471c62d09750","28731869e94e62f83ca251a5139ee8ca","170664b4221b88a7b017599fe3009dca","50189556b9b25cb35a625c5e7e07a8d4"]
 const finnhub = require('finnhub');
-const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g"]
+const apiKeys = ["c5pfejaad3i98uum8f0g","c5mtisqad3iam7tur1qg","c5riunqad3ifnpn54h4g","c5vl882ad3ibtqnn9te0","c5vl8jaad3ibtqnn9tt0","c5vlb92ad3ibtqnn9uug"]
 const api_key = finnhub.ApiClient.instance.authentications['api_key'];
 api_key.apiKey = apiKeys[Math.floor(Math.random(apiKeys.length))]
 const finnhubClient = new finnhub.DefaultApi()
@@ -66,7 +67,8 @@ const Stockpage = () => {
     const [currentShares,setCurrentShares] = useState("")
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
-    const [test,setTest] = useState("")
+    const [pageLoaded,setPageLoaded] = useState("")
+    const theme = useSelector(state=>state.session.theme)
 
     const user = useSelector(state=>state.session.user)
     console.log("USER: ",user)
@@ -97,6 +99,7 @@ const Stockpage = () => {
                 if(stockData.data[0])setOpenPrice(stockData.data[0].price)
             }
             console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
+            setPageLoaded(params.symbol)
         }
     },[stockData])
     const CustomTooltip = ({ active, payload }) => {
@@ -367,10 +370,14 @@ const Stockpage = () => {
     console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
         let errors = []
-        if(isNaN(Number(investValue)) || investValue.toString().includes("-")){
+        if(isNaN(Number(investValue))){
             errors.push("Letters are not allowed")
             console.log("ERRRRRRRRRRORS : ",errors)
             setErrors(errors)
+            return
+        }
+        if(investValue.toString()[0] === "-"){
+            setErrors(["Negative numbers are not allowed"])
             return
         }
         if(!Number(investValue) && type === "buy"){
@@ -456,6 +463,10 @@ const Stockpage = () => {
         console.log("STOCK DATA: ",stockData)
         console.log("PERFORMANCE IN STOCK PAGE: ",performance)
         console.log()
+    if(pageLoaded !== params.symbol){
+        return (<div id = "react-loading-container" style = {theme === "light" ? {backgroundColor:"white"} : {backgroundColor:"black"}}><div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div></div>
+            );
+    }
     return (
         <div id = "stockpage-outer-container">
             <div id = "stockpage-left-container">
@@ -474,7 +485,6 @@ const Stockpage = () => {
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("D","1Y")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>1Y</button></span>
                             <span className = "stockpage-graph-timeframe"><button onClick = {()=>{timeFrameClick("M","ALL")}} className = {performance ? "dashboard-graph-timeframe-button-good" : "dashboard-graph-timeframe-button-bad"}>ALL</button></span>
                         </div>
-
                     </div>
                 </div>
                 <div id = "stockpage-lower-container">
