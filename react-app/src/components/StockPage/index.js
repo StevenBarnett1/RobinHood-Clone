@@ -87,9 +87,14 @@ const Stockpage = () => {
             console.log("STOCDNFGIBIERBNo: ",stockData)
             console.log("STOCK DATA BEFORE PRICE: ",stockData)
             if(!isNaN(Number(stockData.price)))setStockValue(stockData.price)
-            setGraphData(stockData.data)
-            setYmin(stockData.min)
-            setYmax(stockData.max)
+            if(stockData.data){
+                if(stockData.data.length > 3){
+                    setGraphData(stockData.data)
+                    setYmin(stockData.min)
+                    setYmax(stockData.max)
+                }
+            }
+
 
             setActualScatterData(stockData.actual)
             setEstimatedScatterData(stockData.estimated)
@@ -463,6 +468,7 @@ const Stockpage = () => {
         console.log("STOCK DATA: ",stockData)
         console.log("PERFORMANCE IN STOCK PAGE: ",performance)
         console.log()
+        console.log("GRAPH DATA: ",graphData)
     if(pageLoaded !== params.symbol){
         return (<div id = "react-loading-container" style = {theme === "light" ? {backgroundColor:"white"} : {backgroundColor:"black"}}><div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div></div>
             );
