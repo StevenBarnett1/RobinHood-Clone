@@ -654,7 +654,8 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
     }
 
     return (
-        <div id = "dashboard-outer-container">
+        <div id = "dashboard-outermost" style = {theme === "dark" ? {backgroundColor:"black"} : {backgroundColor:"white"}}>
+        <div id = "dashboard-outer-container" style = {theme === "dark" ? {backgroundColor:"black"} : {backgroundColor:"white"}}>
 
             <div id = "dashboard-left-container">
                 <div id = "dashboard-upper-container">
@@ -835,6 +836,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                 <FormModal performance = {performance}/>
                 </div>
 
+        </div>
         </div>
 
     )

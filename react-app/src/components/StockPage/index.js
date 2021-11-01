@@ -468,7 +468,8 @@ const Stockpage = () => {
             );
     }
     return (
-        <div id = "stockpage-outer-container">
+        <div id = "stockpage-outermost" style = {theme === "dark" ? {backgroundColor:"black"} : {backgroundColor:"white"}}>
+        <div id = "stockpage-outer-container" style = {theme === "dark" ? {backgroundColor:"black"} : {backgroundColor:"white"}}>
             <div id = "stockpage-left-container">
                 <div id = "stockpage-upper-container">
                     <div id = "stockpage-stock-value"><h1>$<Odometer value={(!isNaN(Number(stockValueDynamic)) && stockValueDynamic)? Number(stockValueDynamic.toFixed(2)) : Number(stockValue.toFixed(2))} format="(,ddd).dd" /></h1></div>
@@ -638,6 +639,7 @@ const Stockpage = () => {
                 </div>
             </div>
             <FormModal symbol={stockData && stockData.symbol} performance = {performance}/>
+        </div>
         </div>
     )
 }
