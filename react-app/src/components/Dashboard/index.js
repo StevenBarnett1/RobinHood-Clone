@@ -62,6 +62,7 @@ const Dashboard = () => {
     const [renderLineChart,setRenderLineChart] = useState("")
     const [performance,setPerformance] = useState(true)
     const [errors,setErrors] = useState([])
+    const [buyingPowerErrors,setBuyingPowerErrors] = useState([])
     const [watchlistChanges,setWatchlistChanges] = useState({})
     const [watchlistPrices,setWatchlistPrices] = useState({})
     const [holdingChanges,setHoldingChanges] = useState({})
@@ -507,7 +508,7 @@ const Dashboard = () => {
 }
 
 useEffect(()=>{
-    setErrors([])
+    setBuyingPowerErrors([])
 },[buyingPowerValue])
 
 const chartHoverFunction = (e) => {
@@ -520,15 +521,15 @@ const deposit = (value) => {
     console.log("RJGNPRIGUNBERPIGUNRE: ",!value)
     if(!value){
         if(isNaN(Number(buyingPowerValue))){
-            setErrors(["Letters are not allowed"])
+            setBuyingPowerErrors(["Letters are not allowed"])
             return
         }
         if(buyingPowerValue.toString()[0] === "-"){
-            setErrors(["Negative numbers are not allowed"])
+            setBuyingPowerErrors(["Negative numbers are not allowed"])
             return
         }
         if(!Number(buyingPowerValue)){
-            setErrors(["You must enter an amount to purchase"])
+            setBuyingPowerErrors(["You must deposit more than $0"])
             return
         }
         console.log("BEAR: ",Number(buyingPowerValue).toFixed(5))
@@ -536,12 +537,12 @@ const deposit = (value) => {
         console.log(num[num.length-1])
 
         if(buyingPowerValue>= 100000000000000000000){
-            setErrors(['You must enter a smaller number'])
+            setBuyingPowerErrors(['You must enter a smaller number'])
             return
         }
         if(num[num.length-1] !== "0"){
             num = Number(num)
-            setErrors(["Less than one one-hundredth of a penny"])
+            setBuyingPowerErrors(["Less than one one-hundredth of a penny"])
             return
         }
 
@@ -691,7 +692,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                                 </div>
                                 <div id = "dashboard-buying-power-container-right">
                                     <div id = "buying-power-description">Buying Power represents the total value of assets you can purchase.</div>
-                                    {errors.map((error, ind) => (
+                                    {buyingPowerErrors.map((error, ind) => (
                         <div className = "errors" style = {{color:"red",position:"absolute",top:"115px",right:"25px",width:"100%"}}key={ind}>{error}</div>
                     ))}
                                     <input type = "text" placeholder = "Deposit Amount" id = "buying-power-deposit-input" value = {buyingPowerValue} onChange = {(e)=>editBuyingPowerValue(e.target.value)} style = {depositClick ? {display:"block"}: {display:"none"}}></input>
