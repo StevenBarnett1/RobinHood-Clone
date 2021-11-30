@@ -221,3 +221,42 @@
 #footer > *{
     margin-right:100px;
 }
+
+@media screen and (max-width:1000px){
+    #splash-top-inner-container{
+        display:flex;
+        flex-direction: column;
+        margin:18px;
+        margin-top:0px;
+        padding-top:18px;
+        align-items: center;
+        width:auto;
+    }
+    .splash-top-left-title{
+        font-size:38px;
+        margin-bottom:15px;
+    }
+    #splash-top-left{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    #splash-top-container{
+        height:auto;
+    }
+    .splash-top-left-navlink{
+        margin-top:15px;
+        margin-bottom:25px;
+    }
+
+    #splash-video-outer-image{
+        width:200px !important;
+    }
+    #splash-video{
+        width: 200px !important;
+    }
+    #splash-top-right{
+        height:auto;
+    }
+}
