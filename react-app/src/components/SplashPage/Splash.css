@@ -222,7 +222,7 @@
     margin-right:100px;
 }
 
-@media screen and (max-width:1000px){
+@media screen and (max-width:600px){
     #splash-top-inner-container{
         display:flex;
         flex-direction: column;
@@ -313,5 +313,7 @@
         margin-top:80px;
         margin-left:15px;
     }
-    
+    .bottom-bottom-container{
+        margin-right:0px;
+    }
 }
