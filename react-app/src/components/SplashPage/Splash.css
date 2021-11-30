@@ -258,5 +258,17 @@
     }
     #splash-top-right{
         height:auto;
+        position:relative;
     }
+    #splash-center-right{
+        width:auto;
+        height:auto;
+    }
+
+    #splash-center-inner-container{
+        height:auto;
+        display:flex;
+        flex-direction: column;
+    }
+
 }
