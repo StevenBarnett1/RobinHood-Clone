@@ -77,3 +77,18 @@
     color:red;
 
 }
+
+@media screen and (max-width:600px){
+    .navbar-left{
+        display:none;
+    }
+    .navbar-inner-container{
+        margin:auto;
+        width:100%;
+    }
+    .navbar-right{
+        width:100%;
+        display:flex;
+        justify-content: space-around;
+    }
+}

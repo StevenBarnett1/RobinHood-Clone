@@ -37,11 +37,9 @@ const NavBar = () => {
               </NavLink>
             </div>
             <div id = "navbar-user-buttons-spacer"></div>
-
               <NavLink id = "navbar-signup-navlink" className = "navbar-navlink user-button" to='/sign-up' exact={true} activeClassName='active'>
                 Sign Up
               </NavLink>
-
           </div>
         </div>
         )}
