@@ -5,7 +5,7 @@ COPY react-app/. .
 
 # You have to set this because it should be set during build time.
 ENV REACT_APP_BASE_URL=https://stevenhood-app.herokuapp.com/
-ENV DATABASE_URL=postgresql://steven@0.tcp.ngrok.io:10256
+ENV DATABASE_URL=postgresql://steven@0.tcp.ngrok.io:10256/stevenhood
 
 # Build our React App
 RUN npm install
@@ -30,3 +30,4 @@ RUN pip install psycopg2
 
 # Run flask environment
 CMD gunicorn app:app
+
