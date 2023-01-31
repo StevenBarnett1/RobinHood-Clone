@@ -17,8 +17,8 @@ jobs:
     - name: Build and push
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:push -a stevenhood web
+      run: heroku container:push -a stevenhood-app web
     - name: Release
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release -a stevenhood web
+      run: heroku container:release -a stevenhood-app web

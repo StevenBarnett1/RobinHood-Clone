@@ -1,6 +1,6 @@
 # Stevenhood
 
-By Steven Barnett - Visit [Stevenhood](https://stevenhood.herokuapp.com/)
+By Steven Barnett - Visit [Stevenhood](https://stevenhood-app.herokuapp.com/)
 
 ## Description
 
