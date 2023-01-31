@@ -176,7 +176,6 @@ export const addWatchlistThunk = (name,userId) => async dispatch => {
 }
 
 export const deleteWatchlistThunk = (id) => async dispatch => {
-  console.log("WATCHLIST HEREEEE: ",id)
   const response = await fetch(`/api/watchlists/${Number(id)}`,{
     method:"DELETE",
     headers: {
@@ -205,7 +204,6 @@ export const editWatchlistThunk = (id,userId,name) => async dispatch => {
 export const addToWatchlist = (ids,symbol) => async dispatch => {
   let response
   for(let id of ids){
-    console.log("ID HERE: ",id)
     response = await fetch(`/api/watchlists/${id}`,{
       method:"POST",
       headers: {
@@ -286,7 +284,6 @@ export default function reducer(state = initialState, action) {
         newState.user = null
         return newState
       case TOGGLE_THEME:
-        console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
         if(newState.theme === "light"){
           newState.theme = "dark"
           localStorage.setItem('theme',"dark")
@@ -294,7 +291,6 @@ export default function reducer(state = initialState, action) {
           newState.theme = "light"
           localStorage.setItem('theme',"light")
         }
-        console.log("IN REDUX STATE INITIAL THEME: ",newState.theme)
         return newState
       case ADD_MODAL_TYPE:{
         newState.modalType=action.payload

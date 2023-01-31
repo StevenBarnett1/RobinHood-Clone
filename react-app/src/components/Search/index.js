@@ -24,9 +24,7 @@ const Search = () => {
         dispatch(getStocks())
     },[])
     const stocks = useSelector(state=>state.stocks.stocks)
-    console.log("stocks inside search: ",stocks)
     useEffect(()=>{
-        console.log(searchValue,stocks instanceof Array, !searchValue)
 
         if(!searchValue) setCurrentStocks("")
         if(stocks){
@@ -55,11 +53,6 @@ const Search = () => {
             }
 
             for(let stock of newCurrentStocks){
-                if(stock.symbol === "TSLA"){
-                    console.log("INSIDE TESLA")
-                    console.log(stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase()))
-                    console.log(stock.name.toLowerCase().startsWith(searchValue.toLowerCase()))
-                }
                 if(stock.symbol.toLowerCase().startsWith(searchValue.toLowerCase())){
                     stock.coloredSymbol = searchValue
                     stock.nonColoredSymbol = stock.symbol.slice(searchValue.length)
@@ -73,7 +66,6 @@ const Search = () => {
                     stock.nonColoredName = stock.name
                 }
             }
-            console.log("NC STOCKS: ",newCurrentStocks)
              setNonColoredStocks(newCurrentStocks)
 
         }
@@ -85,8 +77,6 @@ const Search = () => {
        setFocus(param)
     }
 
-    console.log("CURRNET STOCKS : ",currentStocks)
-    console.log("FOCUS: ", focus)
     return (
         <div id = "search-container">
             <div id = "search-input-outer-container" style = {theme === "dark" ? {boxShadow:"none"} : {}}>

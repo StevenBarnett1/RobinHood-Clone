@@ -32,13 +32,11 @@ export const getMoversData = (apiKeys) => async dispatch => {
   let newLosersData = []
   const losersResponse = await fetch(`https://financialmodelingprep.com/api/v3/losers?apikey=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   let losersData = await losersResponse.json()
-  console.log("LOSERS DATA AN ARRAY? ",losersData instanceof Array)
   if(losersData instanceof Array){
     newLosersData = [...losersData]
   }
   const gainersResponse = await fetch(`https://financialmodelingprep.com/api/v3/gainers?apikey=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
   let gainersData = await gainersResponse.json()
-  console.log("GAINERS DATA AN ARRAY? ",gainersData instanceof Array)
   if(gainersData instanceof Array){
     newGainersData = [...gainersData]
   }
@@ -56,7 +54,6 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,tokens) =
     const response = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${holdings[i].symbol}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${tokens[Math.floor(Math.random()*tokens.length)]}`)
 
     const data = await response.json()
-    console.log("FINNHUB PRICE DATA: ",data.dp)
 
     if(data.c){
       for(let j = 0; j<data.c.length;j++){
@@ -89,24 +86,7 @@ export const getPortfolioData = (holdings,resolution,unixStart,unixEnd,tokens) =
 
 
   }
-  // // while(prices[prices.length-1].dateTime.getHours() < 13){
-  // if(resolution === "5"){
-  //   if(prices.length){
-  //     if(prices[prices.length-1].dateTime.getHours() < 13){
-  //       let newObj = {}
-  //       let i = 0
-  //         while(i < 50){
-  //         let lastDate = prices[prices.length-1].unixTime
-  //         let newDate = lastDate + 300
-  //         newObj.unixTime = newDate
-  //         newObj.dateTime = new Date(newObj.unixTime * 1000)
-  //         i++
-  //         prices.push(newObj)
-  //       }
-  //       console.log("DATES HERE: ",prices.map(price => price.dateTime))
-  //     }
-  //   }
-  // }
+
   let newData = []
   for(let i =0; i<prices.length;i++){
 

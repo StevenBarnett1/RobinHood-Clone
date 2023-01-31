@@ -44,7 +44,6 @@ const months = {
 const Stockpage = () => {
     const dispatch = useDispatch()
     const params = useParams()
-    console.log("NEW PARAMS: ",params)
     const [graphData,setGraphData] = useState("")
     const [actualScatterData,setActualScatterData] = useState("")
     const [estimatedScatterData,setEstimatedScatterData] = useState("")
@@ -71,7 +70,6 @@ const Stockpage = () => {
     const theme = useSelector(state=>state.session.theme)
 
     const user = useSelector(state=>state.session.user)
-    console.log("USER: ",user)
     const stockData = useSelector(state=>state.stocks.stockData)
 
     useEffect(()=>{
@@ -79,13 +77,10 @@ const Stockpage = () => {
     },[investValue])
     useEffect(()=>{
         document.title = `${params.symbol}`
-        console.log("FORCING RERENDER?")
         forceRerender(!render)
     },[params])
     useEffect(()=>{
         if(stockData && stockData.symbol){
-            console.log("STOCDNFGIBIERBNo: ",stockData)
-            console.log("STOCK DATA BEFORE PRICE: ",stockData)
             if(!isNaN(Number(stockData.price)))setStockValue(stockData.price)
             if(stockData.data){
                 if(stockData.data[0]){
@@ -106,7 +101,6 @@ const Stockpage = () => {
                 setDailyLow(stockData.min)
                 if(stockData.data[0])setOpenPrice(stockData.data[0].price)
             }
-            console.log("STOCKDATA AFTER ADDITIONS: ",stockData)
             if(params){
                 if(stockData.symbol === params.symbol){
                     setPageLoaded(params.symbol)
@@ -130,9 +124,7 @@ const Stockpage = () => {
                 if(hours >= 12){
                     zone = "PM"
                     if(hours > 12){
-                        console.log("HOURS BEFORE: ",hours)
                         hours = hours % 12
-                        console.log("HOURS AFTER: ",hours)
                     }
                 }
                 else zone = "AM"
@@ -169,10 +161,8 @@ const Stockpage = () => {
     },[user,stockData])
 
     useEffect(()=>{
-        console.log("IN TIME USE EFFECT")
         let start = new Date()
               let end = new Date()
-              console.log("START: ",start,"END: ",end)
               if(start.getDay() === 6){
                   start.setDate(start.getDate()-1)
                   end.setDate(end.getDate()-1)
@@ -184,7 +174,6 @@ const Stockpage = () => {
                   end.setDate(end.getDate()-2)
                   end.setHours(23,0,0,0)
               } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
-                  console.log("THIS ONE")
                   if(start.getDate() === 1){
                     start.setDate(start.getDate()-3)
                     end.setDate(end.getDate()-3)
@@ -318,7 +307,6 @@ const Stockpage = () => {
     }
 
     const getAbbreviatedNumber = (num) => {
-        console.log("ABBREVIATED NUMBER: ",num)
         if(num >= 1000000000000000000000000000000000000000){
             return "Unk."
         }
@@ -391,12 +379,10 @@ const Stockpage = () => {
             }
         }
     },[graphData])
-    console.log("ERRORS: ",errors)
     const submitOrder = (type) => {
         let errors = []
         if(isNaN(Number(investValue))){
             errors.push("Letters are not allowed")
-            console.log("ERRRRRRRRRRORS : ",errors)
             setErrors(errors)
             return
         }
@@ -426,14 +412,11 @@ const Stockpage = () => {
             return
         }
 
-
-        console.log("INVEST VALUE: ",investValue, type)
         if(!Number(investValue) && type === "sell"){
             setErrors(["You must enter an amount to sell"])
             return
         }
         if(investValue && investType === "shares" && type === "buy"){
-            console.log("HEREEEEEEEEEEEEEE: ",Number(-Number(stockData.price*investValue).toFixed(4)))
             if(investValue*stockData.price > user.buying_power)errors.push("Not enough funds")
             if(!errors.length){
                 dispatch(addHolding(stockData.symbol,Number(Number(investValue).toFixed(4)),user.id))
@@ -464,9 +447,7 @@ const Stockpage = () => {
 
         }
     }
-    console.log("USER: ",user)
-    console.log("ACTUAL SCATTER: ",actualScatterData)
-    console.log("eSTIMATED SCATTER: ",estimatedScatterData)
+
     let scatterChart = (
     <ScatterChart width={600} height={300} >
 
@@ -484,10 +465,7 @@ const Stockpage = () => {
             dispatch(toggleModalView(true))
             dispatch(addModal("add-to-watchlist"))
         }
-        console.log("STOCK DATA: ",stockData)
-        console.log("PERFORMANCE IN STOCK PAGE: ",performance)
-        console.log("STOCK PAGE LOADED: ",pageLoaded)
-        console.log("GRAPH DATA: ",graphData)
+
     if(pageLoaded !== params.symbol){
         return (<div id = "react-loading-container" style = {theme === "light" ? {backgroundColor:"white"} : {backgroundColor:"black"}}><div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div></div>
             );

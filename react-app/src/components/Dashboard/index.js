@@ -73,11 +73,9 @@ const Dashboard = () => {
     const moversData = useSelector(state => state.portfolio.moversData)
     const watchlistStockData = useSelector(state=>state.stocks.watchlistStockData)
     const holdingStockData = useSelector(state => state.stocks.holdingStockData)
-
     const [pageLoaded,setPageLoaded] = useState("")
 
     const getAbbreviatedNumber = (num) => {
-        console.log("ABBREVIATED NUMBER: ",num)
         if(num >= 1000000000000000000000000000000000000000){
             return "Unk."
         }
@@ -119,7 +117,6 @@ const Dashboard = () => {
     useEffect(()=>{setErrors([])},[watchlistInputValue])
     useEffect(()=>{
         if(watchlistStockData){
-          console.log("WATCHLIST STOCK DATA",Object.keys(watchlistStockData))
           let newChanges = {}
           let newPrices = {}
           for(let symbol of Object.keys(watchlistStockData)){
@@ -173,7 +170,6 @@ const Dashboard = () => {
 
     useEffect(()=>{
         if(holdingStockData){
-          console.log("WATCHLIST STOCK DATA",Object.keys(holdingStockData))
           let newChanges = {}
           let newPrices = {}
           for(let symbol of Object.keys(holdingStockData)){
@@ -218,7 +214,6 @@ const Dashboard = () => {
     if(portfolioData){
         if(portfolioData[0]){
             let data = portfolioData.map(data=> data.dateTime)
-        console.log(data)
         }
 
     }
@@ -244,7 +239,6 @@ const Dashboard = () => {
                 const currentTime = new Date().getTime()/1000
                 if(data){
                     data.sort((a,b)=>a.datetime > b.datetime)
-                console.log("DATA: ",data)
                 data.forEach(article => {
                     let seconds = currentTime - article.datetime
                     let timeInHours = seconds/3600
@@ -265,7 +259,8 @@ const Dashboard = () => {
                             }
                     }
                 })
-                setNews(data)
+
+                // setNews(data)
                 }
 
               });
@@ -274,7 +269,6 @@ const Dashboard = () => {
               editBuyingPowerValue(user.buyingPower)
               dispatch(getMoversData(moverAPIKeys))
               for(let watchlist of user.watchlists){
-                  console.log("WATCHLIST: ",watchlist)
                   allWatchListStocks = [...allWatchListStocks,...watchlist.stocks.filter(stock => !allWatchListStockSymbols.includes(stock.symbol))]
                   allWatchListStockSymbols = [...allWatchListStockSymbols,...watchlist.stocks.map(stock => stock.symbol)]
 
@@ -296,7 +290,6 @@ const Dashboard = () => {
                   end.setHours(23,0,0,0)
               } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
                 if(start.getDate() === 1){
-                    console.log("IN CORRECT")
                     start.setDate(start.getDate()-3)
                     end.setDate(end.getDate()-3)
                     end.setHours(23,0,0,0)
@@ -332,7 +325,6 @@ const Dashboard = () => {
 
 
     const handleWatchlistStockDelete = (stock,watchlist) => {
-        console.log("HANDLER: ",watchlist,stock)
         dispatch(deleteWatchlistStock(watchlist.id,stock.symbol,user.id))
     }
 
@@ -384,7 +376,6 @@ const Dashboard = () => {
     },[interval,unixEnd,unixStart])
 
 
-    console.log("NEWS: ",news)
     const timeFrameClick = (time,frame) => {
 
 
@@ -482,7 +473,6 @@ const Dashboard = () => {
     const CustomTooltip = ({ active, payload }) => {
     // if (!active || !tooltip)    return null
     if(payload && payload[0]){
-
             let year = payload[0].payload.dateTime.getFullYear()
             let month = months[payload[0].payload.dateTime.getMonth()]
             let day = payload[0].payload.dateTime.getDate()
@@ -490,18 +480,14 @@ const Dashboard = () => {
             let minutes = payload[0].payload.dateTime.getMinutes()
             if(minutes === 0)minutes = "00"
             if(minutes === 5)minutes = "05"
-            console.log("IN TOO:LTIP: ",hours)
             let zone
             if(hours >= 12) {
                 zone = "PM"
                 if(hours > 12){
-                    console.log("HOURS BEFORE: ",hours)
                     hours = hours % 12
-                    console.log("HOURS AFTER: ",hours)
                 }
             }
             else zone = "AM"
-
             setPortfolioValueDynamic(payload[0].payload.price)
             if(interval === "5"){
                 return (<span className = "chart-date-label">{hours}:{minutes} {zone}</span>)
@@ -531,7 +517,6 @@ const chartHoverFunction = (e) => {
 }
 
 const deposit = (value) => {
-    console.log("RJGNPRIGUNBERPIGUNRE: ",!value)
     if(!value){
         if(isNaN(Number(buyingPowerValue))){
             setBuyingPowerErrors(["Letters are not allowed"])
@@ -545,9 +530,7 @@ const deposit = (value) => {
             setBuyingPowerErrors(["You must deposit more than $0"])
             return
         }
-        console.log("BEAR: ",Number(buyingPowerValue).toFixed(5))
         let num = Number(buyingPowerValue).toFixed(5)
-        console.log(num[num.length-1])
 
         if(buyingPowerValue>= 100000000000000000000){
             setBuyingPowerErrors(['You must enter a smaller number'])
@@ -571,8 +554,16 @@ const handleDotsClick = () => {
     dispatch(addModal("watchlist-dots"))
 }
 const portfolioReset = (e) => {
-    setPortfolioValueDynamic(0)
+    if(portfolioData?.data){
+        setPortfolioValueDynamic(portfolioData.data[portfolioData.data.length-1].price)
+    } else {
+        setPortfolioValueDynamic(0)
+    }
 }
+
+useEffect(()=>{
+    portfolioReset()
+},[portfolioData])
 
 const addWatchlist = (e) => {
     e.preventDefault()
@@ -595,7 +586,6 @@ const addWatchlist = (e) => {
 
 const deleteListHandler = (watchlist) => {
     setDotsOpen(false)
-    console.log("WATCHLISTTTTTTTTTT: ",watchlist)
     dispatch(deleteWatchlistThunk(watchlist.id))
 }
 
@@ -616,8 +606,6 @@ const handleOpenDots = (e,watchlist) => {
     }
     else setDotsOpen(watchlist.id)
 }
-console.log(user)
-console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
 
     useEffect(()=>{
         if(graphData.length && graphData[0] !== "no_data"){
@@ -653,14 +641,6 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
         }
     },[graphData])
 
-
-    if(moversData){
-        console.log("LOSERS DATA: ",moversData.losersData)
-        console.log("WINNERS DATA: ",moversData.gainersData)
-    }
-
-    console.log("PORTFOLIO DATA: ",portfolioData)
-    console.log("PAGE LOADED ? :", pageLoaded)
     if(pageLoaded !== "Dashboard"){
         return (<div id = "react-loading"><ReactLoading color = {theme === "light" ? "black" : "white"} height={100} width={700}/></div>
             );
@@ -757,7 +737,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                             </div>
                         </div>
                     </div>
-                    <div id = "news-container">
+                    {/* <div id = "news-container">
                         <div id="news-title" className = "dashboard-titles">News</div>
                         <div id = "news-icons-container">
                             {news && news.map(post => {
@@ -775,7 +755,7 @@ console.log("WATCHLIST STOCK DATA: ",watchlistStockData)
                             })}
 
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
             </div>

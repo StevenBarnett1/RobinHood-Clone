@@ -64,7 +64,6 @@ export const getHoldingGraphData = (stocks,tokens) => async dispatch => {
   } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
 
     if(start.getDate() === 1){
-      console.log("IN CORRECT")
       start.setDate(start.getDate()-3)
       end.setDate(end.getDate()-3)
       end.setHours(23,0,0,0)
@@ -135,7 +134,6 @@ export const getWatchlistGraphData = (stocks,tokens) => async dispatch => {
   } else if (start.getHours() < 6 || (start.getHours() === 6 && start.getMinutes() < 30)){
 
     if(start.getDate() === 1){
-      console.log("IN CORRECT")
       start.setDate(start.getDate()-3)
       end.setDate(end.getDate()-3)
       end.setHours(23,0,0,0)
@@ -197,9 +195,6 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     const peerData = await peerResponse.json()
     const earningsData = await earningsResponse.json()
 
-    console.log("MADE ANOTHER API CALL GET STOCK DATA")
-
-    console.log("ALPHA ADVANTAGE DATA: ",alphaAdvantageData)
     if(alphaAdvantageData){
       stock.marketCap = alphaAdvantageData.MarketCapitalization === "None" ? "-" : alphaAdvantageData.MarketCapitalization
       stock.peRatio = alphaAdvantageData.PERatio === "None" ? "-" : alphaAdvantageData.PERatio
@@ -226,7 +221,6 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
     stock.price = priceData.c
 
     if(stock.dividendYield == 0 )stock.dividendYield = "-"
-    console.log("CANDLE DATA: ",candleData, `https://finnhub.io/api/v1/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${unixStart}&to=${unixEnd}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
     let estimated = []
     let actual = []
 
@@ -255,7 +249,6 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
         const peerPriceResponse = await fetch(`https://finnhub.io/api/v1/quote?symbol=${peer.toUpperCase()}&token=${apiKeys[Math.floor(Math.random()*apiKeys.length)]}`)
 
         const peerPriceData = await peerPriceResponse.json()
-        console.log("PEER PRICE DATA: ",peerPriceData)
         newObj.symbol = peer
         newObj.price = peerPriceData.c
         if((peer.toUpperCase() !== symbol.toUpperCase()) && newObj.price)stock.peers.push(newObj)
@@ -274,7 +267,6 @@ export const getStockData = (symbol,resolution,unixStart,unixEnd,apiKeys,financi
       }
     }
 
-    console.log("STOCK DATA IN THUNK: ",stock)
   dispatch(setStockGraphData(stock))
 }
 

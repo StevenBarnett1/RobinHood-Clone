@@ -22,7 +22,6 @@ function FormModal(props) {
   const modalInfo = useSelector(state => state.session.modalInfo)
   const theme = useSelector(state=> state.session.theme)
   let userForm
-  console.log("PROPS: ",props,)
 
   useEffect(()=>{
 
@@ -47,7 +46,6 @@ function FormModal(props) {
     let errors = []
       if(!WatchlistInputValue)errors.push("Watchlist name cannot be empty")
       if(WatchlistInputValue.length > 15)errors.push("Watchlist name must be less than 15 characters")
-      console.log("MADE IT HERE")
       if(filteredList[0]){
           errors.push(["Watchlist name already exists"])
       }
@@ -107,14 +105,10 @@ function FormModal(props) {
     else {
       for(let i =0; i<oldBoxes.length;i++){
         if(oldBoxes[i] !== watchlist.id){
-          console.log("IN HERE: ",oldBoxes[i])
           newBoxes.push(oldBoxes[i])
         }
       }
     }
-    console.log("WATCHLIST ID: ",watchlist.id)
-    console.log("OLD BOXES: ",oldBoxes)
-    console.log("NEW BOXES: ",newBoxes)
     setCheckedBoxes(newBoxes)
   }
 
@@ -132,8 +126,7 @@ function FormModal(props) {
         if(!found && checkedBoxes.includes(watchlist.id))actualList.push(watchlist.id)
       }
       if(actualList.length){
-        console.log("ACTUAL LIST: ",actualList)
-        console.log("PROPS SYMBOL",props.symbol)
+
         dispatch(addToWatchlist(actualList,props.symbol))
 
       }
