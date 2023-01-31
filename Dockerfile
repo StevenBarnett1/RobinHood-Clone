@@ -4,7 +4,8 @@ WORKDIR /react-app
 COPY react-app/. .
 
 # You have to set this because it should be set during build time.
-ENV REACT_APP_BASE_URL=https://stevenhood.herokuapp.com/
+ENV REACT_APP_BASE_URL=https://stevenhood-app.herokuapp.com/
+ENV DATABASE_URL=postgresql://steven@0.tcp.ngrok.io:10256
 
 # Build our React App
 RUN npm install
