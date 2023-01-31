@@ -9,6 +9,7 @@ const LoginForm = () => {
   const [errors, setErrors] = useState([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [demoUser,setDemoUser] = useState("Demo User")
   const user = useSelector(state => state.session.user);
   const dispatch = useDispatch();
 
@@ -76,7 +77,10 @@ const LoginForm = () => {
         </div>
         <div id = "login-button-container">
           <button id = "login-submit" type='submit'>Sign In</button>
-          <button onClick = {(e)=>handleDemo(e)}type="demo-submit">Demo User</button>
+          <button onClick = {(e)=>{
+            setDemoUser("Loading...")
+            handleDemo(e)
+            }}type="demo-submit">{demoUser}</button>
           <div id = "login-redirect-container">
             <div>Not on Stevenhood?</div>
             <div><NavLink to = "/sign-up"> Create an account</NavLink></div>
